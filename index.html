@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Iftar Timetable Card (PrayTime-based)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <h1 class="page-title">Adhan Timings</h1>
+      <div class="bar">
+        <div class="left">
+          <div class="chip">
+            <span>📍</span>
+            <select id="city" aria-label="City"></select>
+          </div>
+
+          <div class="chip">
+            <span>🧭</span>
+            <span>Lat</span
+            ><input id="lat" type="number" step="0.0001" aria-label="Latitude" />
+            <span style="opacity: 0.5">|</span>
+            <span>Lng</span
+            ><input
+              id="lng"
+              type="number"
+              step="0.0001"
+              aria-label="Longitude"
+            />
+          </div>
+
+          <div class="chip">
+            <span>🧮</span>
+            <span>Method</span>
+            <select id="method" aria-label="Calculation method"></select>
+          </div>
+
+          <div class="chip">
+            <span>🕒</span>
+            <span>TZ</span>
+            <input id="tz" type="number" step="0.5" aria-label="Timezone" />
+            <span style="color: var(--muted)">hrs</span>
+          </div>
+
+          <div class="chip">
+            <span>🗓️</span>
+            <input id="start" type="date" aria-label="Start date" />
+          </div>
+
+          <div class="chip">
+            <span>📅</span>
+            <span>Days</span>
+            <select id="days" aria-label="Number of days">
+              <option>7</option>
+              <option selected>10</option>
+              <option>15</option>
+              <option>30</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- Removed generate button as auto-update handles regenerations -->
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="inner">
+            <div class="head">
+              <div class="title">
+                <div class="headline" id="subline">—</div>
+                <div class="hijri-time mono" id="hijriDate">—</div>
+              </div>
+              <div class="big">
+                <div class="label" id="bigLabel">Today’s Iftar (Maghrib)</div>
+                <div class="time mono" id="bigTime">--:--</div>
+              </div>
+            </div>
+
+            <div class="stats" aria-label="Countdown to iftar">
+              <div class="stat">
+                <div class="n mono" id="cdH">--</div>
+                <div class="k">Hours</div>
+              </div>
+              <div class="stat">
+                <div class="n mono" id="cdM">--</div>
+                <div class="k">Minutes</div>
+              </div>
+              <div class="stat">
+                <div class="n mono" id="cdS">--</div>
+                <div class="k">Seconds</div>
+              </div>
+              <div class="stat">
+                <div class="n mono" id="nextName">—</div>
+                <div class="k">Next</div>
+              </div>
+            </div>
+
+            <div class="table" id="table"></div>
+
+            <div class="note">
+              This page ports the core logic from your Lua snippet
+              (PrayTimes/PrayTime) into JavaScript.
+              <br />
+              <span class="warn">Note:</span> In your Lua,
+              <code>Imsak_offset</code> is labeled “minutes” but used as if it
+              were a day-portion; here it’s treated as minutes (default: 10).
+              Your selections are saved locally in the browser.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
