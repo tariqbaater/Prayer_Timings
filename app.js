@@ -640,7 +640,7 @@ function renderTable(rows) {
   host.innerHTML = "";
 
   const head = document.createElement("div");
-  head.className = "row";
+  head.className = "row row--head";
   head.innerHTML = `
     <div class="cell headcell">Date</div>
     <div class="cell headcell">Fajr</div>
@@ -654,6 +654,7 @@ function renderTable(rows) {
 
   const now = new Date();
 
+  let i = 0;
   for (const r of rows) {
     const isToday = sameDay(r.date, now);
     const badge = isToday
@@ -663,6 +664,8 @@ function renderTable(rows) {
     const row = document.createElement("div");
     row.className = "row";
     if (isToday) row.classList.add("today-row");
+    if (i % 2 === 1) row.classList.add("row--alt");
+
     row.innerHTML = `
       <div class="cell">
         <div class="datecell">
@@ -678,6 +681,7 @@ function renderTable(rows) {
       <div class="cell mono">${r.times.Isha}</div>
     `;
     host.appendChild(row);
+    i++;
   }
 }
 
@@ -711,6 +715,7 @@ function startCountdown(targetDate, label) {
   nextName.textContent = label || "Next";
 
   function tick() {
+    updateNowLine();
     const now = new Date();
     let diffMs = targetDate - now;
 
@@ -769,7 +774,7 @@ function getNextPrayerTarget(now, pt, lat, lng, tz) {
     const t = todayMap[p.key];
     const d = parseHHMMToDate(today, String(t));
     if (!Number.isNaN(d.getTime()) && d > now) {
-      return { name: p.label, time: String(t), date: d };
+      return { key: p.key, name: p.label, time: String(t), date: d };
     }
   }
 
@@ -777,12 +782,46 @@ function getNextPrayerTarget(now, pt, lat, lng, tz) {
   const tomorrowMap = getPrayerTimesMapForDate(pt, tomorrow, lat, lng, tz);
   const t = tomorrowMap.Fajr;
   const d = parseHHMMToDate(tomorrow, String(t));
-  return { name: "Fajr", time: String(t), date: d };
+  return { key: "Fajr", name: "Fajr", time: String(t), date: d };
+}
+
+function updateNowLine() {
+  const host = $("nowLine");
+  if (!host) return;
+  const tz = parseFloat($("tz").value);
+  const tzLabel = Number.isFinite(tz) ? `TZ ${tz > 0 ? "+" : ""}${tz}` : "TZ —";
+  const now = new Date();
+  const nowStr = now.toLocaleTimeString(undefined, {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  host.textContent = `Now: ${nowStr} • ${tzLabel}`;
 }
 
 function regenerate() {
   const rows = buildRows();
+  // Next prayer target and dashboard values.
+  const now = new Date();
+  const methodID = parseInt($("method").value, 10);
+  const pt = new PrayTime(methodID);
+  pt.setTimeFormat(PrayTime.Time12);
+  pt.setHighLatsMethod(PrayTime.MidNight);
+
+  const latN = parseFloat($("lat").value);
+  const lngN = parseFloat($("lng").value);
+  const tzN = parseFloat($("tz").value);
+
+  const next = getNextPrayerTarget(now, pt, latN, lngN, tzN);
   renderTable(rows);
+
+  const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const todayMap = getPrayerTimesMapForDate(pt, todayDate, latN, lngN, tzN);
+  const imsakEl = $("imsakIftar");
+  if (imsakEl) {
+    const imsak = todayMap.Imsak || PrayTime.InvalidTime;
+    const iftar = todayMap.Maghrib || PrayTime.InvalidTime;
+    imsakEl.textContent = `Imsak ${imsak} | Iftar ${iftar}`;
+  }
 
   const city = $("city").value;
   const lat = $("lat").value;
@@ -798,22 +837,13 @@ function regenerate() {
   const hijriEl = $("hijriDate");
   if (hijriEl) hijriEl.textContent = todayHijri;
 
-  const now = new Date();
-  const methodID = parseInt($("method").value, 10);
-  const pt = new PrayTime(methodID);
-  pt.setTimeFormat(PrayTime.Time12);
-  pt.setHighLatsMethod(PrayTime.MidNight);
-
-  const next = getNextPrayerTarget(
-    now,
-    pt,
-    parseFloat($("lat").value),
-    parseFloat($("lng").value),
-    parseFloat($("tz").value),
-  );
-
   $("bigLabel").textContent = `Next Prayer: ${next.name}`;
   $("bigTime").textContent = next.time;
+
+  const nextAt = $("nextAt");
+  if (nextAt) nextAt.textContent = `at ${next.time}`;
+
+  updateNowLine();
 
   startCountdown(next.date, next.name);
   saveSettings();

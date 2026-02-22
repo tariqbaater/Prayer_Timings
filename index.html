@@ -8,7 +8,9 @@
   </head>
   <body>
     <div class="wrap">
-      <h1 class="page-title">Adhan Timings</h1>
+      <div class="title-banner">
+        <h1 class="page-title">Adhan Timings</h1>
+      </div>
       <div class="bar">
         <div class="left">
           <div class="chip">
@@ -19,7 +21,12 @@
           <div class="chip">
             <span>🧭</span>
             <span>Lat</span
-            ><input id="lat" type="number" step="0.0001" aria-label="Latitude" />
+            ><input
+              id="lat"
+              type="number"
+              step="0.0001"
+              aria-label="Latitude"
+            />
             <span style="opacity: 0.5">|</span>
             <span>Lng</span
             ><input
@@ -58,7 +65,6 @@
               <option>30</option>
             </select>
           </div>
-
         </div>
 
         <!-- Removed generate button as auto-update handles regenerations -->
@@ -72,13 +78,23 @@
                 <div class="headline" id="subline">—</div>
                 <div class="hijri-time mono" id="hijriDate">—</div>
               </div>
+
+              <div class="midline mono" id="imsakIftar" aria-label="Imsak and Iftar times">
+                Imsak --:-- | Iftar --:--
+              </div>
+
               <div class="big">
                 <div class="label" id="bigLabel">Today’s Iftar (Maghrib)</div>
                 <div class="time mono" id="bigTime">--:--</div>
+                <div class="meta mono" id="nowLine">—</div>
               </div>
             </div>
 
-            <div class="stats" aria-label="Countdown to iftar">
+            <div
+              class="stats"
+              aria-label="Countdown to next prayer"
+              aria-live="polite"
+            >
               <div class="stat">
                 <div class="n mono" id="cdH">--</div>
                 <div class="k">Hours</div>
@@ -91,9 +107,9 @@
                 <div class="n mono" id="cdS">--</div>
                 <div class="k">Seconds</div>
               </div>
-              <div class="stat">
+              <div class="stat stat--next">
                 <div class="n mono" id="nextName">—</div>
-                <div class="k">Next</div>
+                <div class="k" id="nextAt">—</div>
               </div>
             </div>
 
