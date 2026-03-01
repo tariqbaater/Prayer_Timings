@@ -20,14 +20,14 @@
   --text-secondary: #e4e4e7;
   --border: rgba(255, 255, 255, 0.08);
   --border-light: rgba(255, 255, 255, 0.12);
-  --accent: #8b5cf6;
-  --accent-hover: #a78bfa;
+  --accent: #CAA380;
+  --accent-hover: #CAA380;
   --accent-subtle: rgba(139, 92, 246, 0.15);
   --good: #2B5746;
   --good-subtle: rgba(43, 87, 70, 0.15);
   --warn: #f59e0b;
   --warn-subtle: rgba(245, 158, 11, 0.15);
-  --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  --gradient-1: linear-gradient(135deg, #CAA380 0%, #A88560 100%);
   --gradient-2: linear-gradient(135deg, #2B5746 0%, #1e3d31 100%);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -43,7 +43,6 @@
   --head-bg: rgba(24, 24, 27, 0.95);
   --bg-gradient-1: rgba(139, 92, 246, 0.15);
   --bg-gradient-2: rgba(16, 185, 129, 0.08);
-  --banner-sheen: rgba(255, 255, 255, 0.03);
   --card-sheen: rgba(255, 255, 255, 0.02);
   --midline-bg: linear-gradient(135deg, rgba(43, 87, 70, 0.2) 0%, rgba(43, 87, 70, 0.15) 100%);
   --midline-border: rgba(43, 87, 70, 0.35);
@@ -73,14 +72,14 @@
   --text-secondary: #3f3f46;
   --border: rgba(0, 0, 0, 0.08);
   --border-light: rgba(0, 0, 0, 0.12);
-  --accent: #8b5cf6;
-  --accent-hover: #7c3aed;
+  --accent: #CAA380;
+  --accent-hover: #CAA380;
   --accent-subtle: rgba(139, 92, 246, 0.1);
   --good: #2B5746;
   --good-subtle: rgba(43, 87, 70, 0.1);
   --warn: #f59e0b;
   --warn-subtle: rgba(245, 158, 11, 0.1);
-  --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  --gradient-1: linear-gradient(135deg, #CAA380 0%, #A88560 100%);
   --gradient-2: linear-gradient(135deg, #2B5746 0%, #1e3d31 100%);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -95,7 +94,6 @@
   --head-bg: rgba(255, 255, 255, 0.95);
   --bg-gradient-1: rgba(139, 92, 246, 0.06);
   --bg-gradient-2: rgba(43, 87, 70, 0.04);
-  --banner-sheen: rgba(255, 255, 255, 0.5);
   --card-sheen: rgba(255, 255, 255, 0.4);
   --midline-bg: linear-gradient(135deg, rgba(43, 87, 70, 0.1) 0%, rgba(43, 87, 70, 0.08) 100%);
   --midline-border: rgba(43, 87, 70, 0.25);
@@ -203,11 +201,7 @@ body::before {
 
 /* Header */
 .title-banner {
-  background: 
-    linear-gradient(180deg, rgba(9, 9, 11, 0.7) 0%, rgba(9, 9, 11, 0.85) 50%, rgba(9, 9, 11, 0.9) 100%),
-    url("assets/asset_mosque_header.png");
-  background-size: cover;
-  background-position: center;
+  background: var(--card);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 48px 24px;
@@ -229,20 +223,18 @@ body::before {
 .title-arabic {
   font-size: 36px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--good);
   font-family: "Amiri", "Traditional Arabic", "Simplified Arabic", "Times New Roman", serif;
   letter-spacing: 4px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .title-english {
   font-size: 24px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--good);
   letter-spacing: 8px;
   text-transform: uppercase;
   font-family: Georgia, "Times New Roman", serif;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* Toolbar */
@@ -1076,4 +1068,112 @@ input[type="date"] {
     font-size: 11px;
     padding: 6px 8px;
   }
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  position: relative;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 28px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-close:hover {
+  color: var(--text);
+}
+
+.modal-title {
+  margin: 0 0 24px;
+  font-size: 20px;
+  color: var(--text);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.social-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 80px;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+}
+
+.social-btn span {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.social-btn.facebook {
+  background: #1877f2;
+  color: white;
+}
+
+.social-btn.twitter {
+  background: #000000;
+  color: white;
+}
+
+.social-btn.whatsapp {
+  background: #25d366;
+  color: white;
+}
+
+.social-btn.email {
+  background: var(--surface-3);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.modal-download {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.download-btn {
+  width: 100%;
+  justify-content: center;
 }
