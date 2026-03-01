@@ -397,8 +397,6 @@ const methods = [
 
 function fmtDateLong(d) {
   return d.toLocaleDateString(undefined, {
-    weekday: "short",
-    year: "numeric",
     month: "short",
     day: "numeric",
   });
@@ -605,7 +603,6 @@ function buildRows() {
   const methodID = parseInt($("method").value, 10);
 
   const pt = new PrayTime(methodID);
-  // default to 12-hour format
   pt.setTimeFormat(PrayTime.Time12);
   pt.setHighLatsMethod(PrayTime.MidNight);
 
@@ -653,13 +650,21 @@ function renderTable(rows) {
   host.appendChild(head);
 
   const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const tomorrowStart = new Date(todayStart);
+  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
 
   let i = 0;
   for (const r of rows) {
     const isToday = sameDay(r.date, now);
+    const isTomorrow = sameDay(r.date, tomorrowStart);
     const badge = isToday
       ? `<span class="badge today">Today</span>`
-      : `<span class="badge">${r.date.toLocaleDateString(undefined, { weekday: 'short' })}</span>`;
+      : isTomorrow
+        ? `<span class="badge tomorrow">Tomorrow</span>`
+        : `<span class="badge">${r.date.toLocaleDateString(undefined, {
+            weekday: "short",
+          })}</span>`;
 
     const row = document.createElement("div");
     row.className = "row";
@@ -682,6 +687,12 @@ function renderTable(rows) {
     `;
     host.appendChild(row);
     i++;
+  }
+
+  // Auto-scroll to today row
+  const todayRow = host.querySelector(".today-row");
+  if (todayRow) {
+    todayRow.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
 
@@ -785,6 +796,47 @@ function getNextPrayerTarget(now, pt, lat, lng, tz) {
   return { key: "Fajr", name: "Fajr", time: String(t), date: d };
 }
 
+function getCurrentPrayer(now, pt, lat, lng, tz) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const prayers = [
+    { key: "Fajr", label: "Fajr" },
+    { key: "Sunrise", label: "Sunrise" },
+    { key: "Dhuhr", label: "Dhuhr" },
+    { key: "Asr", label: "Asr" },
+    { key: "Maghrib", label: "Maghrib" },
+    { key: "Isha", label: "Isha" },
+  ];
+
+  const todayMap = getPrayerTimesMapForDate(pt, today, lat, lng, tz);
+  const yesterdayMap = getPrayerTimesMapForDate(pt, yesterday, lat, lng, tz);
+
+  // Check yesterday's Isha first (can extend into today early morning)
+  const yesterdayIsha = yesterdayMap.Isha;
+  const yesterdayIshaDate = parseHHMMToDate(yesterday, String(yesterdayIsha));
+  if (
+    !Number.isNaN(yesterdayIshaDate.getTime()) &&
+    now >= yesterdayIshaDate &&
+    now < todayMap.Fajr
+  ) {
+    return { key: "Isha", name: "Isha", time: String(yesterdayIsha) };
+  }
+
+  // Check today's prayers in order
+  for (let i = prayers.length - 1; i >= 0; i--) {
+    const p = prayers[i];
+    const t = todayMap[p.key];
+    const d = parseHHMMToDate(today, String(t));
+    if (!Number.isNaN(d.getTime()) && now >= d) {
+      return { key: p.key, name: p.label, time: String(t) };
+    }
+  }
+
+  return null;
+}
+
 function updateNowLine() {
   const host = $("nowLine");
   if (!host) return;
@@ -843,6 +895,13 @@ function regenerate() {
   const nextAt = $("nextAt");
   if (nextAt) nextAt.textContent = `at ${next.time}`;
 
+  // Show current prayer
+  const currentEl = $("currentName");
+  const current = getCurrentPrayer(now, pt, latN, lngN, tzN);
+  if (currentEl) {
+    currentEl.textContent = current ? current.name : "—";
+  }
+
   updateNowLine();
 
   startCountdown(next.date, next.name);
@@ -859,14 +918,131 @@ function regenerate() {
 
   $("city").addEventListener("change", () => {
     syncCityToLatLng();
+    saveSettings();
     regenerate();
   });
-  $("method").addEventListener("change", regenerate);
-  $("days").addEventListener("change", regenerate);
-  $("start").addEventListener("change", regenerate);
-  $("lat").addEventListener("change", regenerate);
-  $("lng").addEventListener("change", regenerate);
-  $("tz").addEventListener("change", regenerate);
+  $("method").addEventListener("change", () => {
+    saveSettings();
+    regenerate();
+  });
+  $("days").addEventListener("change", () => {
+    saveSettings();
+    regenerate();
+  });
+  $("start").addEventListener("change", () => {
+    saveSettings();
+    regenerate();
+  });
+  $("lat").addEventListener("change", () => {
+    saveSettings();
+    regenerate();
+  });
+  $("lng").addEventListener("change", () => {
+    saveSettings();
+    regenerate();
+  });
+  $("tz").addEventListener("change", () => {
+    saveSettings();
+    regenerate();
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener("keydown", (e) => {
+    // Ignore if typing in an input
+    if (
+      e.target.tagName === "INPUT" ||
+      e.target.tagName === "SELECT" ||
+      e.target.tagName === "TEXTAREA"
+    )
+      return;
+
+    const startInput = $("start");
+    const current = startInput.value ? new Date(startInput.value + "T00:00:00") : new Date();
+
+    if (e.key === "t" || e.key === "T") {
+      e.preventDefault();
+      setTodayDateInput();
+      saveSettings();
+      regenerate();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      current.setDate(current.getDate() - 1);
+      const yyyy = current.getFullYear();
+      const mm = String(current.getMonth() + 1).padStart(2, "0");
+      const dd = String(current.getDate()).padStart(2, "0");
+      startInput.value = `${yyyy}-${mm}-${dd}`;
+      saveSettings();
+      regenerate();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      current.setDate(current.getDate() + 1);
+      const yyyy = current.getFullYear();
+      const mm = String(current.getMonth() + 1).padStart(2, "0");
+      const dd = String(current.getDate()).padStart(2, "0");
+      startInput.value = `${yyyy}-${mm}-${dd}`;
+      saveSettings();
+      regenerate();
+    }
+  });
+
+  // Toggle advanced settings
+  const toggleAdvanced = $("toggleAdvanced");
+  const chipMethod = $("chipMethod");
+  const chipTz = $("chipTz");
+  const chipLatLng = $("chipLatLng");
+  let advancedVisible = false;
+
+  toggleAdvanced.addEventListener("click", () => {
+    advancedVisible = !advancedVisible;
+    if (advancedVisible) {
+      chipMethod.classList.remove("chip--hidden");
+      chipMethod.classList.add("chip--visible");
+      chipTz.classList.remove("chip--hidden");
+      chipTz.classList.add("chip--visible");
+      chipLatLng.classList.remove("chip--hidden");
+      chipLatLng.classList.add("chip--visible");
+      toggleAdvanced.textContent = "⚙️ Hide";
+    } else {
+      chipMethod.classList.add("chip--hidden");
+      chipMethod.classList.remove("chip--visible");
+      chipTz.classList.add("chip--hidden");
+      chipTz.classList.remove("chip--visible");
+      chipLatLng.classList.add("chip--hidden");
+      chipLatLng.classList.remove("chip--visible");
+      toggleAdvanced.textContent = "⚙️ Advanced";
+    }
+  });
+
+  // Today button
+  $("todayBtn").addEventListener("click", () => {
+    setTodayDateInput();
+    saveSettings();
+    regenerate();
+  });
+
+  // Copy today's times
+  $("copyBtn").addEventListener("click", () => {
+    const rows = buildRows();
+    const now = new Date();
+    const today = rows.find((r) => sameDay(r.date, now));
+    if (!today) return;
+
+    const city = $("city").value;
+    const text = `${city} Prayer Times - ${fmtDateLong(today.date)}
+Fajr: ${today.times.Fajr}
+Sunrise: ${today.times.Sunrise}
+Dhuhr: ${today.times.Dhuhr}
+Asr: ${today.times.Asr}
+Maghrib: ${today.times.Maghrib}
+Isha: ${today.times.Isha}`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = $("copyBtn");
+      const original = btn.textContent;
+      btn.textContent = "Copied!";
+      setTimeout(() => (btn.textContent = original), 1500);
+    });
+  });
 
   regenerate();
 })();

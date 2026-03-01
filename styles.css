@@ -109,6 +109,14 @@ body {
   min-height: 32px;
 }
 
+.chip--hidden {
+  display: none;
+}
+
+.chip--visible {
+  display: flex;
+}
+
 select,
 input {
   background: transparent;
@@ -196,9 +204,9 @@ input:focus-visible {
 }
 
 .head {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: flex-start;
-  justify-content: space-between;
   gap: 14px;
   padding-bottom: 14px;
   border-bottom: 1px solid var(--border);
@@ -212,6 +220,37 @@ input:focus-visible {
   font-size: 16px;
   color: var(--text);
   opacity: 0.95;
+}
+
+/* Imsak/Iftar callout pill */
+#imsakIftar {
+  justify-self: center;
+  width: fit-content;
+  margin-inline: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.09),
+      rgba(255, 255, 255, 0.03)
+    ),
+    radial-gradient(
+      180px 80px at 18% 25%,
+      rgba(124, 92, 255, 0.26),
+      transparent 62%
+    ),
+    radial-gradient(
+      160px 80px at 82% 25%,
+      rgba(34, 197, 94, 0.16),
+      transparent 62%
+    );
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.28),
+    0 0 0 6px rgba(124, 92, 255, 0.09);
+  backdrop-filter: blur(10px);
+  white-space: nowrap;
 }
 
 .title {
@@ -262,8 +301,24 @@ input:focus-visible {
 .stats {
   margin-top: 14px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1.7fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1.5fr;
   gap: 10px;
+}
+
+.stat--current {
+  text-align: left;
+  padding-left: 14px;
+  background: rgba(124, 92, 255, 0.1);
+  border-color: rgba(124, 92, 255, 0.25);
+}
+
+.stat--current .n {
+  font-size: 16px;
+  color: var(--accent);
+}
+
+.stat--current .k {
+  margin-top: 2px;
 }
 
 .stat--next {
@@ -313,6 +368,11 @@ input:focus-visible {
   backdrop-filter: blur(10px);
 }
 
+/* Nudge header labels to align with values */
+.row.row--head .cell + .cell {
+  padding-left: 12px;
+}
+
 .row.row--alt {
   background: rgba(255, 255, 255, 0.03);
 }
@@ -351,6 +411,11 @@ input:focus-visible {
 
 .badge {
   justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 58px;
+  min-height: 24px;
   padding: 4px 10px;
   border-radius: 999px;
   border: 1px solid var(--border);
@@ -364,6 +429,12 @@ input:focus-visible {
   color: var(--good);
   border-color: rgba(34, 197, 94, 0.35);
   background: rgba(34, 197, 94, 0.1);
+}
+
+.badge.tomorrow {
+  color: var(--accent);
+  border-color: rgba(124, 92, 255, 0.35);
+  background: rgba(124, 92, 255, 0.1);
 }
 
 .datecell {
@@ -388,6 +459,7 @@ input:focus-visible {
 
 @media (max-width: 720px) {
   .head {
+    display: flex;
     flex-wrap: wrap;
   }
 
@@ -396,6 +468,15 @@ input:focus-visible {
     flex: 1 0 100%;
     text-align: left;
     font-size: 14px;
+  }
+
+  #imsakIftar {
+    flex: 1 0 100%;
+    width: 100%;
+    margin-inline: 0;
+    border-radius: 16px;
+    padding: 10px 12px;
+    white-space: normal;
   }
 
   .title-banner {
@@ -419,5 +500,20 @@ input:focus-visible {
   }
   .big {
     min-width: auto;
+  }
+
+  .bar {
+    padding: 10px 8px;
+    gap: 6px;
+  }
+
+  .chip {
+    padding: 5px 6px;
+    font-size: 12px;
+    min-height: 28px;
+  }
+
+  .chip--hidden {
+    display: none;
   }
 }
