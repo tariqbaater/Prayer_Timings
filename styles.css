@@ -58,6 +58,7 @@
   --active-border: rgba(16, 185, 129, 0.4);
   --active-hover-bg: rgba(16, 185, 129, 0.25);
   --active-hover-border: rgba(16, 185, 129, 0.5);
+  --pattern-opacity: 0.06;
   --color-scheme: dark;
 }
 
@@ -109,6 +110,7 @@
   --active-border: rgba(43, 87, 70, 0.3);
   --active-hover-bg: rgba(43, 87, 70, 0.15);
   --active-hover-border: rgba(43, 87, 70, 0.4);
+  --pattern-opacity: 0.45;
   --color-scheme: light;
 }
 
@@ -144,7 +146,7 @@ html.theme-transition,
 html.theme-transition *,
 html.theme-transition *::before,
 html.theme-transition *::after {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease !important;
 }
 
 body {
@@ -184,7 +186,7 @@ body::before {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0.50;
+  opacity: var(--pattern-opacity);
   pointer-events: none;
   z-index: 0;
 }
