@@ -1884,7 +1884,7 @@ function parseArticleItems(doc) {
 
 async function loadArticles() {
   const grid  = $("articles-grid");
-  grid.innerHTML = `<div class="islamqa-loading">Loading articles…</div>`;
+  grid.innerHTML = Array(8).fill(`<div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
   const PROXY = "https://api.allorigins.win/raw?url=";
   const BASE  = "https://islamqa.info/en/articles";
 
@@ -1941,7 +1941,7 @@ function parseBookItems(doc) {
 
 async function loadBooks() {
   const grid  = $("books-grid");
-  grid.innerHTML = `<div class="islamqa-loading">Loading books…</div>`;
+  grid.innerHTML = Array(8).fill(`<div class="skeleton-card skeleton-card--tall"><div class="skeleton-cover skeleton-cover--tall"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
   const PROXY = "https://api.allorigins.win/raw?url=";
   const BASE  = "https://islamqa.info/en/books";
 
