@@ -270,13 +270,15 @@
               <!-- Gregorian to Hijri -->
               <div class="converter-panel" id="panelGreg">
                 <label class="converter-label" for="convGregDate">Gregorian Date</label>
-                <input
-                  type="date"
-                  id="convGregDate"
-                  class="converter-input"
-                  aria-label="Gregorian date input"
-                />
-                <button class="converter-btn" id="convGregToday">Today</button>
+                <div class="converter-date-row">
+                  <input
+                    type="date"
+                    id="convGregDate"
+                    class="converter-input"
+                    aria-label="Gregorian date input"
+                  />
+                  <button class="converter-btn" id="convGregToday">Today</button>
+                </div>
 
                 <div class="converter-result" id="convGregResult">
                   <div class="converter-result-label">Hijri Date</div>

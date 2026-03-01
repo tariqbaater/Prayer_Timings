@@ -603,6 +603,17 @@ input[type="date"] {
   border-color: var(--accent);
 }
 
+.converter-date-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.converter-date-row .converter-input {
+  flex: 1;
+  min-width: 0;
+}
+
 .converter-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
