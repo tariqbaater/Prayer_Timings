@@ -1771,6 +1771,14 @@ Isha: ${today.times.Isha}`;
   $("shareWhatsApp").href = `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
   $("shareEmail").href = `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(shareText + "\n" + shareUrl)}`;
 
+  // Islamic Q&A search
+  $("islamqaForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const query = $("islamqaInput").value.trim();
+    if (!query) return;
+    window.open(`https://islamqa.info/en/search?q=${encodeURIComponent(query)}`, "_blank", "noopener");
+  });
+
   // Daily Ayah
   (async function loadDailyAyah() {
     const container = $("ayahContent");
