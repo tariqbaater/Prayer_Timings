@@ -806,6 +806,43 @@ function saveSettings() {
   localStorage.setItem(settingsKey, JSON.stringify(settings));
 }
 
+async function geolocateUser(locateBtn) {
+  if (!navigator.geolocation) return;
+  if (locateBtn) locateBtn.classList.add("locating");
+
+  navigator.geolocation.getCurrentPosition(
+    async (pos) => {
+      const lat = pos.coords.latitude.toFixed(4);
+      const lng = pos.coords.longitude.toFixed(4);
+      $("lat").value = lat;
+      $("lng").value = lng;
+      $("tz").value = -(new Date().getTimezoneOffset()) / 60;
+
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+          { headers: { "User-Agent": "AdhanTimings/1.0" } }
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const city = data.address.city || data.address.town || data.address.village || data.address.state || "";
+          $("citySearch").value = city;
+        }
+      } catch {
+        if (locateBtn) $("citySearch").value = "My Location";
+      }
+
+      if (locateBtn) locateBtn.classList.remove("locating");
+      saveSettings();
+      regenerate();
+    },
+    () => {
+      if (locateBtn) locateBtn.classList.remove("locating");
+    },
+    { enableHighAccuracy: !!locateBtn, timeout: 10000 }
+  );
+}
+
 function applySettings() {
   const settings = loadSettings();
   if (settings) {
@@ -817,11 +854,12 @@ function applySettings() {
     if (settings.start) $("start").value = settings.start;
     if (settings.days) $("days").value = settings.days;
   } else {
-    // Default to Makkah on first load
+    // First visit: default to Makkah, then silently detect location
     $("citySearch").value = "Makkah";
     $("lat").value = 21.3891;
     $("lng").value = 39.8579;
     $("method").value = String(PrayTime.Makkah);
+    geolocateUser(null);
   }
 }
 
@@ -1329,7 +1367,7 @@ function storeTheme(theme) {
 }
 
 function getCurrentTheme() {
-  return getStoredTheme() || getSystemTheme();
+  return getStoredTheme() || "light";
 }
 
 function updateThemeButton(btn, theme) {
@@ -1442,10 +1480,6 @@ function toggleTheme(btn) {
     }
   });
 
-  // Notifications
-  const notifyBtn = $("notifyBtn");
-  notifyBtn.addEventListener("click", () => toggleNotifications(notifyBtn));
-  restoreNotificationState(notifyBtn);
 
   // Toggle advanced settings
   const toggleAdvanced = $("toggleAdvanced");
@@ -1540,46 +1574,7 @@ Isha: ${today.times.Isha}`;
       alert("Geolocation is not supported by your browser.");
       return;
     }
-
-    const btn = $("locateBtn");
-    btn.classList.add("locating");
-
-    navigator.geolocation.getCurrentPosition(
-      async (pos) => {
-        const lat = pos.coords.latitude.toFixed(4);
-        const lng = pos.coords.longitude.toFixed(4);
-        $("lat").value = lat;
-        $("lng").value = lng;
-
-        // Reverse geocode to get city name
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-            { headers: { "User-Agent": "AdhanTimings/1.0" } }
-          );
-          if (res.ok) {
-            const data = await res.json();
-            const city = data.address.city || data.address.town || data.address.village || data.address.state || "";
-            $("citySearch").value = city;
-          }
-        } catch {
-          $("citySearch").value = "My Location";
-        }
-
-        btn.classList.remove("locating");
-        saveSettings();
-        regenerate();
-      },
-      (err) => {
-        btn.classList.remove("locating");
-        if (err.code === err.PERMISSION_DENIED) {
-          alert("Location access was denied. Please allow location access in your browser settings.");
-        } else {
-          alert("Could not get your location. Please search for a city instead.");
-        }
-      },
-      { enableHighAccuracy: true, timeout: 10000 }
-    );
+    geolocateUser($("locateBtn"));
   });
 
   // Share modal
