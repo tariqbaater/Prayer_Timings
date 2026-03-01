@@ -1771,6 +1771,18 @@ Isha: ${today.times.Isha}`;
   $("shareWhatsApp").href = `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
   $("shareEmail").href = `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(shareText + "\n" + shareUrl)}`;
 
+  // Contact form
+  $("contactForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name    = $("contactName").value.trim();
+    const email   = $("contactEmail").value.trim();
+    const subject = $("contactSubject").value.trim();
+    const message = $("contactMessage").value.trim();
+    if (!name || !email || !subject || !message) return;
+    const body = `Name: ${name}\nEmail: ${email}\n\n${message}`;
+    window.location.href = `mailto:tariqbaater@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+
   // Islamic Q&A search
   $("islamqaForm").addEventListener("submit", (e) => {
     e.preventDefault();
@@ -1821,5 +1833,144 @@ Isha: ${today.times.Isha}`;
     }
   })();
 
+  initContentTabs();
   regenerate();
 })();
+
+/********************************************************************
+ * Content Tabs — Articles & Books
+ ********************************************************************/
+function initContentTabs() {
+  const tabs   = document.querySelectorAll(".content-tab");
+  const panels = document.querySelectorAll(".tab-content");
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.tab;
+
+      tabs.forEach((t) => {
+        t.classList.toggle("active", t === tab);
+        t.setAttribute("aria-selected", t === tab ? "true" : "false");
+      });
+
+      panels.forEach((p) => {
+        p.hidden = p.id !== `tab-${target}`;
+      });
+
+      if (target === "articles" && !$("articles-grid").dataset.loaded) loadArticles();
+      if (target === "books"    && !$("books-grid").dataset.loaded)    loadBooks();
+    });
+  });
+}
+
+function parseArticleItems(doc) {
+  return Array.from(doc.querySelectorAll('a[data-sut="post-item"]')).map((a) => {
+    const href    = a.getAttribute("href") || "";
+    const full    = href.startsWith("http") ? href : `https://islamqa.info${href}`;
+    const title   = (a.querySelector('[data-sut="post-item-title"]') || a.querySelector("h2"))?.textContent.trim() || "Article";
+    const excerpt = a.querySelector('[data-sut="post-item-excerpt"]')?.textContent.trim() || "";
+    return `<a class="article-card" href="${full}" target="_blank" rel="noopener">
+      <div class="article-cover-placeholder">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="article-card-body">
+        <div class="article-card-title">${title}</div>
+        ${excerpt ? `<div class="article-card-excerpt">${excerpt}</div>` : ""}
+      </div>
+      <div class="article-card-footer">Read article →</div>
+    </a>`;
+  });
+}
+
+async function loadArticles() {
+  const grid  = $("articles-grid");
+  grid.innerHTML = `<div class="islamqa-loading">Loading articles…</div>`;
+  const PROXY = "https://api.allorigins.win/raw?url=";
+  const BASE  = "https://islamqa.info/en/articles";
+
+  try {
+    // Fetch page 1 and detect total pages
+    const res1  = await fetch(PROXY + encodeURIComponent(BASE));
+    const html1 = await res1.text();
+    const doc1  = new DOMParser().parseFromString(html1, "text/html");
+    if (!doc1.querySelectorAll('a[data-sut="post-item"]').length) throw new Error("no items");
+
+    const pageNums = Array.from(doc1.querySelectorAll('a[href*="?page="]'))
+      .map((a) => parseInt(new URL(a.href, "https://islamqa.info").searchParams.get("page"), 10))
+      .filter((n) => !isNaN(n));
+    const totalPages = pageNums.length ? Math.max(...pageNums) : 1;
+
+    // Fetch remaining pages concurrently
+    const remaining = Array.from({ length: totalPages - 1 }, (_, i) =>
+      fetch(PROXY + encodeURIComponent(`${BASE}?page=${i + 2}`))
+        .then((r) => r.text())
+        .then((h) => new DOMParser().parseFromString(h, "text/html"))
+    );
+    const otherDocs = await Promise.all(remaining);
+
+    const allCards = [doc1, ...otherDocs].flatMap(parseArticleItems);
+    grid.innerHTML = allCards.join("") || `<div class="islamqa-error">No articles found.</div>`;
+  } catch {
+    grid.innerHTML = `<div class="islamqa-error">Could not load articles.<br>
+      <a class="islamqa-browse-btn" href="https://islamqa.info/en/articles" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
+  }
+  grid.dataset.loaded = "1";
+}
+
+function parseBookItems(doc) {
+  return Array.from(doc.querySelectorAll('a[data-sut="post-item"]')).map((a) => {
+    const href    = a.getAttribute("href") || "";
+    const full    = href.startsWith("http") ? href : `https://islamqa.info${href}`;
+    const title   = (a.querySelector('[data-sut="post-item-title"]') || a.querySelector("h2"))?.textContent.trim() || "Book";
+    const excerpt = a.querySelector('[data-sut="book-item-excerpt"]')?.textContent.trim() || "";
+    const img     = a.querySelector("img");
+    const src     = img ? (img.getAttribute("src") || "") : "";
+    const cover   = src
+      ? `<img class="book-cover" src="${src}" alt="" loading="lazy">`
+      : `<div class="book-cover-placeholder"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>`;
+    return `<a class="book-card" href="${full}" target="_blank" rel="noopener">
+      ${cover}
+      <div class="article-card-body">
+        <div class="article-card-title">${title}</div>
+        ${excerpt ? `<div class="article-card-excerpt">${excerpt}</div>` : ""}
+      </div>
+      <div class="article-card-footer">Read book →</div>
+    </a>`;
+  });
+}
+
+async function loadBooks() {
+  const grid  = $("books-grid");
+  grid.innerHTML = `<div class="islamqa-loading">Loading books…</div>`;
+  const PROXY = "https://api.allorigins.win/raw?url=";
+  const BASE  = "https://islamqa.info/en/books";
+
+  try {
+    // Fetch page 1 and detect total pages
+    const res1  = await fetch(PROXY + encodeURIComponent(BASE));
+    const html1 = await res1.text();
+    const doc1  = new DOMParser().parseFromString(html1, "text/html");
+    if (!doc1.querySelectorAll('a[data-sut="post-item"]').length) throw new Error("no items");
+
+    // Find the highest page number from pagination links
+    const pageNums = Array.from(doc1.querySelectorAll('a[href*="?page="]'))
+      .map((a) => parseInt(new URL(a.href, "https://islamqa.info").searchParams.get("page"), 10))
+      .filter((n) => !isNaN(n));
+    const totalPages = pageNums.length ? Math.max(...pageNums) : 1;
+
+    // Fetch remaining pages concurrently
+    const remaining = Array.from({ length: totalPages - 1 }, (_, i) =>
+      fetch(PROXY + encodeURIComponent(`${BASE}?page=${i + 2}`))
+        .then((r) => r.text())
+        .then((h) => new DOMParser().parseFromString(h, "text/html"))
+    );
+    const otherDocs = await Promise.all(remaining);
+
+    const allCards = [doc1, ...otherDocs].flatMap(parseBookItems);
+    grid.innerHTML = allCards.join("") || `<div class="islamqa-error">No books found.</div>`;
+  } catch {
+    grid.innerHTML = `<div class="islamqa-error">Could not load books.<br>
+      <a class="islamqa-browse-btn" href="https://islamqa.info/en/books" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
+  }
+  grid.dataset.loaded = "1";
+}

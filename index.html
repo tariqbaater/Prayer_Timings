@@ -40,6 +40,28 @@
           <span class="title-english">ADHAN TIMINGS</span>
         </h1>
       </header>
+      <!-- Content nav tabs -->
+      <nav class="content-tabs" role="tablist" aria-label="Content sections">
+        <button class="content-tab active" data-tab="prayer" role="tab" aria-selected="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Prayer Times
+        </button>
+        <button class="content-tab" data-tab="articles" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Articles
+        </button>
+        <button class="content-tab" data-tab="books" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Books
+        </button>
+        <button class="content-tab" data-tab="contact" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Contact
+        </button>
+      </nav>
+
+      <!-- Prayer Times tab -->
+      <div id="tab-prayer" class="tab-content">
       <nav class="bar" aria-label="Settings toolbar">
         <div class="left">
           <div class="chip city-search-chip">
@@ -309,6 +331,93 @@
         <p>Prayer times calculated using PrayTimes method. Data may vary by locale.</p>
         <p>City search powered by <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener noreferrer">OpenStreetMap Nominatim</a></p>
       </footer>
+      </div><!-- /#tab-prayer -->
+
+      <!-- Articles tab -->
+      <div id="tab-articles" class="tab-content" hidden>
+        <div class="content-disclaimer" role="note">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          All articles displayed here are the intellectual property of <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a>. Adhan Timings does not claim ownership of, nor hold any copyright over, any of the content listed below. This content is presented solely for convenience and ease of access. Please visit islamqa.info directly to support their work.
+        </div>
+        <div id="articles-grid" class="content-grid"></div>
+      </div>
+
+      <!-- Books tab -->
+      <div id="tab-books" class="tab-content" hidden>
+        <div class="content-disclaimer" role="note">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          All books displayed here are the intellectual property of <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a> and their respective authors. Adhan Timings does not claim ownership of, nor hold any copyright over, any of the content listed below. This content is presented solely for convenience and ease of access. Please visit islamqa.info directly to support their work.
+        </div>
+        <div id="books-grid" class="content-grid"></div>
+      </div>
+
+      <!-- Contact tab -->
+      <div id="tab-contact" class="tab-content" hidden>
+        <div class="contact-wrap">
+          <div class="contact-intro">
+            <h2 class="contact-heading">We'd Love to Hear From You</h2>
+            <p class="contact-body">
+              Adhan Timings is a community-driven tool built with the intention of making
+              Islamic prayer times accessible and beautiful for everyone, everywhere. Your
+              feedback is invaluable in helping us grow and improve.
+            </p>
+            <p class="contact-body">
+              Do you have a suggestion for a new feature? Perhaps a calculation method we're
+              missing, a city that isn't resolving correctly, or an idea that would make your
+              daily prayer routine easier? We want to know. Every message is read personally
+              and taken seriously — no request is too small.
+            </p>
+            <p class="contact-body">
+              If you've encountered a bug, noticed incorrect prayer times for your location,
+              or simply want to share how this app has helped you, please reach out. Your
+              experience matters, and together we can make Adhan Timings better for the
+              entire Muslim community.
+            </p>
+            <div class="contact-highlights">
+              <div class="contact-highlight">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Feature requests
+              </div>
+              <div class="contact-highlight">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                Bug reports
+              </div>
+              <div class="contact-highlight">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                General feedback
+              </div>
+            </div>
+          </div>
+
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="contact-form-grid">
+              <div class="contact-field">
+                <label class="contact-label" for="contactName">Your Name</label>
+                <input type="text" id="contactName" class="contact-input" placeholder="e.g. Abdullah Al-Farsi" autocomplete="name" required />
+              </div>
+              <div class="contact-field">
+                <label class="contact-label" for="contactEmail">Your Email</label>
+                <input type="email" id="contactEmail" class="contact-input" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+            </div>
+            <div class="contact-field">
+              <label class="contact-label" for="contactSubject">Subject</label>
+              <input type="text" id="contactSubject" class="contact-input" placeholder="e.g. Suggestion for Hanafi Asr method" required />
+            </div>
+            <div class="contact-field">
+              <label class="contact-label" for="contactMessage">Message</label>
+              <textarea id="contactMessage" class="contact-input contact-textarea" placeholder="Share your thoughts, suggestions, or report an issue…" rows="6" required></textarea>
+            </div>
+            <div class="contact-footer">
+              <p class="contact-note">Your message will open in your default email client addressed to us directly.</p>
+              <button type="submit" class="contact-submit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Send Message
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
 
       <!-- Share Modal -->
       <div class="modal-overlay" id="shareModal">
