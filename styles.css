@@ -1011,6 +1011,7 @@ input[type="date"] {
   .bar {
     padding: 12px;
     gap: 8px;
+    overflow: hidden;
   }
 
   .left {
@@ -1018,12 +1019,17 @@ input[type="date"] {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
     width: 100%;
+    min-width: 0;
   }
 
   .city-search-chip {
     grid-column: 1 / -1;
     min-width: unset;
     width: auto;
+  }
+
+  #chipLatLng {
+    grid-column: 1 / -1;
   }
 
   #toggleAdvanced {
@@ -1035,6 +1041,14 @@ input[type="date"] {
     padding: 6px 10px;
     font-size: 12px;
     min-height: 36px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .chip input[type="number"],
+  .chip input[type="text"] {
+    min-width: 0;
+    width: 100%;
   }
 
   .btn {
