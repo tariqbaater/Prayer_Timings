@@ -177,6 +177,21 @@
         </section>
 
         <aside class="sidebar" aria-label="Tools">
+          <!-- Daily Ayah -->
+          <div class="card sidebar-card">
+            <div class="sidebar-inner">
+              <h2 class="sidebar-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                Daily Ayah
+              </h2>
+              <div id="ayahContent" aria-live="polite">
+                <div class="ayah-loading">Loading today's ayah…</div>
+              </div>
+            </div>
+          </div>
           <!-- Calendar Converter -->
           <div class="card sidebar-card">
             <div class="sidebar-inner">
@@ -253,21 +268,6 @@
                   <div class="converter-result-label">Gregorian Date</div>
                   <div class="converter-result-value mono" id="convHijriGreg">—</div>
                 </div>
-              </div>
-            </div>
-          </div>
-          <!-- Daily Ayah -->
-          <div class="card sidebar-card">
-            <div class="sidebar-inner">
-              <h2 class="sidebar-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-                </svg>
-                Daily Ayah
-              </h2>
-              <div id="ayahContent" aria-live="polite">
-                <div class="ayah-loading">Loading today's ayah…</div>
               </div>
             </div>
           </div>
