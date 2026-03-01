@@ -917,30 +917,24 @@ function renderTable(rows) {
   head.innerHTML = `
     <div class="cell headcell" role="columnheader">Date</div>
     <div class="cell headcell" role="columnheader">Fajr</div>
-    <div class="cell headcell" role="columnheader">Sunrise</div>
+    <div class="cell headcell col-sunrise" role="columnheader">Sunrise</div>
     <div class="cell headcell" role="columnheader">Dhuhr</div>
     <div class="cell headcell" role="columnheader">Asr</div>
-    <div class="cell headcell" role="columnheader">Maghrib (Iftar)</div>
+    <div class="cell headcell" role="columnheader">Maghrib</div>
     <div class="cell headcell" role="columnheader">Isha</div>
   `;
   host.appendChild(head);
 
   const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const tomorrowStart = new Date(todayStart);
-  tomorrowStart.setDate(tomorrowStart.getDate() + 1);
 
   let i = 0;
   for (const r of rows) {
     const isToday = sameDay(r.date, now);
-    const isTomorrow = sameDay(r.date, tomorrowStart);
     const badge = isToday
       ? `<span class="badge today">Today</span>`
-      : isTomorrow
-        ? `<span class="badge tomorrow">Tomorrow</span>`
-        : `<span class="badge">${r.date.toLocaleDateString(undefined, {
-            weekday: "short",
-          })}</span>`;
+      : `<span class="badge">${r.date.toLocaleDateString(undefined, {
+          weekday: "short",
+        })}</span>`;
 
     const row = document.createElement("div");
     row.className = "row";
@@ -956,7 +950,7 @@ function renderTable(rows) {
         </div>
       </div>
       <div class="cell mono" role="cell" aria-label="Fajr ${r.times.Fajr}">${r.times.Fajr}</div>
-      <div class="cell mono" role="cell" aria-label="Sunrise ${r.times.Sunrise}">${r.times.Sunrise}</div>
+      <div class="cell mono col-sunrise" role="cell" aria-label="Sunrise ${r.times.Sunrise}">${r.times.Sunrise}</div>
       <div class="cell mono" role="cell" aria-label="Dhuhr ${r.times.Dhuhr}">${r.times.Dhuhr}</div>
       <div class="cell mono" role="cell" aria-label="Asr ${r.times.Asr}">${r.times.Asr}</div>
       <div class="cell mono" role="cell" aria-label="Maghrib ${r.times.Maghrib}" style="font-weight:800">${r.times.Maghrib}</div>

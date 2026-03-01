@@ -885,12 +885,6 @@ input[type="date"] {
   background: var(--good-subtle);
 }
 
-.badge.tomorrow {
-  color: var(--accent-hover);
-  border-color: var(--accent-border);
-  background: var(--accent-subtle);
-}
-
 .mono {
   font-variant-numeric: tabular-nums;
 }
@@ -989,6 +983,24 @@ input[type="date"] {
     gap: 8px;
   }
 
+  .left {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .city-search-chip {
+    grid-column: 1 / -1;
+    min-width: unset;
+    width: auto;
+  }
+
+  #toggleAdvanced {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+
   .chip {
     padding: 6px 10px;
     font-size: 12px;
@@ -999,6 +1011,7 @@ input[type="date"] {
     padding: 6px 10px;
     font-size: 12px;
     min-height: 36px;
+    justify-content: center;
   }
 
   .inner {
@@ -1043,23 +1056,40 @@ input[type="date"] {
     grid-column: span 2;
   }
 
-  .table {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+  .col-sunrise {
+    display: none;
   }
 
   .row {
-    min-width: 700px;
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 4px;
+    padding: 10px 8px;
+  }
+
+  .cell {
+    font-size: 11px;
+  }
+
+  .headcell {
+    font-size: 9px;
+    letter-spacing: 0.2px;
   }
 
   .datecell {
-    min-width: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .datecell span:first-child {
+    display: none;
   }
 
   .badge {
-    min-width: 44px;
-    min-height: 20px;
-    font-size: 10px;
+    min-width: 36px;
+    min-height: 18px;
+    font-size: 9px;
+    padding: 2px 6px;
   }
 
   .sidebar-inner {
