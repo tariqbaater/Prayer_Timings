@@ -1100,9 +1100,20 @@ function regenerate() {
   const todayMap = getPrayerTimesMapForDate(pt, todayDate, latN, lngN, tzN);
   const imsakEl = $("imsakIftar");
   if (imsakEl) {
-    const imsak = todayMap.Imsak || PrayTime.InvalidTime;
-    const iftar = todayMap.Maghrib || PrayTime.InvalidTime;
-    imsakEl.textContent = `Imsak ${imsak} | Iftar ${iftar}`;
+    const maghribToday = parseHHMMToDate(todayDate, String(todayMap.Maghrib));
+    const showTomorrow = now >= maghribToday;
+    if (showTomorrow) {
+      const tomorrowDate = new Date(todayDate);
+      tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+      const tomorrowMap = getPrayerTimesMapForDate(pt, tomorrowDate, latN, lngN, tzN);
+      const imsak = tomorrowMap.Imsak || PrayTime.InvalidTime;
+      const iftar = tomorrowMap.Maghrib || PrayTime.InvalidTime;
+      imsakEl.textContent = `Imsak ${imsak} | Iftar ${iftar}`;
+    } else {
+      const imsak = todayMap.Imsak || PrayTime.InvalidTime;
+      const iftar = todayMap.Maghrib || PrayTime.InvalidTime;
+      imsakEl.textContent = `Imsak ${imsak} | Iftar ${iftar}`;
+    }
   }
 
   const city = $("citySearch").value;
