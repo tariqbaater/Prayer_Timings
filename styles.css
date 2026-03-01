@@ -1177,3 +1177,50 @@ input[type="date"] {
   width: 100%;
   justify-content: center;
 }
+
+/* Daily Ayah */
+.ayah-arabic {
+  font-family: "Amiri", "Traditional Arabic", serif;
+  font-size: 22px;
+  line-height: 2;
+  text-align: right;
+  direction: rtl;
+  color: var(--good);
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.ayah-english {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.ayah-ref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ayah-ref-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.ayah-ref-num {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: monospace;
+}
+
+.ayah-loading,
+.ayah-error {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  padding: 16px 0;
+}

@@ -1771,5 +1771,47 @@ Isha: ${today.times.Isha}`;
   $("shareWhatsApp").href = `https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}`;
   $("shareEmail").href = `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(shareText + "\n" + shareUrl)}`;
 
+  // Daily Ayah
+  (async function loadDailyAyah() {
+    const container = $("ayahContent");
+    const todayKey  = `ayah_${new Date().toDateString()}`;
+
+    function render(ayah) {
+      container.innerHTML = `
+        <div class="ayah-arabic">${ayah.arabic}</div>
+        <div class="ayah-english">"${ayah.english}"</div>
+        <div class="ayah-ref">
+          <span class="ayah-ref-name">${ayah.surah}</span>
+          <span class="ayah-ref-num">${ayah.surahNum}:${ayah.ayahNum}</span>
+        </div>`;
+    }
+
+    const cached = localStorage.getItem(todayKey);
+    if (cached) { render(JSON.parse(cached)); return; }
+
+    // Pick a verse: spread evenly across the year using a prime step
+    const start   = new Date(new Date().getFullYear(), 0, 1);
+    const dayOfYear = Math.floor((new Date() - start) / 86400000) + 1;
+    const verseNum  = ((dayOfYear * 17) % 6236) + 1;
+
+    try {
+      const res  = await fetch(`https://api.alquran.cloud/v1/ayah/${verseNum}/editions/quran-uthmani,en.sahih`);
+      const json = await res.json();
+      if (json.code !== 200) throw new Error();
+      const [ar, en] = json.data;
+      const ayah = {
+        arabic:   ar.text,
+        english:  en.text,
+        surah:    ar.surah.englishName,
+        surahNum: ar.surah.number,
+        ayahNum:  ar.numberInSurah,
+      };
+      localStorage.setItem(todayKey, JSON.stringify(ayah));
+      render(ayah);
+    } catch {
+      container.innerHTML = `<div class="ayah-error">Could not load today's ayah.<br>Check your connection and refresh.</div>`;
+    }
+  })();
+
   regenerate();
 })();
