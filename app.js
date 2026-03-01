@@ -1452,7 +1452,7 @@ function toggleTheme(btn) {
       chipTz.classList.add("chip--visible");
       chipLatLng.classList.remove("chip--hidden");
       chipLatLng.classList.add("chip--visible");
-      toggleAdvanced.textContent = "⚙️ Hide";
+      toggleAdvanced.textContent = "⚙️ Hide Advanced Settings";
     } else {
       chipMethod.classList.add("chip--hidden");
       chipMethod.classList.remove("chip--visible");
@@ -1460,7 +1460,7 @@ function toggleTheme(btn) {
       chipTz.classList.remove("chip--visible");
       chipLatLng.classList.add("chip--hidden");
       chipLatLng.classList.remove("chip--visible");
-      toggleAdvanced.textContent = "⚙️ Advanced";
+      toggleAdvanced.textContent = "⚙️ Advanced Settings";
     }
   });
 
