@@ -374,16 +374,6 @@ const $ = (id) => document.getElementById(id);
 
 const settingsKey = "iftar-timetable-settings";
 
-const cities = [
-  { name: "Riyadh", lat: 24.7136, lng: 46.6753, method: PrayTime.Makkah },
-  { name: "Jeddah", lat: 21.4858, lng: 39.1925, method: PrayTime.Makkah },
-  { name: "Makkah", lat: 21.3891, lng: 39.8579, method: PrayTime.Makkah },
-  { name: "Madinah", lat: 24.5247, lng: 39.5692, method: PrayTime.Makkah },
-  { name: "Dammam", lat: 26.4207, lng: 50.0888, method: PrayTime.Makkah },
-  { name: "Mombasa", lat: -4.0545, lng: 39.6651, method: PrayTime.MWL },
-  { name: "Custom…", lat: 24.7136, lng: 46.6753, method: PrayTime.MWL },
-];
-
 const methods = [
   { id: PrayTime.Jafari, label: "Jafari (Ithna Ashari)" },
   { id: PrayTime.Karachi, label: "Karachi (UIS)" },
@@ -456,7 +446,7 @@ function gregorianToHijriIntl(
         month: "numeric",
         year: "numeric",
       });
-    } catch (error) {
+    } catch (_error) {
       continue;
     }
 
@@ -481,6 +471,181 @@ function formatHijriDate(date) {
   const hijri = gregorianToHijriIntl(date, "en", "islamic-umalqura");
   if (!hijri) return "—";
   return `${hijri.hd} ${hijriMonthNames[hijri.hm - 1]} ${hijri.hy}`;
+}
+
+/**
+ * Convert Hijri date -> Gregorian using binary search over Intl.
+ * Searches Gregorian dates to find the one matching the target Hijri date.
+ * Returns a Date object or null if not found.
+ */
+function hijriToGregorian(hy, hm, hd) {
+  // Approximate: Hijri year ~354 days, epoch ~622 CE
+  const approxDays = Math.floor((hy - 1) * 354.36667 + (hm - 1) * 29.5 + hd);
+  const epochOffset = new Date(622, 6, 16).getTime();
+  const approxMs = epochOffset + approxDays * 86400000;
+  const approxDate = new Date(approxMs);
+
+  // Binary search within +/- 30 days of the approximation
+  let lo = new Date(approxDate.getTime() - 30 * 86400000);
+  let hi = new Date(approxDate.getTime() + 30 * 86400000);
+
+  // First try: linear scan (more reliable for small ranges)
+  for (let d = new Date(lo); d <= hi; d.setDate(d.getDate() + 1)) {
+    const h = gregorianToHijriIntl(d, "en", "islamic-umalqura");
+    if (h && h.hy === hy && h.hm === hm && h.hd === hd) {
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }
+  }
+
+  // Wider search if not found (edge cases around year boundaries)
+  lo = new Date(approxDate.getTime() - 90 * 86400000);
+  hi = new Date(approxDate.getTime() + 90 * 86400000);
+  for (let d = new Date(lo); d <= hi; d.setDate(d.getDate() + 1)) {
+    const h = gregorianToHijriIntl(d, "en", "islamic-umalqura");
+    if (h && h.hy === hy && h.hm === hm && h.hd === hd) {
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }
+  }
+
+  return null;
+}
+
+function formatGregorianLong(date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function formatHijriLong(date) {
+  const hijri = gregorianToHijriIntl(date, "en", "islamic-umalqura");
+  if (!hijri) return "—";
+  const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
+  return `${dayName}, ${hijri.hd} ${hijriMonthNames[hijri.hm - 1]} ${hijri.hy} AH`;
+}
+
+/********************************************************************
+ * Calendar Converter UI
+ ********************************************************************/
+function initCalendarConverter() {
+  const tabGreg = $("tabGreg");
+  const tabHijri = $("tabHijri");
+  const panelGreg = $("panelGreg");
+  const panelHijri = $("panelHijri");
+
+  if (!tabGreg || !tabHijri) return;
+
+  // Populate Hijri month dropdown
+  const monthSelect = $("convHijriMonth");
+  hijriMonthNames.forEach((name, idx) => {
+    const opt = document.createElement("option");
+    opt.value = String(idx + 1);
+    opt.textContent = `${idx + 1} - ${name}`;
+    monthSelect.appendChild(opt);
+  });
+
+  // Set default Hijri year to current
+  const todayHijri = gregorianToHijriIntl(new Date(), "en", "islamic-umalqura");
+  if (todayHijri) {
+    $("convHijriYear").value = todayHijri.hy;
+    $("convHijriMonth").value = todayHijri.hm;
+    $("convHijriDay").value = todayHijri.hd;
+  }
+
+  // Tab switching
+  tabGreg.addEventListener("click", () => {
+    tabGreg.classList.add("active");
+    tabHijri.classList.remove("active");
+    panelGreg.classList.remove("hidden");
+    panelHijri.classList.add("hidden");
+  });
+
+  tabHijri.addEventListener("click", () => {
+    tabHijri.classList.add("active");
+    tabGreg.classList.remove("active");
+    panelHijri.classList.remove("hidden");
+    panelGreg.classList.add("hidden");
+  });
+
+  // Gregorian -> Hijri
+  const gregInput = $("convGregDate");
+  const gregResult = $("convGregHijri");
+
+  // Set today as default
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  gregInput.value = `${yyyy}-${mm}-${dd}`;
+
+  function convertGregToHijri() {
+    const val = gregInput.value;
+    if (!val) {
+      gregResult.textContent = "—";
+      return;
+    }
+    const date = new Date(val + "T12:00:00");
+    if (Number.isNaN(date.getTime())) {
+      gregResult.textContent = "Invalid date";
+      return;
+    }
+    gregResult.textContent = formatHijriLong(date);
+  }
+
+  gregInput.addEventListener("change", convertGregToHijri);
+  gregInput.addEventListener("input", convertGregToHijri);
+
+  $("convGregToday").addEventListener("click", () => {
+    const t = new Date();
+    gregInput.value = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+    convertGregToHijri();
+  });
+
+  // Initial conversion
+  convertGregToHijri();
+
+  // Hijri -> Gregorian
+  const hijriDay = $("convHijriDay");
+  const hijriMonth = $("convHijriMonth");
+  const hijriYear = $("convHijriYear");
+  const hijriResult = $("convHijriGreg");
+
+  function convertHijriToGreg() {
+    const hd = parseInt(hijriDay.value, 10);
+    const hm = parseInt(hijriMonth.value, 10);
+    const hy = parseInt(hijriYear.value, 10);
+
+    if (!Number.isFinite(hd) || !Number.isFinite(hm) || !Number.isFinite(hy)) {
+      hijriResult.textContent = "—";
+      return;
+    }
+
+    if (hd < 1 || hd > 30 || hm < 1 || hm > 12 || hy < 1) {
+      hijriResult.textContent = "Invalid date";
+      return;
+    }
+
+    hijriResult.textContent = "Converting...";
+
+    // Use setTimeout to avoid blocking UI during search
+    setTimeout(() => {
+      const greg = hijriToGregorian(hy, hm, hd);
+      if (greg) {
+        hijriResult.textContent = formatGregorianLong(greg);
+      } else {
+        hijriResult.textContent = "Date not found";
+      }
+    }, 10);
+  }
+
+  hijriDay.addEventListener("change", convertHijriToGreg);
+  hijriMonth.addEventListener("change", convertHijriToGreg);
+  hijriYear.addEventListener("change", convertHijriToGreg);
+
+  // Initial conversion
+  convertHijriToGreg();
 }
 
 function parseHHMMToDate(baseDate, hhmm) {
@@ -521,11 +686,6 @@ function setTodayDateInput() {
 }
 
 function initDropdowns() {
-  const citySel = $("city");
-  citySel.innerHTML = cities
-    .map((c) => `<option value="${c.name}">${c.name}</option>`)
-    .join("");
-
   const methodSel = $("method");
   methodSel.innerHTML = methods
     .map((m) => `<option value="${m.id}">${m.label}</option>`)
@@ -535,37 +695,107 @@ function initDropdowns() {
   $("tz").value = String(-now.getTimezoneOffset() / 60);
 }
 
-function syncCityToLatLng() {
-  const sel = $("city").value;
-  const c = cities.find((x) => x.name === sel);
-  if (!c) return;
-  const isCustom = sel === "Custom…";
-  // For preconfigured cities, reset lat/lng to defaults and disable inputs
-  if (!isCustom) {
-    $("lat").value = c.lat;
-    $("lng").value = c.lng;
+let citySearchTimeout = null;
+
+async function searchCity(query) {
+  const dropdown = $("cityDropdown");
+  
+  if (!query || query.length < 2) {
+    dropdown.classList.remove("active");
+    return;
   }
-  // Enable lat/lng only for custom city
-  $("lat").disabled = !isCustom;
-  $("lng").disabled = !isCustom;
-  // Sync method for non-custom
-  if (!isCustom && c.method != null) {
-    $("method").value = String(c.method);
+
+  dropdown.classList.add("active");
+  dropdown.innerHTML = '<div class="city-dropdown-loading">Searching...</div>';
+
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=8&featuretype=city,town,municipality`,
+      {
+        headers: {
+          "User-Agent": "AdhanTimings/1.0",
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error("API error");
+
+    const data = await response.json();
+
+    if (data.length === 0) {
+      dropdown.innerHTML = '<div class="city-dropdown-empty">No cities found</div>';
+      return;
+    }
+
+    dropdown.innerHTML = data
+      .map(
+        (place) => `
+      <div class="city-dropdown-item" data-lat="${place.lat}" data-lng="${place.lon}" data-name="${place.display_name.split(",")[0]}">
+        <div class="name">${place.display_name.split(",")[0]}</div>
+        <div class="country">${place.display_name.split(",").slice(1, 3).join(",")}</div>
+        <div class="coords">${parseFloat(place.lat).toFixed(4)}, ${parseFloat(place.lon).toFixed(4)}</div>
+      </div>
+    `
+      )
+      .join("");
+  } catch (_error) {
+    dropdown.innerHTML = '<div class="city-dropdown-error">Search failed. Try again.</div>';
   }
+}
+
+function setupCitySearch() {
+  const searchInput = $("citySearch");
+  const dropdown = $("cityDropdown");
+
+  searchInput.addEventListener("input", (e) => {
+    clearTimeout(citySearchTimeout);
+    citySearchTimeout = setTimeout(() => {
+      searchCity(e.target.value);
+    }, 300);
+  });
+
+  searchInput.addEventListener("focus", () => {
+    if (searchInput.value.length >= 2) {
+      dropdown.classList.add("active");
+    }
+  });
+
+  dropdown.addEventListener("click", (e) => {
+    const item = e.target.closest(".city-dropdown-item");
+    if (item) {
+      const lat = item.dataset.lat;
+      const lng = item.dataset.lng;
+      const name = item.dataset.name;
+
+      $("lat").value = lat;
+      $("lng").value = lng;
+      searchInput.value = name;
+      dropdown.classList.remove("active");
+
+      saveSettings();
+      regenerate();
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".city-search-chip")) {
+      dropdown.classList.remove("active");
+    }
+  });
 }
 
 function loadSettings() {
   try {
     const raw = localStorage.getItem(settingsKey);
     return raw ? JSON.parse(raw) : null;
-  } catch (error) {
+  } catch (_error) {
     return null;
   }
 }
 
 function saveSettings() {
   const settings = {
-    city: $("city").value,
+    city: $("citySearch").value,
     lat: $("lat").value,
     lng: $("lng").value,
     method: $("method").value,
@@ -578,14 +808,21 @@ function saveSettings() {
 
 function applySettings() {
   const settings = loadSettings();
-  if (!settings) return;
-  if (settings.city) $("city").value = settings.city;
-  if (settings.lat) $("lat").value = settings.lat;
-  if (settings.lng) $("lng").value = settings.lng;
-  if (settings.method) $("method").value = settings.method;
-  if (settings.tz) $("tz").value = settings.tz;
-  if (settings.start) $("start").value = settings.start;
-  if (settings.days) $("days").value = settings.days;
+  if (settings) {
+    if (settings.city) $("citySearch").value = settings.city;
+    if (settings.lat) $("lat").value = settings.lat;
+    if (settings.lng) $("lng").value = settings.lng;
+    if (settings.method) $("method").value = settings.method;
+    if (settings.tz) $("tz").value = settings.tz;
+    if (settings.start) $("start").value = settings.start;
+    if (settings.days) $("days").value = settings.days;
+  } else {
+    // Default to Makkah on first load
+    $("citySearch").value = "Makkah";
+    $("lat").value = 21.3891;
+    $("lng").value = 39.8579;
+    $("method").value = String(PrayTime.Makkah);
+  }
 }
 
 
@@ -638,14 +875,15 @@ function renderTable(rows) {
 
   const head = document.createElement("div");
   head.className = "row row--head";
+  head.setAttribute("role", "row");
   head.innerHTML = `
-    <div class="cell headcell">Date</div>
-    <div class="cell headcell">Fajr</div>
-    <div class="cell headcell">Sunrise</div>
-    <div class="cell headcell">Dhuhr</div>
-    <div class="cell headcell">Asr</div>
-    <div class="cell headcell">Maghrib (Iftar)</div>
-    <div class="cell headcell">Isha</div>
+    <div class="cell headcell" role="columnheader">Date</div>
+    <div class="cell headcell" role="columnheader">Fajr</div>
+    <div class="cell headcell" role="columnheader">Sunrise</div>
+    <div class="cell headcell" role="columnheader">Dhuhr</div>
+    <div class="cell headcell" role="columnheader">Asr</div>
+    <div class="cell headcell" role="columnheader">Maghrib (Iftar)</div>
+    <div class="cell headcell" role="columnheader">Isha</div>
   `;
   host.appendChild(head);
 
@@ -668,22 +906,23 @@ function renderTable(rows) {
 
     const row = document.createElement("div");
     row.className = "row";
+    row.setAttribute("role", "row");
     if (isToday) row.classList.add("today-row");
     if (i % 2 === 1) row.classList.add("row--alt");
 
     row.innerHTML = `
-      <div class="cell">
+      <div class="cell" role="cell">
         <div class="datecell">
           <span>${fmtDateLong(r.date)}</span>
           ${badge}
         </div>
       </div>
-      <div class="cell mono">${r.times.Fajr}</div>
-      <div class="cell mono">${r.times.Sunrise}</div>
-      <div class="cell mono">${r.times.Dhuhr}</div>
-      <div class="cell mono">${r.times.Asr}</div>
-      <div class="cell mono" style="font-weight:800">${r.times.Maghrib}</div>
-      <div class="cell mono">${r.times.Isha}</div>
+      <div class="cell mono" role="cell" aria-label="Fajr ${r.times.Fajr}">${r.times.Fajr}</div>
+      <div class="cell mono" role="cell" aria-label="Sunrise ${r.times.Sunrise}">${r.times.Sunrise}</div>
+      <div class="cell mono" role="cell" aria-label="Dhuhr ${r.times.Dhuhr}">${r.times.Dhuhr}</div>
+      <div class="cell mono" role="cell" aria-label="Asr ${r.times.Asr}">${r.times.Asr}</div>
+      <div class="cell mono" role="cell" aria-label="Maghrib ${r.times.Maghrib}" style="font-weight:800">${r.times.Maghrib}</div>
+      <div class="cell mono" role="cell" aria-label="Isha ${r.times.Isha}">${r.times.Isha}</div>
     `;
     host.appendChild(row);
     i++;
@@ -694,15 +933,6 @@ function renderTable(rows) {
   if (todayRow) {
     todayRow.scrollIntoView({ behavior: "smooth", block: "center" });
   }
-}
-
-function pickTodayOrNext(rows) {
-  const now = new Date();
-  const today = rows.find((r) => sameDay(r.date, now));
-  if (today) return today;
-
-  const today0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  return rows.find((r) => r.date >= today0) || rows[0];
 }
 
 let countdownTimer = null;
@@ -728,7 +958,7 @@ function startCountdown(targetDate, label) {
   function tick() {
     updateNowLine();
     const now = new Date();
-    let diffMs = targetDate - now;
+    const diffMs = targetDate - now;
 
     if (diffMs <= 0) {
       cdH.textContent = "00";
@@ -875,10 +1105,7 @@ function regenerate() {
     imsakEl.textContent = `Imsak ${imsak} | Iftar ${iftar}`;
   }
 
-  const city = $("city").value;
-  const lat = $("lat").value;
-  const lng = $("lng").value;
-  const tz = $("tz").value;
+  const city = $("citySearch").value;
 
   // Display city + method in header, and show today's Hijri date prominently.
   const todayHijri = formatHijriDate(new Date());
@@ -908,19 +1135,235 @@ function regenerate() {
   saveSettings();
 }
 
+/********************************************************************
+ * Prayer Notifications
+ ********************************************************************/
+let notificationsEnabled = false;
+let notificationTimer = null;
+const notifiedPrayers = new Set();
+
+function canNotify() {
+  return "Notification" in window && Notification.permission === "granted";
+}
+
+async function requestNotificationPermission() {
+  if (!("Notification" in window)) {
+    alert("Your browser does not support notifications.");
+    return false;
+  }
+
+  if (Notification.permission === "granted") return true;
+  if (Notification.permission === "denied") {
+    alert("Notifications are blocked. Please enable them in your browser settings.");
+    return false;
+  }
+
+  const result = await Notification.requestPermission();
+  return result === "granted";
+}
+
+function firePrayerNotification(prayerName, prayerTime) {
+  if (!canNotify()) return;
+
+  const key = `${prayerName}-${new Date().toDateString()}`;
+  if (notifiedPrayers.has(key)) return;
+  notifiedPrayers.add(key);
+
+  const notification = new Notification("Adhan Timings", {
+    body: `It's time for ${prayerName} (${prayerTime})`,
+    icon: "icon-192.png",
+    badge: "icon-192.png",
+    tag: `prayer-${prayerName}`,
+    renotify: true,
+  });
+
+  notification.addEventListener("click", () => {
+    window.focus();
+    notification.close();
+  });
+
+  // Auto-close after 30 seconds
+  setTimeout(() => notification.close(), 30000);
+}
+
+function checkPrayerNotifications() {
+  if (!notificationsEnabled || !canNotify()) return;
+
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const methodID = parseInt($("method").value, 10);
+  const pt = new PrayTime(methodID);
+  pt.setTimeFormat(PrayTime.Time12);
+  pt.setHighLatsMethod(PrayTime.MidNight);
+
+  const latN = parseFloat($("lat").value);
+  const lngN = parseFloat($("lng").value);
+  const tzN = parseFloat($("tz").value);
+
+  const todayMap = getPrayerTimesMapForDate(pt, today, latN, lngN, tzN);
+
+  const prayers = [
+    { key: "Fajr", label: "Fajr" },
+    { key: "Dhuhr", label: "Dhuhr" },
+    { key: "Asr", label: "Asr" },
+    { key: "Maghrib", label: "Maghrib" },
+    { key: "Isha", label: "Isha" },
+  ];
+
+  for (const p of prayers) {
+    const timeStr = String(todayMap[p.key]);
+    const prayerDate = parseHHMMToDate(today, timeStr);
+    if (Number.isNaN(prayerDate.getTime())) continue;
+
+    const diffMs = prayerDate - now;
+    // Fire notification if prayer is within 60 seconds (past or future)
+    if (diffMs >= -60000 && diffMs <= 60000) {
+      firePrayerNotification(p.label, timeStr);
+    }
+  }
+}
+
+function startNotificationChecker() {
+  if (notificationTimer) clearInterval(notificationTimer);
+  notificationTimer = setInterval(checkPrayerNotifications, 30000);
+  checkPrayerNotifications(); // Check immediately
+}
+
+function stopNotificationChecker() {
+  if (notificationTimer) {
+    clearInterval(notificationTimer);
+    notificationTimer = null;
+  }
+}
+
+function toggleNotifications(btn) {
+  if (notificationsEnabled) {
+    notificationsEnabled = false;
+    stopNotificationChecker();
+    btn.textContent = "🔔 Notify";
+    btn.classList.remove("btn--active");
+    try {
+      localStorage.setItem("adhan-notifications", "off");
+    } catch { /* ignore */ }
+  } else {
+    requestNotificationPermission().then((granted) => {
+      if (granted) {
+        notificationsEnabled = true;
+        startNotificationChecker();
+        btn.textContent = "🔕 On";
+        btn.classList.add("btn--active");
+        try {
+          localStorage.setItem("adhan-notifications", "on");
+        } catch { /* ignore */ }
+      }
+    });
+  }
+}
+
+function restoreNotificationState(btn) {
+  try {
+    const saved = localStorage.getItem("adhan-notifications");
+    if (saved === "on" && canNotify()) {
+      notificationsEnabled = true;
+      startNotificationChecker();
+      btn.textContent = "🔕 On";
+      btn.classList.add("btn--active");
+    }
+  } catch { /* ignore */ }
+}
+
+/********************************************************************
+ * Theme (Dark / Light)
+ ********************************************************************/
+const themeKey = "adhan-theme";
+
+function getSystemTheme() {
+  return window.matchMedia("(prefers-color-scheme: light)").matches
+    ? "light"
+    : "dark";
+}
+
+function applyTheme(theme, animate = false) {
+  if (animate) {
+    document.documentElement.classList.add("theme-transition");
+    setTimeout(() => document.documentElement.classList.remove("theme-transition"), 350);
+  }
+
+  if (theme === "light") {
+    document.documentElement.setAttribute("data-theme", "light");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+  }
+
+  // Update meta theme-color
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    meta.setAttribute("content", theme === "light" ? "#f4f4f5" : "#8b5cf6");
+  }
+}
+
+function getStoredTheme() {
+  try {
+    return localStorage.getItem(themeKey);
+  } catch {
+    return null;
+  }
+}
+
+function storeTheme(theme) {
+  try {
+    localStorage.setItem(themeKey, theme);
+  } catch { /* ignore */ }
+}
+
+function getCurrentTheme() {
+  return getStoredTheme() || getSystemTheme();
+}
+
+function updateThemeButton(btn, theme) {
+  if (theme === "light") {
+    btn.textContent = "☀️ Light";
+  } else {
+    btn.textContent = "🌙 Dark";
+  }
+}
+
+function initTheme(btn) {
+  const theme = getCurrentTheme();
+  applyTheme(theme);
+  updateThemeButton(btn, theme);
+
+  // Listen for system theme changes (only applies when no stored preference)
+  window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", (e) => {
+    if (!getStoredTheme()) {
+      const newTheme = e.matches ? "light" : "dark";
+      applyTheme(newTheme);
+      updateThemeButton(btn, newTheme);
+    }
+  });
+}
+
+function toggleTheme(btn) {
+  const current = getCurrentTheme();
+  const next = current === "dark" ? "light" : "dark";
+  storeTheme(next);
+  applyTheme(next, true);
+  updateThemeButton(btn, next);
+}
+
 (function init() {
   initDropdowns();
   setTodayDateInput();
-  // initial sync then load saved settings, then re-sync for correct state
-  syncCityToLatLng();
+  setupCitySearch();
   applySettings();
-  syncCityToLatLng();
+  initCalendarConverter();
 
-  $("city").addEventListener("change", () => {
-    syncCityToLatLng();
-    saveSettings();
-    regenerate();
-  });
+  // Theme toggle
+  const themeBtn = $("themeBtn");
+  initTheme(themeBtn);
+  themeBtn.addEventListener("click", () => toggleTheme(themeBtn));
+
   $("method").addEventListener("change", () => {
     saveSettings();
     regenerate();
@@ -982,8 +1425,16 @@ function regenerate() {
       startInput.value = `${yyyy}-${mm}-${dd}`;
       saveSettings();
       regenerate();
+    } else if (e.key === "d" || e.key === "D") {
+      e.preventDefault();
+      toggleTheme(themeBtn);
     }
   });
+
+  // Notifications
+  const notifyBtn = $("notifyBtn");
+  notifyBtn.addEventListener("click", () => toggleNotifications(notifyBtn));
+  restoreNotificationState(notifyBtn);
 
   // Toggle advanced settings
   const toggleAdvanced = $("toggleAdvanced");
@@ -1027,7 +1478,7 @@ function regenerate() {
     const today = rows.find((r) => sameDay(r.date, now));
     if (!today) return;
 
-    const city = $("city").value;
+    const city = $("citySearch").value;
     const text = `${city} Prayer Times - ${fmtDateLong(today.date)}
 Fajr: ${today.times.Fajr}
 Sunrise: ${today.times.Sunrise}
@@ -1036,12 +1487,88 @@ Asr: ${today.times.Asr}
 Maghrib: ${today.times.Maghrib}
 Isha: ${today.times.Isha}`;
 
-    navigator.clipboard.writeText(text).then(() => {
-      const btn = $("copyBtn");
-      const original = btn.textContent;
-      btn.textContent = "Copied!";
-      setTimeout(() => (btn.textContent = original), 1500);
-    });
+    // Try clipboard API first, fallback for mobile
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        showCopyFeedback("copyBtn");
+      }).catch(() => {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  });
+
+  function fallbackCopy(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand("copy");
+      showCopyFeedback("copyBtn");
+    } catch {
+      // Last resort - show the text in an alert
+      alert(text);
+    }
+    document.body.removeChild(textArea);
+  }
+
+  function showCopyFeedback(btnId) {
+    const btn = $(btnId);
+    const original = btn.textContent;
+    btn.textContent = "Copied!";
+    setTimeout(() => (btn.textContent = original), 1500);
+  }
+
+  // Geolocation: use my location
+  $("locateBtn").addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    const btn = $("locateBtn");
+    btn.classList.add("locating");
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude.toFixed(4);
+        const lng = pos.coords.longitude.toFixed(4);
+        $("lat").value = lat;
+        $("lng").value = lng;
+
+        // Reverse geocode to get city name
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+            { headers: { "User-Agent": "AdhanTimings/1.0" } }
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const city = data.address.city || data.address.town || data.address.village || data.address.state || "";
+            $("citySearch").value = city;
+          }
+        } catch {
+          $("citySearch").value = "My Location";
+        }
+
+        btn.classList.remove("locating");
+        saveSettings();
+        regenerate();
+      },
+      (err) => {
+        btn.classList.remove("locating");
+        if (err.code === err.PERMISSION_DENIED) {
+          alert("Location access was denied. Please allow location access in your browser settings.");
+        } else {
+          alert("Could not get your location. Please search for a city instead.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
   });
 
   regenerate();

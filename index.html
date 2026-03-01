@@ -3,41 +3,64 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#8b5cf6" />
+    <meta name="description" content="Islamic prayer times for any location worldwide" />
+    
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="apple-touch-icon" href="icon-192.png" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Adhan Timings - Prayer Times" />
+    <meta property="og:description" content="Islamic prayer times for any location worldwide" />
+    <meta property="og:image" content="icon-512.png" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Adhan Timings - Prayer Times" />
+    <meta name="twitter:description" content="Islamic prayer times for any location worldwide" />
+    <meta name="twitter:image" content="icon-512.png" />
+    
     <title>Adhan Timings</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" href="fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="wrap">
-      <div class="title-banner">
+    <a href="#table" class="skip-link">Skip to prayer times table</a>
+    <div class="wrap" role="main">
+      <header class="title-banner" role="banner">
+        <div class="logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="5" r="3" fill="currentColor"/>
+            <path d="M12 9C7 9 4 12 3 15C3 17 5 19 7 19H17C19 19 21 17 21 15C20 12 17 9 12 9Z" fill="currentColor"/>
+            <path d="M6 20H18V22H6V20Z" fill="currentColor"/>
+          </svg>
+        </div>
         <h1 class="page-title">Adhan Timings</h1>
-      </div>
-      <div class="bar">
+      </header>
+      <nav class="bar" aria-label="Settings toolbar">
         <div class="left">
-          <div class="chip">
+          <div class="chip city-search-chip">
             <span>📍</span>
-            <select id="city" aria-label="City"></select>
-          </div>
-
-          <div class="chip">
-            <span>🧭</span>
-            <span>Lat</span
-            ><input
-              id="lat"
-              type="number"
-              step="0.0001"
-              aria-label="Latitude"
+            <input
+              type="text"
+              id="citySearch"
+              placeholder="Search city..."
+              aria-label="Search city"
+              autocomplete="off"
             />
-            <span style="opacity: 0.5">|</span>
-            <span>Lng</span
-            ><input
-              id="lng"
-              type="number"
-              step="0.0001"
-              aria-label="Longitude"
-            />
+            <button class="locate-btn" id="locateBtn" aria-label="Use my location" title="Use my location">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/>
+                <line x1="12" y1="2" x2="12" y2="6"/>
+                <line x1="12" y1="18" x2="12" y2="22"/>
+                <line x1="2" y1="12" x2="6" y2="12"/>
+                <line x1="18" y1="12" x2="22" y2="12"/>
+              </svg>
+            </button>
+            <div class="city-dropdown" id="cityDropdown"></div>
           </div>
 
           <div class="chip chip--hidden" id="chipMethod">
@@ -73,13 +96,6 @@
           </div>
 
           <div class="chip">
-            <span>🕒</span>
-            <span>TZ</span>
-            <input id="tz" type="number" step="0.5" aria-label="Timezone" />
-            <span style="color: var(--muted)">hrs</span>
-          </div>
-
-          <div class="chip">
             <span>🗓️</span>
             <input id="start" type="date" aria-label="Start date" />
           </div>
@@ -97,31 +113,33 @@
 
           <button class="btn chip" id="todayBtn" aria-label="Go to today">📆 Today</button>
           <button class="btn chip" id="copyBtn" aria-label="Copy today's times">📋 Copy</button>
+          <button class="btn chip" id="notifyBtn" aria-label="Toggle prayer notifications" title="Enable prayer time notifications">🔔 Notify</button>
+          <button class="btn chip" id="themeBtn" aria-label="Toggle light/dark theme" title="Toggle theme">🌙 Dark</button>
           <button class="btn chip" id="toggleAdvanced" aria-label="Toggle advanced settings">⚙️ Advanced</button>
 
 
         </div>
 
         <!-- Removed generate button as auto-update handles regenerations -->
-      </div>
+      </nav>
 
       <div class="grid">
-        <div class="card">
+        <section class="card" aria-label="Prayer times dashboard">
           <div class="inner">
             <div class="head">
               <div class="title">
-                <div class="headline" id="subline">—</div>
-                <div class="hijri-time mono" id="hijriDate">—</div>
+                <div class="headline" id="subline" aria-label="Location and method">—</div>
+                <div class="hijri-time mono" id="hijriDate" aria-label="Hijri date">—</div>
               </div>
 
-              <div class="midline mono" id="imsakIftar" aria-label="Imsak and Iftar times">
+              <div class="midline mono" id="imsakIftar" aria-label="Imsak and Iftar times" role="status">
                 Imsak --:-- | Iftar --:--
               </div>
 
-              <div class="big">
-                <div class="label" id="bigLabel">Today’s Iftar (Maghrib)</div>
-                <div class="time mono" id="bigTime">--:--</div>
-                <div class="meta mono" id="nowLine">—</div>
+              <div class="big" aria-label="Next prayer time">
+                <div class="label" id="bigLabel">Today's Iftar (Maghrib)</div>
+                <div class="time mono" id="bigTime" aria-live="polite">--:--</div>
+                <div class="meta mono" id="nowLine" aria-live="off">—</div>
               </div>
             </div>
 
@@ -152,14 +170,105 @@
               </div>
             </div>
 
-            <div class="table" id="table"></div>
-
+            <div class="table" id="table" role="table" aria-label="Prayer times schedule"></div>
 
           </div>
-        </div>
+        </section>
+
+        <aside class="sidebar" aria-label="Tools">
+          <!-- Calendar Converter -->
+          <div class="card sidebar-card">
+            <div class="sidebar-inner">
+              <h2 class="sidebar-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+                Calendar Converter
+              </h2>
+
+              <div class="converter-tabs">
+                <button class="converter-tab active" id="tabGreg" aria-label="Gregorian to Hijri">
+                  Gregorian &rarr; Hijri
+                </button>
+                <button class="converter-tab" id="tabHijri" aria-label="Hijri to Gregorian">
+                  Hijri &rarr; Gregorian
+                </button>
+              </div>
+
+              <!-- Gregorian to Hijri -->
+              <div class="converter-panel" id="panelGreg">
+                <label class="converter-label" for="convGregDate">Gregorian Date</label>
+                <input
+                  type="date"
+                  id="convGregDate"
+                  class="converter-input"
+                  aria-label="Gregorian date input"
+                />
+                <button class="converter-btn" id="convGregToday">Today</button>
+
+                <div class="converter-result" id="convGregResult">
+                  <div class="converter-result-label">Hijri Date</div>
+                  <div class="converter-result-value mono" id="convGregHijri">—</div>
+                </div>
+              </div>
+
+              <!-- Hijri to Gregorian -->
+              <div class="converter-panel hidden" id="panelHijri">
+                <div class="converter-row">
+                  <div class="converter-field">
+                    <label class="converter-label" for="convHijriDay">Day</label>
+                    <input
+                      type="number"
+                      id="convHijriDay"
+                      class="converter-input"
+                      min="1"
+                      max="30"
+                      value="1"
+                      aria-label="Hijri day"
+                    />
+                  </div>
+                  <div class="converter-field">
+                    <label class="converter-label" for="convHijriMonth">Month</label>
+                    <select id="convHijriMonth" class="converter-input" aria-label="Hijri month"></select>
+                  </div>
+                  <div class="converter-field">
+                    <label class="converter-label" for="convHijriYear">Year</label>
+                    <input
+                      type="number"
+                      id="convHijriYear"
+                      class="converter-input"
+                      min="1"
+                      max="1500"
+                      value="1446"
+                      aria-label="Hijri year"
+                    />
+                  </div>
+                </div>
+
+                <div class="converter-result" id="convHijriResult">
+                  <div class="converter-result-label">Gregorian Date</div>
+                  <div class="converter-result-value mono" id="convHijriGreg">—</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
+
+      <footer class="footer" role="contentinfo">
+        <p>Prayer times calculated using PrayTimes method. Data may vary by locale.</p>
+        <p>City search powered by <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener noreferrer">OpenStreetMap Nominatim</a></p>
+      </footer>
     </div>
 
     <script src="app.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+      }
+    </script>
   </body>
 </html>

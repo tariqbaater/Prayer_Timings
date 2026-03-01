@@ -1,0 +1,14 @@
+{
+  "name": "adhan-timings",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Islamic prayer times for any location worldwide",
+  "scripts": {
+    "lint": "eslint app.js sw.js",
+    "lint:fix": "eslint app.js sw.js --fix"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.2"
+  }
+}
