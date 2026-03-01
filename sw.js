@@ -1,4 +1,4 @@
-const CACHE_NAME = "adhan-timings-v12";
+const CACHE_NAME = "adhan-timings-v13";
 const ASSETS = [
   "./",
   "./index.html",
@@ -12,6 +12,7 @@ const ASSETS = [
   "./icon-512.svg",
   "./manifest.json",
   "./assets/asset_background_pattern.png",
+  "./assets/adhan_format_no_table.pdf",
 ];
 
 // Install: cache core assets
