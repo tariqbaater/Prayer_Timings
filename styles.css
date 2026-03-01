@@ -212,6 +212,12 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.title-banner:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 40px rgba(202, 163, 128, 0.15);
 }
 
 .page-title {
@@ -242,10 +248,8 @@ body::before {
 /* Toolbar */
 .bar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   align-items: center;
-  padding: 16px 20px;
+  padding: 12px;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 16px;
@@ -256,6 +260,8 @@ body::before {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .chip {
@@ -288,7 +294,9 @@ body::before {
 /* City Search */
 .city-search-chip {
   position: relative;
+  flex: 1;
   min-width: 180px;
+  max-width: 320px;
 }
 
 .city-search-chip input {
@@ -479,6 +487,12 @@ input[type="date"] {
   animation: fadeIn 0.4s ease-out;
 }
 
+.sidebar-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg), 0 8px 32px rgba(202, 163, 128, 0.18);
+}
+
 .sidebar-inner {
   position: relative;
   padding: 20px;
@@ -645,6 +659,13 @@ input[type="date"] {
   overflow: hidden;
   box-shadow: var(--shadow-lg);
   position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-light);
+  box-shadow: var(--shadow-lg), 0 0 0 1px var(--border-light);
 }
 
 .card::before {
@@ -699,6 +720,14 @@ input[type="date"] {
   font-size: 15px;
   color: var(--good);
   white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: default;
+}
+
+.midline:hover {
+  transform: translateY(-2px);
+  border-color: var(--good);
+  box-shadow: 0 6px 24px rgba(43, 87, 70, 0.22);
 }
 
 .big {
