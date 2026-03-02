@@ -276,6 +276,14 @@ body::before {
   gap: 8px;
 }
 
+.header-logo {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  border-radius: 20px;
+  margin-bottom: 4px;
+}
+
 .title-arabic {
   font-size: 36px;
   font-weight: 700;
