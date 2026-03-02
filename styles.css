@@ -343,7 +343,7 @@ body::before {
   border-radius: 12px;
   max-height: 280px;
   overflow-y: auto;
-  z-index: 100;
+  z-index: 9999;
   box-shadow: var(--shadow-lg);
   display: none;
 }
@@ -357,6 +357,8 @@ body::before {
   cursor: pointer;
   border-bottom: 1px solid var(--border);
   transition: background 0.15s ease;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(202, 163, 128, 0.15);
 }
 
 .city-dropdown-item:last-child {
@@ -1022,7 +1024,6 @@ input[type="date"] {
   .bar {
     padding: 12px;
     gap: 8px;
-    overflow: hidden;
   }
 
   .left {
@@ -1054,6 +1055,11 @@ input[type="date"] {
     min-height: 36px;
     min-width: 0;
     overflow: hidden;
+  }
+
+  /* Must come after .chip to win the cascade */
+  .city-search-chip {
+    overflow: visible;
   }
 
   .chip input[type="number"],

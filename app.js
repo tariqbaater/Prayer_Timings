@@ -710,33 +710,32 @@ async function searchCity(query) {
 
   try {
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=8&featuretype=city,town,municipality`,
-      {
-        headers: {
-          "User-Agent": "AdhanTimings/1.0",
-        },
-      }
+      `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=8`
     );
 
     if (!response.ok) throw new Error("API error");
 
     const data = await response.json();
+    const features = data.features || [];
 
-    if (data.length === 0) {
+    if (!features.length) {
       dropdown.innerHTML = '<div class="city-dropdown-empty">No cities found</div>';
       return;
     }
 
-    dropdown.innerHTML = data
-      .map(
-        (place) => `
-      <div class="city-dropdown-item" data-lat="${place.lat}" data-lng="${place.lon}" data-name="${place.display_name.split(",")[0]}">
-        <div class="name">${place.display_name.split(",")[0]}</div>
-        <div class="country">${place.display_name.split(",").slice(1, 3).join(",")}</div>
-        <div class="coords">${parseFloat(place.lat).toFixed(4)}, ${parseFloat(place.lon).toFixed(4)}</div>
-      </div>
-    `
-      )
+    dropdown.innerHTML = features
+      .map((f) => {
+        const p    = f.properties;
+        const name = p.name || p.city || p.town || p.village || "Unknown";
+        const sub  = [p.state, p.country].filter(Boolean).join(", ");
+        const lat  = f.geometry.coordinates[1];
+        const lng  = f.geometry.coordinates[0];
+        return `<div class="city-dropdown-item" data-lat="${lat}" data-lng="${lng}" data-name="${name}">
+          <div class="name">${name}</div>
+          <div class="country">${sub}</div>
+          <div class="coords">${parseFloat(lat).toFixed(4)}, ${parseFloat(lng).toFixed(4)}</div>
+        </div>`;
+      })
       .join("");
   } catch (_error) {
     dropdown.innerHTML = '<div class="city-dropdown-error">Search failed. Try again.</div>';
@@ -760,22 +759,38 @@ function setupCitySearch() {
     }
   });
 
-  dropdown.addEventListener("click", (e) => {
+  function selectCity(item) {
+    $("lat").value = item.dataset.lat;
+    $("lng").value = item.dataset.lng;
+    searchInput.value = item.dataset.name;
+    dropdown.classList.remove("active");
+    saveSettings();
+    regenerate();
+  }
+
+  // touchstart fires before scroll cancellation and before blur — most reliable on mobile
+  dropdown.addEventListener("touchstart", (e) => {
     const item = e.target.closest(".city-dropdown-item");
     if (item) {
-      const lat = item.dataset.lat;
-      const lng = item.dataset.lng;
-      const name = item.dataset.name;
-
-      $("lat").value = lat;
-      $("lng").value = lng;
-      searchInput.value = name;
-      dropdown.classList.remove("active");
-
-      saveSettings();
-      regenerate();
+      e.preventDefault();
+      e.stopPropagation();
+      selectCity(item);
     }
+  }, { passive: false });
+
+  // mousedown for desktop — fires before blur
+  dropdown.addEventListener("mousedown", (e) => {
+    e.preventDefault();
+    const item = e.target.closest(".city-dropdown-item");
+    if (item) selectCity(item);
   });
+
+  // Close on outside tap or click
+  document.addEventListener("touchstart", (e) => {
+    if (!e.target.closest(".city-search-chip")) {
+      dropdown.classList.remove("active");
+    }
+  }, { passive: true });
 
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".city-search-chip")) {
