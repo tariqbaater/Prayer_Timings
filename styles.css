@@ -1450,7 +1450,27 @@ input[type="date"] {
   font-size: 11px;
   color: var(--muted);
   font-family: monospace;
-  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.copy-card-btn {
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  cursor: pointer;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+
+.copy-card-btn:hover {
+  color: var(--text);
+  background: var(--surface-3);
 }
 
 /* Islamic Q&A Search */

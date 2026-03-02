@@ -1911,17 +1911,35 @@ function toggleTheme(btn) {
 /********************************************************************
  * Dua of the Day — render
  ********************************************************************/
+const COPY_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+const CHECK_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+function copySidebarCard(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.innerHTML = CHECK_ICON;
+    btn.style.color = "var(--good)";
+    setTimeout(() => { btn.innerHTML = COPY_ICON; btn.style.color = ""; }, 2000);
+  }).catch(() => { /* ignore */ });
+}
+
 function renderDua() {
   const container = $("duaContent");
   if (!container) return;
   const start = new Date(new Date().getFullYear(), 0, 1);
   const dayOfYear = Math.floor((new Date() - start) / 86400000);
   const dua = DUAS[dayOfYear % DUAS.length];
+  const copyText = `${dua.arabic}\n${dua.transliteration}\n"${dua.translation}"\n${dua.source}`;
   container.innerHTML = `
     <div class="dua-arabic">${dua.arabic}</div>
     <div class="dua-transliteration">${dua.transliteration}</div>
     <div class="dua-translation">"${dua.translation}"</div>
-    <div class="dua-source">${dua.source}</div>`;
+    <div class="dua-source">
+      <span>${dua.source}</span>
+      <button class="copy-card-btn" aria-label="Copy dua">${COPY_ICON}</button>
+    </div>`;
+  container.querySelector(".copy-card-btn").addEventListener("click", function () {
+    copySidebarCard(this, copyText);
+  });
 }
 
 /********************************************************************
@@ -2434,13 +2452,18 @@ Isha: ${today.times.Isha}`;
     const todayKey  = `ayah_${new Date().toDateString()}`;
 
     function render(ayah) {
+      const copyText = `${ayah.arabic}\n"${ayah.english}"\n${ayah.surah} ${ayah.surahNum}:${ayah.ayahNum}`;
       container.innerHTML = `
         <div class="ayah-arabic">${ayah.arabic}</div>
         <div class="ayah-english">"${ayah.english}"</div>
         <div class="ayah-ref">
           <span class="ayah-ref-name">${ayah.surah}</span>
           <span class="ayah-ref-num">${ayah.surahNum}:${ayah.ayahNum}</span>
+          <button class="copy-card-btn" aria-label="Copy ayah">${COPY_ICON}</button>
         </div>`;
+      container.querySelector(".copy-card-btn").addEventListener("click", function () {
+        copySidebarCard(this, copyText);
+      });
     }
 
     const cached = localStorage.getItem(todayKey);
