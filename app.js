@@ -1188,37 +1188,9 @@ function regenerate() {
   }
 
   updateNowLine();
-  updateQibla(latN, lngN);
 
   startCountdown(next.date, t("prayer." + next.key.toLowerCase()));
   saveSettings();
-}
-
-function updateQibla(userLat, userLng) {
-  const needle      = $("qiblaNeedle");
-  const degEl       = $("qiblaDeg");
-  const dirEl       = $("qiblaDir");
-  const wrap        = $("qiblaWrap");
-  const placeholder = $("qiblaPlaceholder");
-  if (!needle) return;
-
-  const MECCA_LAT = 21.3891, MECCA_LNG = 39.8579;
-  const φ1 = userLat  * Math.PI / 180;
-  const φ2 = MECCA_LAT * Math.PI / 180;
-  const Δλ = (MECCA_LNG - userLng) * Math.PI / 180;
-
-  const x = Math.sin(Δλ) * Math.cos(φ2);
-  const y = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-  const bearing = ((Math.atan2(x, y) * 180 / Math.PI) + 360) % 360;
-
-  needle.style.transform = `rotate(${bearing}deg)`;
-  degEl.textContent = `${Math.round(bearing)}°`;
-
-  const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
-  dirEl.textContent = dirs[Math.round(bearing / 22.5) % 16];
-
-  wrap.classList.remove("hidden");
-  placeholder.classList.add("hidden");
 }
 
 /********************************************************************
@@ -1324,24 +1296,21 @@ function stopNotificationChecker() {
 }
 
 function toggleNotifications(btn) {
+  const sp = btn.querySelector("[data-i18n]");
   if (notificationsEnabled) {
     notificationsEnabled = false;
     stopNotificationChecker();
-    btn.textContent = "🔔 Notify";
+    if (sp) { sp.dataset.i18n = "btn.notify"; sp.textContent = t("btn.notify"); }
     btn.classList.remove("btn--active");
-    try {
-      localStorage.setItem("adhan-notifications", "off");
-    } catch { /* ignore */ }
+    try { localStorage.setItem("adhan-notifications", "off"); } catch { /* ignore */ }
   } else {
     requestNotificationPermission().then((granted) => {
       if (granted) {
         notificationsEnabled = true;
         startNotificationChecker();
-        btn.textContent = "🔕 On";
+        if (sp) { sp.dataset.i18n = "btn.notify_on"; sp.textContent = t("btn.notify_on"); }
         btn.classList.add("btn--active");
-        try {
-          localStorage.setItem("adhan-notifications", "on");
-        } catch { /* ignore */ }
+        try { localStorage.setItem("adhan-notifications", "on"); } catch { /* ignore */ }
       }
     });
   }
@@ -1353,7 +1322,8 @@ function restoreNotificationState(btn) {
     if (saved === "on" && canNotify()) {
       notificationsEnabled = true;
       startNotificationChecker();
-      btn.textContent = "🔕 On";
+      const sp = btn.querySelector("[data-i18n]");
+      if (sp) { sp.dataset.i18n = "btn.notify_on"; sp.textContent = t("btn.notify_on"); }
       btn.classList.add("btn--active");
     }
   } catch { /* ignore */ }
@@ -1371,6 +1341,7 @@ const TRANSLATIONS = {
     "chip.lat": "Lat", "chip.lng": "Lng", "chip.days": "Days",
     "btn.today": "Today", "btn.copy": "Copy", "btn.share": "Share",
     "btn.dark": "Dark", "btn.light": "Light", "btn.advanced": "Advanced Settings", "btn.hide_advanced": "Hide Advanced Settings",
+    "btn.notify": "Notify", "btn.notify_on": "Notifying",
     "search.placeholder": "Search city...",
     "col.date": "Date", "col.fajr": "Fajr", "col.sunrise": "Sunrise",
     "col.dhuhr": "Dhuhr", "col.asr": "Asr", "col.maghrib": "Maghrib", "col.isha": "Isha",
@@ -1467,6 +1438,7 @@ const TRANSLATIONS = {
     "chip.lat": "خط العرض", "chip.lng": "خط الطول", "chip.days": "أيام",
     "btn.today": "اليوم", "btn.copy": "نسخ", "btn.share": "مشاركة",
     "btn.dark": "مظلم", "btn.light": "مضيء", "btn.advanced": "إعدادات متقدمة", "btn.hide_advanced": "إخفاء الإعدادات المتقدمة",
+    "btn.notify": "تنبيهات", "btn.notify_on": "مفعّل",
     "search.placeholder": "ابحث عن مدينة...",
     "col.date": "التاريخ", "col.fajr": "الفجر", "col.sunrise": "الشروق",
     "col.dhuhr": "الظهر", "col.asr": "العصر", "col.maghrib": "المغرب", "col.isha": "العشاء",
@@ -1689,6 +1661,7 @@ function toggleTheme(btn) {
   updateThemeButton(btn, next);
 }
 
+
 (function init() {
   initDropdowns();
   setTodayDateInput();
@@ -1711,6 +1684,14 @@ function toggleTheme(btn) {
   const themeBtn = $("themeBtn");
   initTheme(themeBtn);
   themeBtn.addEventListener("click", () => toggleTheme(themeBtn));
+
+  // Notification toggle
+  const notifBtn = $("notifBtn");
+  if (notifBtn) {
+    restoreNotificationState(notifBtn);
+    notifBtn.addEventListener("click", () => toggleNotifications(notifBtn));
+  }
+
 
   $("method").addEventListener("change", () => {
     saveSettings();

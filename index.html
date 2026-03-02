@@ -148,6 +148,7 @@
           <button class="btn chip" id="copyBtn" aria-label="Copy today's times">📋 <span data-i18n="btn.copy">Copy</span></button>
           <button class="btn chip" id="shareBtn" aria-label="Share prayer times">📤 <span data-i18n="btn.share">Share</span></button>
           <button class="btn chip" id="themeBtn" aria-label="Toggle light/dark theme" title="Toggle theme">🌙 <span data-i18n="btn.dark">Dark</span></button>
+          <button class="btn chip" id="notifBtn" aria-label="Enable prayer notifications">🔔 <span data-i18n="btn.notify">Notify</span></button>
           <button class="btn chip" id="toggleAdvanced" aria-label="Toggle advanced settings">⚙️ <span data-i18n="btn.advanced">Advanced Settings</span></button>
 
 
@@ -209,35 +210,6 @@
         </section>
 
         <aside class="sidebar" aria-label="Tools">
-          <!-- Qibla Direction -->
-          <div class="card sidebar-card">
-            <div class="sidebar-inner">
-              <h2 class="sidebar-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                <span data-i18n="sidebar.qibla">Qibla Direction</span>
-              </h2>
-              <div id="qiblaContent">
-                <p class="qibla-placeholder" id="qiblaPlaceholder" data-i18n="qibla.placeholder">Set your location to see the Qibla direction.</p>
-                <div class="qibla-wrap hidden" id="qiblaWrap">
-                  <div class="qibla-compass">
-                    <span class="qibla-cardinal qibla-n">N</span>
-                    <span class="qibla-cardinal qibla-s">S</span>
-                    <span class="qibla-cardinal qibla-e">E</span>
-                    <span class="qibla-cardinal qibla-w">W</span>
-                    <div class="qibla-needle-wrap" id="qiblaNeedle">
-                      <div class="qibla-needle-n"></div>
-                      <div class="qibla-needle-s"></div>
-                    </div>
-                    <div class="qibla-center"></div>
-                  </div>
-                  <div class="qibla-info">
-                    <span class="qibla-deg mono" id="qiblaDeg">—°</span>
-                    <span class="qibla-dir" id="qiblaDir">—</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <!-- Islamic Q&A Search -->
           <div class="card sidebar-card">
             <div class="sidebar-inner">
