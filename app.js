@@ -2562,8 +2562,26 @@ async function fetchViaProxy(url) {
   throw new Error("All proxies failed");
 }
 
+function clearOldIslamQACache() {
+  const today = new Date().toDateString();
+  try {
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith("islamqa_") && !k.includes(today))
+      .forEach((k) => localStorage.removeItem(k));
+  } catch { /* ignore */ }
+}
+
 async function loadArticles() {
-  const grid  = $("articles-grid");
+  const grid     = $("articles-grid");
+  const cacheKey = `islamqa_articles_${currentLang}_${new Date().toDateString()}`;
+  clearOldIslamQACache();
+
+  // Serve from cache instantly if available
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) { grid.innerHTML = cached; grid.dataset.loaded = "1"; return; }
+  } catch { /* ignore */ }
+
   grid.innerHTML = Array(8).fill(`<div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
   const BASE  = `https://islamqa.info/${currentLang}/articles`;
 
@@ -2586,7 +2604,9 @@ async function loadArticles() {
     const otherDocs = await Promise.all(remaining);
 
     const allCards = [doc1, ...otherDocs].flatMap(parseArticleItems);
-    grid.innerHTML = allCards.join("") || `<div class="islamqa-error">No articles found.</div>`;
+    const html = allCards.join("") || `<div class="islamqa-error">No articles found.</div>`;
+    grid.innerHTML = html;
+    try { localStorage.setItem(cacheKey, html); } catch { /* quota exceeded */ }
   } catch {
     grid.innerHTML = `<div class="islamqa-error">Could not load articles.<br>
       <a class="islamqa-browse-btn" href="https://islamqa.info/${currentLang}/articles" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
@@ -2617,7 +2637,16 @@ function parseBookItems(doc) {
 }
 
 async function loadBooks() {
-  const grid  = $("books-grid");
+  const grid     = $("books-grid");
+  const cacheKey = `islamqa_books_${currentLang}_${new Date().toDateString()}`;
+  clearOldIslamQACache();
+
+  // Serve from cache instantly if available
+  try {
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) { grid.innerHTML = cached; grid.dataset.loaded = "1"; return; }
+  } catch { /* ignore */ }
+
   grid.innerHTML = Array(8).fill(`<div class="skeleton-card skeleton-card--tall"><div class="skeleton-cover skeleton-cover--tall"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
   const BASE  = `https://islamqa.info/${currentLang}/books`;
 
@@ -2641,7 +2670,9 @@ async function loadBooks() {
     const otherDocs = await Promise.all(remaining);
 
     const allCards = [doc1, ...otherDocs].flatMap(parseBookItems);
-    grid.innerHTML = allCards.join("") || `<div class="islamqa-error">No books found.</div>`;
+    const html = allCards.join("") || `<div class="islamqa-error">No books found.</div>`;
+    grid.innerHTML = html;
+    try { localStorage.setItem(cacheKey, html); } catch { /* quota exceeded */ }
   } catch {
     grid.innerHTML = `<div class="islamqa-error">Could not load books.<br>
       <a class="islamqa-browse-btn" href="https://islamqa.info/${currentLang}/books" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
