@@ -2529,7 +2529,7 @@ async function fetchViaProxy(url) {
   ];
   for (const proxyUrl of proxies) {
     try {
-      const res = await fetch(proxyUrl);
+      const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(6000) });
       if (res.ok) {
         const text = await res.text();
         if (text.length > 500) return text;
