@@ -54,6 +54,10 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           Books
         </button>
+        <button class="content-tab" data-tab="zakat" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Zakat
+        </button>
         <button class="content-tab" data-tab="contact" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Contact
@@ -351,6 +355,157 @@
           <span>All books displayed here are the intellectual property of <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a> and their respective authors. Adhan Timings does not claim ownership of, nor hold any copyright over, any of the content listed below. This content is presented solely for convenience and ease of access. Please visit islamqa.info directly to support their work.</span>
         </div>
         <div id="books-grid" class="content-grid"></div>
+      </div>
+
+      <!-- Zakat tab -->
+      <div id="tab-zakat" class="tab-content" hidden>
+        <div class="zakat-page">
+
+          <!-- Calculator -->
+          <div class="zakat-calculator-col">
+            <div class="zakat-card">
+              <div class="zakat-card-header">
+                <h2 class="zakat-title">Zakat Calculator</h2>
+                <p class="zakat-subtitle">Enter your assets and liabilities below. Zakat is 2.5% of your net zakatable wealth if it meets or exceeds the Nisab threshold for a full lunar year (Hawl).</p>
+              </div>
+
+              <!-- Nisab Settings -->
+              <div class="zakat-nisab-bar">
+                <div class="zakat-nisab-inputs">
+                  <div class="zakat-field">
+                    <label class="zakat-label" for="zakatCurrency">Currency</label>
+                    <select id="zakatCurrency" class="zakat-input">
+                      <option value="USD">$ USD</option>
+                      <option value="GBP">£ GBP</option>
+                      <option value="EUR">€ EUR</option>
+                      <option value="SAR">SAR</option>
+                      <option value="INR">₹ INR</option>
+                      <option value="PKR">PKR</option>
+                      <option value="BDT">৳ BDT</option>
+                    </select>
+                  </div>
+                  <div class="zakat-field">
+                    <label class="zakat-label" for="goldPrice">Gold price / gram</label>
+                    <div class="gold-price-row">
+                      <input type="number" id="goldPrice" class="zakat-input" value="85" min="1" />
+                      <span class="gold-price-hint" id="goldPriceHint"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="zakat-nisab-threshold">
+                  <span class="zakat-nisab-label">Nisab (85g gold)</span>
+                  <span class="zakat-nisab-value mono" id="nisabDisplay">—</span>
+                </div>
+              </div>
+
+              <div class="zakat-sections">
+                <!-- Assets -->
+                <div class="zakat-section">
+                  <h3 class="zakat-section-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    Assets
+                  </h3>
+                  <div class="zakat-rows">
+                    <div class="zakat-row"><label class="zakat-row-label">Cash &amp; Bank Savings</label><input type="number" id="z_cash" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                    <div class="zakat-row"><label class="zakat-row-label">Gold &amp; Silver (market value)</label><input type="number" id="z_gold" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                    <div class="zakat-row"><label class="zakat-row-label">Investments &amp; Stocks</label><input type="number" id="z_investments" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                    <div class="zakat-row"><label class="zakat-row-label">Business Inventory</label><input type="number" id="z_business" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                    <div class="zakat-row"><label class="zakat-row-label">Money Owed to You</label><input type="number" id="z_receivables" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                    <div class="zakat-row"><label class="zakat-row-label">Other Zakatable Assets</label><input type="number" id="z_other" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                  </div>
+                </div>
+
+                <!-- Liabilities -->
+                <div class="zakat-section">
+                  <h3 class="zakat-section-title">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+                    Liabilities
+                  </h3>
+                  <div class="zakat-rows">
+                    <div class="zakat-row"><label class="zakat-row-label">Outstanding Debts</label><input type="number" id="z_debts" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                    <div class="zakat-row"><label class="zakat-row-label">Bills &amp; Expenses Due</label><input type="number" id="z_expenses" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                    <div class="zakat-row"><label class="zakat-row-label">Business Liabilities</label><input type="number" id="z_bizliab" class="zakat-input zakat-row-input" value="" min="0" placeholder="0" /></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Result -->
+              <div class="zakat-result" id="zakatResult">
+                <div class="zakat-result-row">
+                  <span>Total Assets</span><span class="mono" id="zr_assets">—</span>
+                </div>
+                <div class="zakat-result-row">
+                  <span>Total Liabilities</span><span class="mono" id="zr_liabilities">—</span>
+                </div>
+                <div class="zakat-result-row zakat-result-row--net">
+                  <span>Net Zakatable Wealth</span><span class="mono" id="zr_net">—</span>
+                </div>
+                <div class="zakat-result-row">
+                  <span>Nisab Threshold</span><span class="mono" id="zr_nisab">—</span>
+                </div>
+                <div class="zakat-verdict" id="zakatVerdict">Enter your wealth details above to calculate your Zakat obligation.</div>
+                <div class="zakat-amount" id="zakatAmount"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ -->
+          <div class="zakat-faq-col">
+            <h2 class="zakat-faq-heading">Frequently Asked Questions</h2>
+
+            <div class="faq-list">
+              <div class="faq-item">
+                <button class="faq-question">What is Zakat?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>Zakat (زكاة) is the third pillar of Islam — a mandatory annual act of worship through wealth. The word means both <em>purification</em> and <em>growth</em>. By giving Zakat, a Muslim purifies the remainder of their wealth and contributes to the welfare of the broader community. It is mentioned alongside Salah over 80 times in the Quran, reflecting its fundamental importance in the faith.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">Who is obligated to pay Zakat?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>Zakat is obligatory upon every Muslim who is: <strong>an adult</strong>, <strong>of sound mind</strong>, and <strong>in possession of wealth equal to or above the Nisab</strong> for a complete lunar year (Hawl). It does not apply to non-Muslims, children, or those whose wealth falls below the Nisab threshold.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">What is Nisab?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>Nisab is the minimum threshold of wealth that must be owned before Zakat becomes obligatory. There are two standards: <strong>Gold Nisab</strong> — equivalent to 85 grams of gold, and <strong>Silver Nisab</strong> — equivalent to 595 grams of silver. Most contemporary scholars recommend using the gold standard as it is more conservative. Enter your local gold price per gram above and the calculator will compute the Nisab automatically.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">What is Hawl (the lunar year condition)?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>Hawl refers to the condition that wealth must remain at or above the Nisab for a complete Islamic (lunar) year — approximately 354 days — before Zakat is due. If your wealth drops below Nisab at any point during the year, the clock resets. It is common practice to set a personal Zakat date (e.g. the beginning of Ramadan) and assess your wealth annually on that date.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">What is the Zakat rate?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>The standard Zakat rate is <strong>2.5%</strong> of your total net zakatable wealth (assets minus liabilities). This applies to cash, gold, silver, trade goods, and investments. Different rates apply to agricultural produce and livestock, which follow their own specific rulings.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">Which types of wealth require Zakat?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><ul><li><strong>Cash:</strong> savings accounts, current accounts, foreign currencies held</li><li><strong>Gold &amp; Silver:</strong> in any form — jewelry, bullion, coins, or investments</li><li><strong>Business inventory:</strong> goods held for trade at market value</li><li><strong>Investments:</strong> stocks and shares based on their zakatable portion</li><li><strong>Receivables:</strong> money owed to you that you expect to be repaid</li><li><strong>Agricultural produce &amp; livestock:</strong> subject to separate detailed rulings</li></ul></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">What wealth is exempt from Zakat?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><ul><li>Your primary home and personal residence</li><li>Personal vehicle used for daily commuting</li><li>Clothing, furniture, and personal possessions</li><li>Tools and equipment used for your profession</li><li>Debts owed by others that are unlikely to be repaid</li></ul><p>These items are considered personal needs and are not subject to Zakat.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">Who can receive Zakat?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>The Quran (9:60) specifies eight categories of Zakat recipients:</p><ol><li><strong>Al-Fuqara</strong> — the poor who lack basic necessities</li><li><strong>Al-Masakin</strong> — the needy who are in financial hardship</li><li><strong>Al-Amileen</strong> — administrators collecting and distributing Zakat</li><li><strong>Al-Mu'allafatu Qulubuhum</strong> — those whose hearts are being reconciled</li><li><strong>Fir-Riqab</strong> — those in bondage or captivity</li><li><strong>Al-Gharimeen</strong> — those overwhelmed by debt</li><li><strong>Fi Sabilillah</strong> — those striving in the cause of Allah</li><li><strong>Ibnus-Sabil</strong> — stranded travellers in genuine need</li></ol></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">Can I pay Zakat to my family members?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>Zakat <strong>cannot</strong> be given to your direct ascendants (parents, grandparents), direct descendants (children, grandchildren), or your spouse, as you are already financially responsible for them. However, it <strong>can</strong> be given to brothers, sisters, aunts, uncles, cousins, and other relatives who are genuinely in need — and doing so carries double reward: once for Zakat and once for maintaining family ties (Silat al-Rahim).</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">What is the difference between Zakat and Sadaqah?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p><strong>Zakat</strong> is a mandatory (fard) pillar of Islam with strict rules regarding eligibility, calculation, and qualified recipients. Refusing to pay Zakat is a major sin. <strong>Sadaqah</strong> is voluntary charity that can be given at any time, in any amount, to any person or cause. Both are acts of worship, but Sadaqah is far broader — even a smile or a kind word is considered Sadaqah in Islam.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">Can Zakat be paid in installments?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>Yes. Zakat may be paid in installments throughout the year as long as the full calculated amount is fulfilled by the end of the Hawl. Many Muslims choose to pay a portion monthly for ease of planning. It is also permissible to pay Zakat in advance before the Hawl is complete, particularly during Ramadan to maximise reward.</p></div>
+              </div>
+              <div class="faq-item">
+                <button class="faq-question">What if I missed paying Zakat in previous years?<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></button>
+                <div class="faq-answer"><p>If you were eligible to pay Zakat in previous years but did not, the unpaid Zakat remains a debt upon you and must be calculated and paid for each outstanding year. Scholars advise estimating the wealth you held during those years as best you can, calculating 2.5% for each eligible year, and paying it immediately. It is also recommended to make sincere repentance (Tawbah) to Allah.</p></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- Contact tab -->

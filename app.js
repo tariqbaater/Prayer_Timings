@@ -1874,6 +1874,7 @@ function initContentTabs() {
 
       if (target === "articles" && !$("articles-grid").dataset.loaded) loadArticles();
       if (target === "books"    && !$("books-grid").dataset.loaded)    loadBooks();
+      if (target === "zakat")                                          initZakatCalculator();
     });
   });
 }
@@ -1988,4 +1989,115 @@ async function loadBooks() {
       <a class="islamqa-browse-btn" href="https://islamqa.info/en/books" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
   }
   grid.dataset.loaded = "1";
+}
+
+/********************************************************************
+ * Zakat Calculator
+ ********************************************************************/
+const GOLD_API_KEY = "goldapi-8xgjsmm8v5h5j-io"; // see .env
+
+const CURRENCY_SYMBOLS = {
+  USD: "$", GBP: "£", EUR: "€",
+  SAR: "SAR ", INR: "₹", PKR: "PKR ", BDT: "৳ ",
+};
+
+async function fetchGoldPrice(currencyCode) {
+  const input = $("goldPrice");
+  const hint  = $("goldPriceHint");
+  if (!input) return;
+
+  const prev = input.value;
+  input.disabled = true;
+  if (hint) { hint.textContent = "Fetching live price…"; hint.className = "gold-price-hint"; }
+
+  try {
+    const res = await fetch(`https://www.goldapi.io/api/XAU/${currencyCode}`, {
+      headers: { "x-access-token": GOLD_API_KEY, "Content-Type": "application/json" },
+    });
+    if (!res.ok) throw new Error(`${res.status}`);
+    const data = await res.json();
+    if (!data.price) throw new Error("no price");
+    const perGram = data.price / 31.1035;
+    input.value = perGram.toFixed(2);
+    if (hint) { hint.textContent = "Live price · goldapi.io"; hint.className = "gold-price-hint gold-price-hint--live"; }
+  } catch (err) {
+    input.value = prev || "85";
+    if (hint) { hint.textContent = `Could not fetch — enter manually`; hint.className = "gold-price-hint gold-price-hint--error"; }
+  } finally {
+    input.disabled = false;
+    calculateZakat();
+  }
+}
+
+let zakatInitialized = false;
+
+function initZakatCalculator() {
+  if (zakatInitialized) return;
+  zakatInitialized = true;
+
+  const calcIds = ["goldPrice","z_cash","z_gold","z_investments","z_business","z_receivables","z_other","z_debts","z_expenses","z_bizliab"];
+  calcIds.forEach((id) => {
+    const el = $(id);
+    if (el) el.addEventListener("input", calculateZakat);
+  });
+
+  const currencyEl = $("zakatCurrency");
+  if (currencyEl) {
+    currencyEl.addEventListener("change", () => fetchGoldPrice(currencyEl.value));
+  }
+
+  // FAQ accordion
+  document.querySelectorAll(".faq-question").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const item = btn.closest(".faq-item");
+      const isOpen = item.classList.contains("open");
+      document.querySelectorAll(".faq-item.open").forEach((i) => i.classList.remove("open"));
+      if (!isOpen) item.classList.add("open");
+    });
+  });
+
+  calculateZakat(); // show nisab immediately with default price
+  fetchGoldPrice(currencyEl?.value || "USD"); // then update with live price
+}
+
+function calculateZakat() {
+  const currencyCode = $("zakatCurrency")?.value || "USD";
+  const currSymbol   = CURRENCY_SYMBOLS[currencyCode] || currencyCode + " ";
+  const goldPrice    = parseFloat($("goldPrice")?.value) || 85;
+  const nisab     = 85 * goldPrice;
+
+  const val = (id) => parseFloat($(id)?.value) || 0;
+  const assets      = val("z_cash") + val("z_gold") + val("z_investments") + val("z_business") + val("z_receivables") + val("z_other");
+  const liabilities = val("z_debts") + val("z_expenses") + val("z_bizliab");
+  const net         = Math.max(0, assets - liabilities);
+  const isLiable    = net >= nisab;
+  const zakatDue    = isLiable ? net * 0.025 : 0;
+
+  const fmt = (n) => currSymbol + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  $("nisabDisplay").textContent     = fmt(nisab);
+  $("zr_nisab").textContent         = fmt(nisab);
+  $("zr_assets").textContent        = fmt(assets);
+  $("zr_liabilities").textContent   = fmt(liabilities);
+  $("zr_net").textContent           = fmt(net);
+
+  const verdict = $("zakatVerdict");
+  const amount  = $("zakatAmount");
+
+  if (assets === 0) {
+    verdict.className   = "zakat-verdict";
+    verdict.textContent = "Enter your wealth details above to calculate your Zakat obligation.";
+    amount.innerHTML    = "";
+    return;
+  }
+
+  if (isLiable) {
+    verdict.className   = "zakat-verdict zakat-verdict--liable";
+    verdict.textContent = `Your net wealth of ${fmt(net)} exceeds the Nisab. You are obligated to pay Zakat this year.`;
+    amount.innerHTML    = `<span class="zakat-amount-label">Your Zakat due (2.5%)</span><span class="zakat-amount-value">${fmt(zakatDue)}</span>`;
+  } else {
+    verdict.className   = "zakat-verdict zakat-verdict--exempt";
+    verdict.textContent = `Your net wealth of ${fmt(net)} is below the Nisab threshold of ${fmt(nisab)}. Zakat is not obligatory for you this year.`;
+    amount.innerHTML    = "";
+  }
 }
