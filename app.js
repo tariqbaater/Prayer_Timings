@@ -1341,7 +1341,7 @@ const TRANSLATIONS = {
     "chip.method": "Method", "chip.tz": "TZ", "chip.hrs": "hrs",
     "chip.lat": "Lat", "chip.lng": "Lng", "chip.days": "Days",
     "btn.today": "Today", "btn.copy": "Copy", "btn.share": "Share",
-    "btn.dark": "Dark", "btn.light": "Light", "btn.advanced": "Advanced Settings",
+    "btn.dark": "Dark", "btn.light": "Light", "btn.advanced": "Advanced Settings", "btn.hide_advanced": "Hide Advanced Settings",
     "search.placeholder": "Search city...",
     "col.date": "Date", "col.fajr": "Fajr", "col.sunrise": "Sunrise",
     "col.dhuhr": "Dhuhr", "col.asr": "Asr", "col.maghrib": "Maghrib", "col.isha": "Isha",
@@ -1358,6 +1358,76 @@ const TRANSLATIONS = {
     "calendar.greg.label": "Gregorian Date", "calendar.today": "Today",
     "calendar.hijri.result": "Hijri Date",
     "lang.label": "العربية",
+    "gold.fetching": "Fetching live price…",
+    "gold.live": "Live price · goldapi.io",
+    "gold.error": "Could not fetch — enter manually",
+    "zakat.empty": "Enter your wealth details above to calculate your Zakat obligation.",
+    "zakat.liable": "Your net wealth of {net} exceeds the Nisab. You are obligated to pay Zakat this year.",
+    "zakat.exempt": "Your net wealth of {net} is below the Nisab threshold of {nisab}. Zakat is not obligatory for you this year.",
+    "zakat.amount.label": "Your Zakat due (2.5%)",
+    "zakat.title": "Zakat Calculator",
+    "zakat.subtitle": "Enter your assets and liabilities below. Zakat is 2.5% of your net zakatable wealth if it meets or exceeds the Nisab threshold for a full lunar year (Hawl).",
+    "zakat.label.currency": "Currency",
+    "zakat.label.goldprice": "Gold price / gram",
+    "zakat.nisab.label": "Nisab (85g gold)",
+    "zakat.section.assets": "Assets",
+    "zakat.row.cash": "Cash & Bank Savings",
+    "zakat.row.gold": "Gold & Silver (market value)",
+    "zakat.row.investments": "Investments & Stocks",
+    "zakat.row.business": "Business Inventory",
+    "zakat.row.receivables": "Money Owed to You",
+    "zakat.row.other": "Other Zakatable Assets",
+    "zakat.section.liabilities": "Liabilities",
+    "zakat.row.debts": "Outstanding Debts",
+    "zakat.row.expenses": "Bills & Expenses Due",
+    "zakat.row.bizliab": "Business Liabilities",
+    "zakat.result.assets": "Total Assets",
+    "zakat.result.liabilities": "Total Liabilities",
+    "zakat.result.net": "Net Zakatable Wealth",
+    "zakat.result.nisab": "Nisab Threshold",
+    "disclaimer.articles": `All articles displayed here are the intellectual property of <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a>. Adhan Timings does not claim ownership of, nor hold any copyright over, any of the content listed below. This content is presented solely for convenience and ease of access. Please visit islamqa.info directly to support their work.`,
+    "disclaimer.books": `All books displayed here are the intellectual property of <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a> and their respective authors. Adhan Timings does not claim ownership of, nor hold any copyright over, any of the content listed below. This content is presented solely for convenience and ease of access. Please visit islamqa.info directly to support their work.`,
+    "faq.heading": "Frequently Asked Questions",
+    "faq.q1": "What is Zakat?",
+    "faq.a1": `<p>Zakat (زكاة) is the third pillar of Islam — a mandatory annual act of worship through wealth. The word means both <em>purification</em> and <em>growth</em>. By giving Zakat, a Muslim purifies the remainder of their wealth and contributes to the welfare of the broader community. It is mentioned alongside Salah over 80 times in the Quran, reflecting its fundamental importance in the faith.</p>`,
+    "faq.q2": "Who is obligated to pay Zakat?",
+    "faq.a2": `<p>Zakat is obligatory upon every Muslim who is: <strong>an adult</strong>, <strong>of sound mind</strong>, and <strong>in possession of wealth equal to or above the Nisab</strong> for a complete lunar year (Hawl). It does not apply to non-Muslims, children, or those whose wealth falls below the Nisab threshold.</p>`,
+    "faq.q3": "What is Nisab?",
+    "faq.a3": `<p>Nisab is the minimum threshold of wealth that must be owned before Zakat becomes obligatory. There are two standards: <strong>Gold Nisab</strong> — equivalent to 85 grams of gold, and <strong>Silver Nisab</strong> — equivalent to 595 grams of silver. Most contemporary scholars recommend using the gold standard as it is more conservative. Enter your local gold price per gram above and the calculator will compute the Nisab automatically.</p>`,
+    "faq.q4": "What is Hawl (the lunar year condition)?",
+    "faq.a4": `<p>Hawl refers to the condition that wealth must remain at or above the Nisab for a complete Islamic (lunar) year — approximately 354 days — before Zakat is due. If your wealth drops below Nisab at any point during the year, the clock resets. It is common practice to set a personal Zakat date (e.g. the beginning of Ramadan) and assess your wealth annually on that date.</p>`,
+    "faq.q5": "What is the Zakat rate?",
+    "faq.a5": `<p>The standard Zakat rate is <strong>2.5%</strong> of your total net zakatable wealth (assets minus liabilities). This applies to cash, gold, silver, trade goods, and investments. Different rates apply to agricultural produce and livestock, which follow their own specific rulings.</p>`,
+    "faq.q6": "Which types of wealth require Zakat?",
+    "faq.a6": `<ul><li><strong>Cash:</strong> savings accounts, current accounts, foreign currencies held</li><li><strong>Gold &amp; Silver:</strong> in any form — jewelry, bullion, coins, or investments</li><li><strong>Business inventory:</strong> goods held for trade at market value</li><li><strong>Investments:</strong> stocks and shares based on their zakatable portion</li><li><strong>Receivables:</strong> money owed to you that you expect to be repaid</li><li><strong>Agricultural produce &amp; livestock:</strong> subject to separate detailed rulings</li></ul>`,
+    "faq.q7": "What wealth is exempt from Zakat?",
+    "faq.a7": `<ul><li>Your primary home and personal residence</li><li>Personal vehicle used for daily commuting</li><li>Clothing, furniture, and personal possessions</li><li>Tools and equipment used for your profession</li><li>Debts owed by others that are unlikely to be repaid</li></ul><p>These items are considered personal needs and are not subject to Zakat.</p>`,
+    "faq.q8": "Who can receive Zakat?",
+    "faq.a8": `<p>The Quran (9:60) specifies eight categories of Zakat recipients:</p><ol><li><strong>Al-Fuqara</strong> — the poor who lack basic necessities</li><li><strong>Al-Masakin</strong> — the needy who are in financial hardship</li><li><strong>Al-Amileen</strong> — administrators collecting and distributing Zakat</li><li><strong>Al-Mu'allafatu Qulubuhum</strong> — those whose hearts are being reconciled</li><li><strong>Fir-Riqab</strong> — those in bondage or captivity</li><li><strong>Al-Gharimeen</strong> — those overwhelmed by debt</li><li><strong>Fi Sabilillah</strong> — those striving in the cause of Allah</li><li><strong>Ibnus-Sabil</strong> — stranded travellers in genuine need</li></ol>`,
+    "faq.q9": "Can I pay Zakat to my family members?",
+    "faq.a9": `<p>Zakat <strong>cannot</strong> be given to your direct ascendants (parents, grandparents), direct descendants (children, grandchildren), or your spouse, as you are already financially responsible for them. However, it <strong>can</strong> be given to brothers, sisters, aunts, uncles, cousins, and other relatives who are genuinely in need — and doing so carries double reward: once for Zakat and once for maintaining family ties (Silat al-Rahim).</p>`,
+    "faq.q10": "What is the difference between Zakat and Sadaqah?",
+    "faq.a10": `<p><strong>Zakat</strong> is a mandatory (fard) pillar of Islam with strict rules regarding eligibility, calculation, and qualified recipients. Refusing to pay Zakat is a major sin. <strong>Sadaqah</strong> is voluntary charity that can be given at any time, in any amount, to any person or cause. Both are acts of worship, but Sadaqah is far broader — even a smile or a kind word is considered Sadaqah in Islam.</p>`,
+    "faq.q11": "Can Zakat be paid in installments?",
+    "faq.a11": `<p>Yes. Zakat may be paid in installments throughout the year as long as the full calculated amount is fulfilled by the end of the Hawl. Many Muslims choose to pay a portion monthly for ease of planning. It is also permissible to pay Zakat in advance before the Hawl is complete, particularly during Ramadan to maximise reward.</p>`,
+    "faq.q12": "What if I missed paying Zakat in previous years?",
+    "faq.a12": `<p>If you were eligible to pay Zakat in previous years but did not, the unpaid Zakat remains a debt upon you and must be calculated and paid for each outstanding year. Scholars advise estimating the wealth you held during those years as best you can, calculating 2.5% for each eligible year, and paying it immediately. It is also recommended to make sincere repentance (Tawbah) to Allah.</p>`,
+    "contact.heading": "We'd Love to Hear From You",
+    "contact.body1": "Adhan Timings is a community-driven tool built with the intention of making Islamic prayer times accessible and beautiful for everyone, everywhere. Your feedback is invaluable in helping us grow and improve.",
+    "contact.body2": "Do you have a suggestion for a new feature? Perhaps a calculation method we're missing, a city that isn't resolving correctly, or an idea that would make your daily prayer routine easier? We want to know. Every message is read personally and taken seriously — no request is too small.",
+    "contact.body3": "If you've encountered a bug, noticed incorrect prayer times for your location, or simply want to share how this app has helped you, please reach out. Your experience matters, and together we can make Adhan Timings better for the entire Muslim community.",
+    "contact.highlight1": "Feature requests",
+    "contact.highlight2": "Bug reports",
+    "contact.highlight3": "General feedback",
+    "contact.label.name": "Your Name",
+    "contact.label.email": "Your Email",
+    "contact.label.subject": "Subject",
+    "contact.label.message": "Message",
+    "contact.ph.name": "e.g. Abdullah Al-Farsi",
+    "contact.ph.subject": "e.g. Suggestion for Hanafi Asr method",
+    "contact.ph.message": "Share your thoughts, suggestions, or report an issue…",
+    "contact.note": "Your message will open in your default email client addressed to us directly.",
+    "contact.submit": "Send Message",
   },
   ar: {
     "tab.prayer": "أوقات الصلاة", "tab.articles": "مقالات", "tab.books": "كتب",
@@ -1365,7 +1435,7 @@ const TRANSLATIONS = {
     "chip.method": "الطريقة", "chip.tz": "التوقيت", "chip.hrs": "س",
     "chip.lat": "خط العرض", "chip.lng": "خط الطول", "chip.days": "أيام",
     "btn.today": "اليوم", "btn.copy": "نسخ", "btn.share": "مشاركة",
-    "btn.dark": "مظلم", "btn.light": "مضيء", "btn.advanced": "إعدادات متقدمة",
+    "btn.dark": "مظلم", "btn.light": "مضيء", "btn.advanced": "إعدادات متقدمة", "btn.hide_advanced": "إخفاء الإعدادات المتقدمة",
     "search.placeholder": "ابحث عن مدينة...",
     "col.date": "التاريخ", "col.fajr": "الفجر", "col.sunrise": "الشروق",
     "col.dhuhr": "الظهر", "col.asr": "العصر", "col.maghrib": "المغرب", "col.isha": "العشاء",
@@ -1382,6 +1452,76 @@ const TRANSLATIONS = {
     "calendar.greg.label": "التاريخ الميلادي", "calendar.today": "اليوم",
     "calendar.hijri.result": "التاريخ الهجري",
     "lang.label": "English",
+    "gold.fetching": "جارٍ جلب السعر…",
+    "gold.live": "سعر مباشر · goldapi.io",
+    "gold.error": "تعذّر الجلب — أدخل يدويًا",
+    "zakat.empty": "أدخل تفاصيل ثروتك أعلاه لحساب زكاتك.",
+    "zakat.liable": "صافي ثروتك {net} يتجاوز النصاب. يجب عليك أداء الزكاة هذا العام.",
+    "zakat.exempt": "صافي ثروتك {net} أقل من عتبة النصاب {nisab}. الزكاة غير واجبة عليك هذا العام.",
+    "zakat.amount.label": "زكاتك الواجبة (2.5%)",
+    "zakat.title": "حاسبة الزكاة",
+    "zakat.subtitle": "أدخل أصولك والتزاماتك أدناه. الزكاة 2.5% من صافي ثروتك الزكوية إذا بلغت النصاب أو تجاوزته طوال سنة قمرية كاملة (الحَوْل).",
+    "zakat.label.currency": "العملة",
+    "zakat.label.goldprice": "سعر الذهب / غرام",
+    "zakat.nisab.label": "النصاب (85 غرام ذهب)",
+    "zakat.section.assets": "الأصول",
+    "zakat.row.cash": "النقد والمدخرات البنكية",
+    "zakat.row.gold": "الذهب والفضة (القيمة السوقية)",
+    "zakat.row.investments": "الاستثمارات والأسهم",
+    "zakat.row.business": "بضائع التجارة",
+    "zakat.row.receivables": "الديون المستحقة لك",
+    "zakat.row.other": "أصول زكوية أخرى",
+    "zakat.section.liabilities": "الالتزامات",
+    "zakat.row.debts": "الديون القائمة",
+    "zakat.row.expenses": "الفواتير والمصاريف المستحقة",
+    "zakat.row.bizliab": "التزامات تجارية",
+    "zakat.result.assets": "إجمالي الأصول",
+    "zakat.result.liabilities": "إجمالي الالتزامات",
+    "zakat.result.net": "صافي الثروة الزكوية",
+    "zakat.result.nisab": "عتبة النصاب",
+    "disclaimer.articles": `جميع المقالات المعروضة هنا هي الملكية الفكرية لـ <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a>. لا يدّعي تطبيق أوقات الأذان ملكية أي محتوى أدناه ولا يحمل أي حق مؤلف عليه. يُقدَّم هذا المحتوى للسهولة وتيسير الوصول فحسب. يُرجى زيارة islamqa.info مباشرةً لدعم عملهم.`,
+    "disclaimer.books": `جميع الكتب المعروضة هنا هي الملكية الفكرية لـ <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a> ومؤلفيها المعنيين. لا يدّعي تطبيق أوقات الأذان ملكية أي محتوى أدناه ولا يحمل أي حق مؤلف عليه. يُقدَّم هذا المحتوى للسهولة وتيسير الوصول فحسب. يُرجى زيارة islamqa.info مباشرةً لدعم عملهم.`,
+    "faq.heading": "أسئلة متكررة",
+    "faq.q1": "ما هي الزكاة؟",
+    "faq.a1": `<p>الزكاة (زكاة) هي الركن الثالث من أركان الإسلام — عبادة سنوية واجبة من خلال المال. وتعني الكلمة <em>التطهير</em> و<em>النماء</em>. بأداء الزكاة يُطهِّر المسلم بقية ماله ويُسهم في رعاية المجتمع الأوسع. وقد وردت مقترنةً بالصلاة أكثر من 80 مرة في القرآن الكريم، مما يعكس أهميتها الجوهرية في الدين.</p>`,
+    "faq.q2": "من يجب عليه أداء الزكاة؟",
+    "faq.a2": `<p>تجب الزكاة على كل مسلم: <strong>بالغ</strong>، <strong>عاقل</strong>، <strong>يمتلك نصاباً أو يزيد عليه</strong> طوال سنة قمرية كاملة (الحَوْل). ولا تجب على غير المسلمين، ولا على الأطفال، ولا على من كان ماله دون النصاب.</p>`,
+    "faq.q3": "ما هو النصاب؟",
+    "faq.a3": `<p>النصاب هو الحد الأدنى من المال الذي يجب توافره حتى تجب الزكاة. وثمة معياران: <strong>نصاب الذهب</strong> — ما يعادل 85 غراماً من الذهب، و<strong>نصاب الفضة</strong> — ما يعادل 595 غراماً من الفضة. ويوصي أكثر العلماء المعاصرين باعتماد معيار الذهب لأنه أكثر تحفظاً. أدخل سعر الذهب المحلي بالغرام أعلاه وسيحسب الحاسبة النصاب تلقائياً.</p>`,
+    "faq.q4": "ما هو الحَوْل (شرط السنة الهجرية)؟",
+    "faq.a4": `<p>الحَوْل هو اشتراط أن يبقى المال عند النصاب أو فوقه طوال سنة إسلامية (قمرية) كاملة — نحو 354 يوماً — حتى تجب الزكاة. فإن نقص المال عن النصاب في أي وقت خلال العام، أُعيد احتساب الحَوْل من جديد. ومن الشائع أن يحدد المسلم تاريخاً سنوياً للزكاة (كبداية رمضان) ليقيّم ماله سنوياً.</p>`,
+    "faq.q5": "ما نسبة الزكاة؟",
+    "faq.a5": `<p>نسبة الزكاة المقررة هي <strong>2.5%</strong> من إجمالي الثروة الزكوية الصافية (الأصول ناقص الديون). وينطبق ذلك على النقود والذهب والفضة وبضائع التجارة والاستثمارات. وتُطبَّق نسب مختلفة على الزروع والمواشي وفق أحكامها الخاصة.</p>`,
+    "faq.q6": "ما الأموال التي تجب فيها الزكاة؟",
+    "faq.a6": `<ul><li><strong>النقود:</strong> حسابات التوفير والجارية والعملات الأجنبية</li><li><strong>الذهب والفضة:</strong> بأي صورة — مجوهرات أو سبائك أو عملات أو استثمارات</li><li><strong>بضائع التجارة:</strong> السلع المعدة للبيع بسعر السوق</li><li><strong>الاستثمارات:</strong> الأسهم والحصص بحسب الجزء الخاضع للزكاة</li><li><strong>الديون المستحقة:</strong> الأموال التي يُتوقع استردادها</li><li><strong>الزروع والمواشي:</strong> تخضع لأحكام تفصيلية خاصة</li></ul>`,
+    "faq.q7": "ما الأموال المعفاة من الزكاة؟",
+    "faq.a7": `<ul><li>المسكن الأساسي ومحل الإقامة الخاص</li><li>السيارة الشخصية للاستخدام اليومي</li><li>الملابس والأثاث والمقتنيات الشخصية</li><li>الأدوات والمعدات المهنية</li><li>الديون المشكوك في استردادها</li></ul><p>هذه الأموال تُعدّ من الحاجات الشخصية ولا تجب فيها الزكاة.</p>`,
+    "faq.q8": "من يستحق الزكاة؟",
+    "faq.a8": `<p>حدد القرآن الكريم (9:60) ثمانية أصناف من مستحقي الزكاة:</p><ol><li><strong>الفقراء</strong> — من يفتقرون إلى الضروريات الأساسية</li><li><strong>المساكين</strong> — المحتاجون المعوزون</li><li><strong>العاملون عليها</strong> — القائمون على جمع الزكاة وتوزيعها</li><li><strong>المؤلَّفة قلوبهم</strong> — من يُستألف قلبهم على الإسلام</li><li><strong>في الرقاب</strong> — لتحرير الرقيق والمكاتبين</li><li><strong>الغارمون</strong> — المثقلون بالديون</li><li><strong>في سبيل الله</strong> — الساعون في سبيل الله</li><li><strong>ابن السبيل</strong> — المسافر المنقطع في حاجة حقيقية</li></ol>`,
+    "faq.q9": "هل يجوز إعطاء الزكاة للأقارب؟",
+    "faq.a9": `<p><strong>لا يجوز</strong> صرف الزكاة للأصول (الآباء والأجداد) ولا للفروع (الأبناء والأحفاد) ولا للزوج/الزوجة، لأن نفقتهم واجبة على المزكّي. غير أنه <strong>يجوز</strong> إعطاؤها للإخوة والأخوات والعمات والأعمام والأقارب الذين هم في حاجة حقيقية — وفي ذلك أجران: أجر الزكاة وأجر صلة الرحم.</p>`,
+    "faq.q10": "ما الفرق بين الزكاة والصدقة؟",
+    "faq.a10": `<p><strong>الزكاة</strong> ركن واجب (فرض) من أركان الإسلام، لها شروط محددة في الاستحقاق والحساب والمصارف، والامتناع عنها كبيرة من الكبائر. <strong>الصدقة</strong> تطوعية تُعطى في أي وقت وبأي قدر ولأي شخص أو قضية. وكلتاهما عبادة، إلا أن الصدقة أوسع نطاقاً — حتى الابتسامة والكلمة الطيبة تُعدّان صدقة في الإسلام.</p>`,
+    "faq.q11": "هل يجوز دفع الزكاة على أقساط؟",
+    "faq.a11": `<p>نعم. يجوز دفع الزكاة على أقساط طوال العام ما دام المبلغ المحسوب كاملاً يُؤدَّى قبل انقضاء الحَوْل. ويؤثر كثيرون على دفع جزء منها شهرياً لسهولة التخطيط. كما يجوز تعجيل الزكاة قبل تمام الحَوْل، لا سيما في رمضان مضاعفةً للأجر.</p>`,
+    "faq.q12": "ماذا لو فاتتني الزكاة في السنوات الماضية؟",
+    "faq.a12": `<p>إن كنت مستحقاً لأداء الزكاة في سنوات ماضية ولم تُؤدِّها، فإن الزكاة تبقى ديناً في ذمتك يجب حسابه وأداؤه عن كل سنة ماضية. وينصح العلماء بتقدير الثروة التي كنت تمتلكها خلال تلك السنوات بقدر الإمكان، وحساب 2.5% عن كل سنة مستحقة، وأدائها فوراً. ويُستحسن كذلك التوبة الصادقة إلى الله.</p>`,
+    "contact.heading": "يسعدنا التواصل معك",
+    "contact.body1": "أوقات الأذان أداة مجتمعية بُنيت بنية إتاحة أوقات الصلاة الإسلامية وتجميلها للجميع في كل مكان. ملاحظاتك لا تُقدَّر بثمن في مساعدتنا على النمو والتحسن.",
+    "contact.body2": "هل لديك اقتراح لميزة جديدة؟ ربما طريقة حساب نفتقر إليها، أو مدينة لا تُحلّ بشكل صحيح، أو فكرة تُيسّر روتين صلاتك اليومية؟ نودّ أن نعلم. كل رسالة تُقرأ شخصياً وتُؤخذ بجدية — لا طلب صغير في نظرنا.",
+    "contact.body3": "إن صادفت خطأً، أو لاحظت أوقات صلاة غير صحيحة لموقعك، أو أردت ببساطة أن تشاركنا كيف ساعدك هذا التطبيق، يُرجى التواصل معنا. تجربتك تهمّنا، ومعاً يمكننا تحسين أوقات الأذان لصالح الأمة الإسلامية.",
+    "contact.highlight1": "طلبات الميزات",
+    "contact.highlight2": "الإبلاغ عن الأخطاء",
+    "contact.highlight3": "ملاحظات عامة",
+    "contact.label.name": "اسمك",
+    "contact.label.email": "بريدك الإلكتروني",
+    "contact.label.subject": "الموضوع",
+    "contact.label.message": "رسالتك",
+    "contact.ph.name": "مثلاً: عبدالله الفارسي",
+    "contact.ph.subject": "مثلاً: اقتراح لطريقة عصر الحنفي",
+    "contact.ph.message": "شاركنا أفكارك أو اقتراحاتك أو أبلغنا عن مشكلة…",
+    "contact.note": "ستفتح رسالتك في برنامج البريد الإلكتروني الافتراضي لديك مرسلةً إلينا مباشرةً.",
+    "contact.submit": "إرسال الرسالة",
   },
 };
 
@@ -1394,6 +1534,9 @@ function t(key) {
 function applyI18n() {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+    el.innerHTML = t(el.dataset.i18nHtml);
   });
   document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
     el.placeholder = t(el.dataset.i18nPlaceholder);
@@ -1411,10 +1554,25 @@ function setLanguage(lang) {
 
   applyI18n();
 
+  // Reset articles/books so they re-fetch in the new language
+  const articlesGrid = $("articles-grid");
+  const booksGrid    = $("books-grid");
+  if (articlesGrid) {
+    delete articlesGrid.dataset.loaded;
+    if (!document.getElementById("tab-articles").hidden) loadArticles();
+  }
+  if (booksGrid) {
+    delete booksGrid.dataset.loaded;
+    if (!document.getElementById("tab-books").hidden) loadBooks();
+  }
+
   // Re-render dynamic content only when coordinates are available
   const themeBtn = $("themeBtn");
   if (themeBtn) updateThemeButton(themeBtn, getCurrentTheme());
   if (!isNaN(parseFloat($("lat")?.value))) updateDashboard();
+
+  // Re-run zakat calculation to update translated verdict text
+  if (zakatInitialized) calculateZakat();
 }
 
 /********************************************************************
@@ -1606,7 +1764,8 @@ function toggleTheme(btn) {
       chipTz.classList.add("chip--visible");
       chipLatLng.classList.remove("chip--hidden");
       chipLatLng.classList.add("chip--visible");
-      toggleAdvanced.textContent = "⚙️ Hide Advanced Settings";
+      const sp = toggleAdvanced.querySelector("[data-i18n]");
+      if (sp) { sp.dataset.i18n = "btn.hide_advanced"; sp.textContent = t("btn.hide_advanced"); }
     } else {
       chipMethod.classList.add("chip--hidden");
       chipMethod.classList.remove("chip--visible");
@@ -1614,7 +1773,8 @@ function toggleTheme(btn) {
       chipTz.classList.remove("chip--visible");
       chipLatLng.classList.add("chip--hidden");
       chipLatLng.classList.remove("chip--visible");
-      toggleAdvanced.textContent = "⚙️ Advanced Settings";
+      const sp = toggleAdvanced.querySelector("[data-i18n]");
+      if (sp) { sp.dataset.i18n = "btn.advanced"; sp.textContent = t("btn.advanced"); }
     }
   });
 
@@ -1903,7 +2063,7 @@ Isha: ${today.times.Isha}`;
     e.preventDefault();
     const query = $("islamqaInput").value.trim();
     if (!query) return;
-    window.open(`https://islamqa.info/en/search?q=${encodeURIComponent(query)}`, "_blank", "noopener");
+    window.open(`https://islamqa.info/${currentLang}/search?q=${encodeURIComponent(query)}`, "_blank", "noopener");
   });
 
   // Daily Ayah
@@ -2002,7 +2162,7 @@ async function loadArticles() {
   const grid  = $("articles-grid");
   grid.innerHTML = Array(8).fill(`<div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
   const PROXY = "https://api.allorigins.win/raw?url=";
-  const BASE  = "https://islamqa.info/en/articles";
+  const BASE  = `https://islamqa.info/${currentLang}/articles`;
 
   try {
     // Fetch page 1 and detect total pages
@@ -2028,7 +2188,7 @@ async function loadArticles() {
     grid.innerHTML = allCards.join("") || `<div class="islamqa-error">No articles found.</div>`;
   } catch {
     grid.innerHTML = `<div class="islamqa-error">Could not load articles.<br>
-      <a class="islamqa-browse-btn" href="https://islamqa.info/en/articles" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
+      <a class="islamqa-browse-btn" href="https://islamqa.info/${currentLang}/articles" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
   }
   grid.dataset.loaded = "1";
 }
@@ -2059,7 +2219,7 @@ async function loadBooks() {
   const grid  = $("books-grid");
   grid.innerHTML = Array(8).fill(`<div class="skeleton-card skeleton-card--tall"><div class="skeleton-cover skeleton-cover--tall"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
   const PROXY = "https://api.allorigins.win/raw?url=";
-  const BASE  = "https://islamqa.info/en/books";
+  const BASE  = `https://islamqa.info/${currentLang}/books`;
 
   try {
     // Fetch page 1 and detect total pages
@@ -2086,7 +2246,7 @@ async function loadBooks() {
     grid.innerHTML = allCards.join("") || `<div class="islamqa-error">No books found.</div>`;
   } catch {
     grid.innerHTML = `<div class="islamqa-error">Could not load books.<br>
-      <a class="islamqa-browse-btn" href="https://islamqa.info/en/books" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
+      <a class="islamqa-browse-btn" href="https://islamqa.info/${currentLang}/books" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
   }
   grid.dataset.loaded = "1";
 }
@@ -2108,7 +2268,7 @@ async function fetchGoldPrice(currencyCode) {
 
   const prev = input.value;
   input.disabled = true;
-  if (hint) { hint.textContent = "Fetching live price…"; hint.className = "gold-price-hint"; }
+  if (hint) { hint.textContent = t("gold.fetching"); hint.className = "gold-price-hint"; }
 
   try {
     const res = await fetch(`https://www.goldapi.io/api/XAU/${currencyCode}`, {
@@ -2119,10 +2279,10 @@ async function fetchGoldPrice(currencyCode) {
     if (!data.price) throw new Error("no price");
     const perGram = data.price / 31.1035;
     input.value = perGram.toFixed(2);
-    if (hint) { hint.textContent = "Live price · goldapi.io"; hint.className = "gold-price-hint gold-price-hint--live"; }
+    if (hint) { hint.textContent = t("gold.live"); hint.className = "gold-price-hint gold-price-hint--live"; }
   } catch (err) {
     input.value = prev || "85";
-    if (hint) { hint.textContent = `Could not fetch — enter manually`; hint.className = "gold-price-hint gold-price-hint--error"; }
+    if (hint) { hint.textContent = t("gold.error"); hint.className = "gold-price-hint gold-price-hint--error"; }
   } finally {
     input.disabled = false;
     calculateZakat();
@@ -2186,18 +2346,18 @@ function calculateZakat() {
 
   if (assets === 0) {
     verdict.className   = "zakat-verdict";
-    verdict.textContent = "Enter your wealth details above to calculate your Zakat obligation.";
+    verdict.textContent = t("zakat.empty");
     amount.innerHTML    = "";
     return;
   }
 
   if (isLiable) {
     verdict.className   = "zakat-verdict zakat-verdict--liable";
-    verdict.textContent = `Your net wealth of ${fmt(net)} exceeds the Nisab. You are obligated to pay Zakat this year.`;
-    amount.innerHTML    = `<span class="zakat-amount-label">Your Zakat due (2.5%)</span><span class="zakat-amount-value">${fmt(zakatDue)}</span>`;
+    verdict.textContent = t("zakat.liable").replace("{net}", fmt(net));
+    amount.innerHTML    = `<span class="zakat-amount-label">${t("zakat.amount.label")}</span><span class="zakat-amount-value">${fmt(zakatDue)}</span>`;
   } else {
     verdict.className   = "zakat-verdict zakat-verdict--exempt";
-    verdict.textContent = `Your net wealth of ${fmt(net)} is below the Nisab threshold of ${fmt(nisab)}. Zakat is not obligatory for you this year.`;
+    verdict.textContent = t("zakat.exempt").replace("{net}", fmt(net)).replace("{nisab}", fmt(nisab));
     amount.innerHTML    = "";
   }
 }

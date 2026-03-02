@@ -2310,6 +2310,19 @@ html[dir="rtl"] .lang-btn {
   font-family: inherit;
 }
 
+/* Mirror the head grid columns' text alignment */
+html[dir="rtl"] .big {
+  text-align: left;
+}
+
+html[dir="rtl"] .title {
+  align-items: flex-start;
+}
+
+html[dir="rtl"] .hijri-time {
+  letter-spacing: 0;
+}
+
 /* Flip border-right separators */
 html[dir="rtl"] .zakat-section:first-child {
   border-right: none;
