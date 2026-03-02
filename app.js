@@ -2521,16 +2521,32 @@ function parseArticleItems(doc) {
   });
 }
 
+async function fetchViaProxy(url) {
+  const proxies = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.codetabs.com/v1/proxy/?quest=${encodeURIComponent(url)}`,
+  ];
+  for (const proxyUrl of proxies) {
+    try {
+      const res = await fetch(proxyUrl);
+      if (res.ok) {
+        const text = await res.text();
+        if (text.length > 500) return text;
+      }
+    } catch { /* try next proxy */ }
+  }
+  throw new Error("All proxies failed");
+}
+
 async function loadArticles() {
   const grid  = $("articles-grid");
   grid.innerHTML = Array(8).fill(`<div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
-  const PROXY = "https://api.allorigins.win/raw?url=";
   const BASE  = `https://islamqa.info/${currentLang}/articles`;
 
   try {
     // Fetch page 1 and detect total pages
-    const res1  = await fetch(PROXY + encodeURIComponent(BASE));
-    const html1 = await res1.text();
+    const html1 = await fetchViaProxy(BASE);
     const doc1  = new DOMParser().parseFromString(html1, "text/html");
     if (!doc1.querySelectorAll('a[data-sut="post-item"]').length) throw new Error("no items");
 
@@ -2541,8 +2557,7 @@ async function loadArticles() {
 
     // Fetch remaining pages concurrently
     const remaining = Array.from({ length: totalPages - 1 }, (_, i) =>
-      fetch(PROXY + encodeURIComponent(`${BASE}?page=${i + 2}`))
-        .then((r) => r.text())
+      fetchViaProxy(`${BASE}?page=${i + 2}`)
         .then((h) => new DOMParser().parseFromString(h, "text/html"))
     );
     const otherDocs = await Promise.all(remaining);
@@ -2581,13 +2596,11 @@ function parseBookItems(doc) {
 async function loadBooks() {
   const grid  = $("books-grid");
   grid.innerHTML = Array(8).fill(`<div class="skeleton-card skeleton-card--tall"><div class="skeleton-cover skeleton-cover--tall"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
-  const PROXY = "https://api.allorigins.win/raw?url=";
   const BASE  = `https://islamqa.info/${currentLang}/books`;
 
   try {
     // Fetch page 1 and detect total pages
-    const res1  = await fetch(PROXY + encodeURIComponent(BASE));
-    const html1 = await res1.text();
+    const html1 = await fetchViaProxy(BASE);
     const doc1  = new DOMParser().parseFromString(html1, "text/html");
     if (!doc1.querySelectorAll('a[data-sut="post-item"]').length) throw new Error("no items");
 
@@ -2599,8 +2612,7 @@ async function loadBooks() {
 
     // Fetch remaining pages concurrently
     const remaining = Array.from({ length: totalPages - 1 }, (_, i) =>
-      fetch(PROXY + encodeURIComponent(`${BASE}?page=${i + 2}`))
-        .then((r) => r.text())
+      fetchViaProxy(`${BASE}?page=${i + 2}`)
         .then((h) => new DOMParser().parseFromString(h, "text/html"))
     );
     const otherDocs = await Promise.all(remaining);
