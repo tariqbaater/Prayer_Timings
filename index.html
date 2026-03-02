@@ -35,6 +35,7 @@
     <a href="#table" class="skip-link">Skip to prayer times table</a>
     <div class="wrap" role="main">
       <header class="title-banner" role="banner">
+        <button class="lang-btn" id="langBtn" aria-label="Toggle language">العربية</button>
         <h1 class="page-title">
           <span class="title-arabic">أوقات الصلاة</span>
           <span class="title-english">ADHAN TIMINGS</span>
@@ -44,23 +45,23 @@
       <nav class="content-tabs" role="tablist" aria-label="Content sections">
         <button class="content-tab active" data-tab="prayer" role="tab" aria-selected="true">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          Prayer Times
+          <span data-i18n="tab.prayer">Prayer Times</span>
         </button>
         <button class="content-tab" data-tab="articles" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          Articles
+          <span data-i18n="tab.articles">Articles</span>
         </button>
         <button class="content-tab" data-tab="books" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-          Books
+          <span data-i18n="tab.books">Books</span>
         </button>
         <button class="content-tab" data-tab="zakat" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          Zakat
+          <span data-i18n="tab.zakat">Zakat</span>
         </button>
         <button class="content-tab" data-tab="contact" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Contact
+          <span data-i18n="tab.contact">Contact</span>
         </button>
       </nav>
 
@@ -74,6 +75,7 @@
               type="text"
               id="citySearch"
               placeholder="Search city..."
+              data-i18n-placeholder="search.placeholder"
               aria-label="Search city"
               autocomplete="off"
             />
@@ -91,20 +93,20 @@
 
           <div class="chip chip--hidden" id="chipMethod">
             <span>🧮</span>
-            <span>Method</span>
+            <span data-i18n="chip.method">Method</span>
             <select id="method" aria-label="Calculation method"></select>
           </div>
 
           <div class="chip chip--hidden" id="chipTz">
             <span>🕒</span>
-            <span>TZ</span>
+            <span data-i18n="chip.tz">TZ</span>
             <input id="tz" type="number" step="0.5" aria-label="Timezone" />
-            <span style="color: var(--muted)">hrs</span>
+            <span data-i18n="chip.hrs" style="color: var(--muted)">hrs</span>
           </div>
 
           <div class="chip chip--hidden" id="chipLatLng">
             <span>🧭</span>
-            <span>Lat</span
+            <span data-i18n="chip.lat">Lat</span
             ><input
               id="lat"
               type="number"
@@ -112,7 +114,7 @@
               aria-label="Latitude"
             />
             <span style="opacity: 0.5">|</span>
-            <span>Lng</span
+            <span data-i18n="chip.lng">Lng</span
             ><input
               id="lng"
               type="number"
@@ -128,7 +130,7 @@
 
           <div class="chip">
             <span>📅</span>
-            <span>Days</span>
+            <span data-i18n="chip.days">Days</span>
             <select id="days" aria-label="Number of days">
               <option>7</option>
               <option selected>10</option>
@@ -137,11 +139,11 @@
             </select>
           </div>
 
-          <button class="btn chip" id="todayBtn" aria-label="Go to today">📆 Today</button>
-          <button class="btn chip" id="copyBtn" aria-label="Copy today's times">📋 Copy</button>
-          <button class="btn chip" id="shareBtn" aria-label="Share prayer times">📤 Share</button>
-          <button class="btn chip" id="themeBtn" aria-label="Toggle light/dark theme" title="Toggle theme">🌙 Dark</button>
-          <button class="btn chip" id="toggleAdvanced" aria-label="Toggle advanced settings">⚙️ Advanced Settings</button>
+          <button class="btn chip" id="todayBtn" aria-label="Go to today">📆 <span data-i18n="btn.today">Today</span></button>
+          <button class="btn chip" id="copyBtn" aria-label="Copy today's times">📋 <span data-i18n="btn.copy">Copy</span></button>
+          <button class="btn chip" id="shareBtn" aria-label="Share prayer times">📤 <span data-i18n="btn.share">Share</span></button>
+          <button class="btn chip" id="themeBtn" aria-label="Toggle light/dark theme" title="Toggle theme">🌙 <span data-i18n="btn.dark">Dark</span></button>
+          <button class="btn chip" id="toggleAdvanced" aria-label="Toggle advanced settings">⚙️ <span data-i18n="btn.advanced">Advanced Settings</span></button>
 
 
         </div>
@@ -176,19 +178,19 @@
             >
               <div class="stat stat--current">
                 <div class="n mono" id="currentName">—</div>
-                <div class="k" id="currentLabel">Current</div>
+                <div class="k" id="currentLabel" data-i18n="stat.current">Current</div>
               </div>
               <div class="stat">
                 <div class="n mono" id="cdH">--</div>
-                <div class="k">Hours</div>
+                <div class="k" data-i18n="stat.hours">Hours</div>
               </div>
               <div class="stat">
                 <div class="n mono" id="cdM">--</div>
-                <div class="k">Minutes</div>
+                <div class="k" data-i18n="stat.minutes">Minutes</div>
               </div>
               <div class="stat">
                 <div class="n mono" id="cdS">--</div>
-                <div class="k">Seconds</div>
+                <div class="k" data-i18n="stat.seconds">Seconds</div>
               </div>
               <div class="stat stat--next">
                 <div class="n mono" id="nextName">—</div>
@@ -210,7 +212,7 @@
                   <circle cx="11" cy="11" r="8"/>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                 </svg>
-                Islamic Q&amp;A
+                <span data-i18n="sidebar.islamqa">Islamic Q&amp;A</span>
               </h2>
               <form class="islamqa-form" id="islamqaForm" role="search">
                 <div class="islamqa-input-wrap">
@@ -219,6 +221,7 @@
                     id="islamqaInput"
                     class="islamqa-input"
                     placeholder="Search IslamQA…"
+                    data-i18n-placeholder="sidebar.islamqa.placeholder"
                     aria-label="Search IslamQA"
                     autocomplete="off"
                     required
@@ -242,7 +245,7 @@
                   <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                   <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                 </svg>
-                Daily Ayah
+                <span data-i18n="sidebar.ayah">Daily Ayah</span>
               </h2>
               <div id="ayahContent" aria-live="polite">
                 <div class="ayah-loading">Loading today's ayah…</div>
@@ -259,21 +262,21 @@
                   <line x1="8" y1="2" x2="8" y2="6"/>
                   <line x1="3" y1="10" x2="21" y2="10"/>
                 </svg>
-                Calendar Converter
+                <span data-i18n="sidebar.calendar">Calendar Converter</span>
               </h2>
 
               <div class="converter-tabs">
-                <button class="converter-tab active" id="tabGreg" aria-label="Gregorian to Hijri">
-                  Gregorian &rarr; Hijri
+                <button class="converter-tab active" id="tabGreg" aria-label="Gregorian to Hijri" data-i18n="calendar.greg.tab">
+                  Gregorian → Hijri
                 </button>
-                <button class="converter-tab" id="tabHijri" aria-label="Hijri to Gregorian">
-                  Hijri &rarr; Gregorian
+                <button class="converter-tab" id="tabHijri" aria-label="Hijri to Gregorian" data-i18n="calendar.hijri.tab">
+                  Hijri → Gregorian
                 </button>
               </div>
 
               <!-- Gregorian to Hijri -->
               <div class="converter-panel" id="panelGreg">
-                <label class="converter-label" for="convGregDate">Gregorian Date</label>
+                <label class="converter-label" for="convGregDate" data-i18n="calendar.greg.label">Gregorian Date</label>
                 <div class="converter-date-row">
                   <input
                     type="date"
@@ -281,11 +284,11 @@
                     class="converter-input"
                     aria-label="Gregorian date input"
                   />
-                  <button class="converter-btn" id="convGregToday">Today</button>
+                  <button class="converter-btn" id="convGregToday" data-i18n="calendar.today">Today</button>
                 </div>
 
                 <div class="converter-result" id="convGregResult">
-                  <div class="converter-result-label">Hijri Date</div>
+                  <div class="converter-result-label" data-i18n="calendar.hijri.result">Hijri Date</div>
                   <div class="converter-result-value mono" id="convGregHijri">—</div>
                 </div>
               </div>

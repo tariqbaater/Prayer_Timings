@@ -234,9 +234,33 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   transition:
     box-shadow 0.25s ease,
     border-color 0.25s ease;
+}
+
+.lang-btn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  padding: 6px 14px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: "Amiri", serif;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  z-index: 2;
+}
+
+.lang-btn:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--accent);
 }
 
 .title-banner:hover {
@@ -2258,4 +2282,42 @@ input[type="date"] {
   .zakat-result {
     padding: 16px;
   }
+}
+
+/* ── RTL (Arabic) overrides ───────────────────────────────────── */
+html[dir="rtl"] {
+  font-family: "Amiri", "Traditional Arabic", "Noto Naskh Arabic", serif;
+}
+
+html[dir="rtl"] body {
+  font-family: "Amiri", "Traditional Arabic", serif;
+}
+
+/* Keep numbers and time values LTR */
+html[dir="rtl"] .mono,
+html[dir="rtl"] .time,
+html[dir="rtl"] #bigTime,
+html[dir="rtl"] .n,
+html[dir="rtl"] .cell.mono,
+html[dir="rtl"] #table {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+html[dir="rtl"] .lang-btn {
+  right: auto;
+  left: 16px;
+  font-family: inherit;
+}
+
+/* Flip border-right separators */
+html[dir="rtl"] .zakat-section:first-child {
+  border-right: none;
+  border-bottom: 1px solid var(--border);
+}
+
+html[dir="rtl"] .faq-answer ul,
+html[dir="rtl"] .faq-answer ol {
+  padding-left: 0;
+  padding-right: 20px;
 }

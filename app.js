@@ -930,13 +930,13 @@ function renderTable(rows) {
   head.className = "row row--head";
   head.setAttribute("role", "row");
   head.innerHTML = `
-    <div class="cell headcell" role="columnheader">Date</div>
-    <div class="cell headcell" role="columnheader">Fajr</div>
-    <div class="cell headcell col-sunrise" role="columnheader">Sunrise</div>
-    <div class="cell headcell" role="columnheader">Dhuhr</div>
-    <div class="cell headcell" role="columnheader">Asr</div>
-    <div class="cell headcell" role="columnheader">Maghrib</div>
-    <div class="cell headcell" role="columnheader">Isha</div>
+    <div class="cell headcell" role="columnheader">${t("col.date")}</div>
+    <div class="cell headcell" role="columnheader">${t("col.fajr")}</div>
+    <div class="cell headcell col-sunrise" role="columnheader">${t("col.sunrise")}</div>
+    <div class="cell headcell" role="columnheader">${t("col.dhuhr")}</div>
+    <div class="cell headcell" role="columnheader">${t("col.asr")}</div>
+    <div class="cell headcell" role="columnheader">${t("col.maghrib")}</div>
+    <div class="cell headcell" role="columnheader">${t("col.isha")}</div>
   `;
   host.appendChild(head);
 
@@ -946,7 +946,7 @@ function renderTable(rows) {
   for (const r of rows) {
     const isToday = sameDay(r.date, now);
     const badge = isToday
-      ? `<span class="badge today">Today</span>`
+      ? `<span class="badge today">${t("badge.today")}</span>`
       : `<span class="badge">${r.date.toLocaleDateString(undefined, {
           weekday: "short",
         })}</span>`;
@@ -1155,11 +1155,11 @@ function regenerate() {
       const tomorrowMap = getPrayerTimesMapForDate(pt, tomorrowDate, latN, lngN, tzN);
       const imsak = tomorrowMap.Imsak || PrayTime.InvalidTime;
       const iftar = tomorrowMap.Maghrib || PrayTime.InvalidTime;
-      imsakEl.textContent = `Imsak ${imsak} | Iftar ${iftar}`;
+      imsakEl.textContent = `${t("prayer.imsak")} ${imsak} | ${t("prayer.iftar")} ${iftar}`;
     } else {
       const imsak = todayMap.Imsak || PrayTime.InvalidTime;
       const iftar = todayMap.Maghrib || PrayTime.InvalidTime;
-      imsakEl.textContent = `Imsak ${imsak} | Iftar ${iftar}`;
+      imsakEl.textContent = `${t("prayer.imsak")} ${imsak} | ${t("prayer.iftar")} ${iftar}`;
     }
   }
 
@@ -1174,22 +1174,22 @@ function regenerate() {
   const hijriEl = $("hijriDate");
   if (hijriEl) hijriEl.textContent = todayHijri;
 
-  $("bigLabel").textContent = `Next Prayer: ${next.name}`;
+  $("bigLabel").textContent = `${t("label.next_prayer")}: ${t("prayer." + next.key.toLowerCase())}`;
   $("bigTime").textContent = next.time;
 
   const nextAt = $("nextAt");
-  if (nextAt) nextAt.textContent = `at ${next.time}`;
+  if (nextAt) nextAt.textContent = `${t("stat.at")} ${next.time}`;
 
   // Show current prayer
   const currentEl = $("currentName");
   const current = getCurrentPrayer(now, pt, latN, lngN, tzN);
   if (currentEl) {
-    currentEl.textContent = current ? current.name : "—";
+    currentEl.textContent = current ? t("prayer." + current.key.toLowerCase()) : "—";
   }
 
   updateNowLine();
 
-  startCountdown(next.date, next.name);
+  startCountdown(next.date, t("prayer." + next.key.toLowerCase()));
   saveSettings();
 }
 
@@ -1332,6 +1332,92 @@ function restoreNotificationState(btn) {
 }
 
 /********************************************************************
+ * Language / i18n
+ ********************************************************************/
+const TRANSLATIONS = {
+  en: {
+    "tab.prayer": "Prayer Times", "tab.articles": "Articles", "tab.books": "Books",
+    "tab.zakat": "Zakat", "tab.contact": "Contact",
+    "chip.method": "Method", "chip.tz": "TZ", "chip.hrs": "hrs",
+    "chip.lat": "Lat", "chip.lng": "Lng", "chip.days": "Days",
+    "btn.today": "Today", "btn.copy": "Copy", "btn.share": "Share",
+    "btn.dark": "Dark", "btn.light": "Light", "btn.advanced": "Advanced Settings",
+    "search.placeholder": "Search city...",
+    "col.date": "Date", "col.fajr": "Fajr", "col.sunrise": "Sunrise",
+    "col.dhuhr": "Dhuhr", "col.asr": "Asr", "col.maghrib": "Maghrib", "col.isha": "Isha",
+    "badge.today": "Today",
+    "stat.current": "Current", "stat.hours": "Hours", "stat.minutes": "Minutes",
+    "stat.seconds": "Seconds", "stat.at": "at",
+    "label.next_prayer": "Next Prayer",
+    "prayer.fajr": "Fajr", "prayer.sunrise": "Sunrise", "prayer.dhuhr": "Dhuhr",
+    "prayer.asr": "Asr", "prayer.maghrib": "Maghrib", "prayer.isha": "Isha",
+    "prayer.imsak": "Imsak", "prayer.iftar": "Iftar", "prayer.midnight": "Midnight",
+    "sidebar.islamqa": "Islamic Q&A", "sidebar.islamqa.placeholder": "Search IslamQA…",
+    "sidebar.ayah": "Daily Ayah", "sidebar.calendar": "Calendar Converter",
+    "calendar.greg.tab": "Gregorian → Hijri", "calendar.hijri.tab": "Hijri → Gregorian",
+    "calendar.greg.label": "Gregorian Date", "calendar.today": "Today",
+    "calendar.hijri.result": "Hijri Date",
+    "lang.label": "العربية",
+  },
+  ar: {
+    "tab.prayer": "أوقات الصلاة", "tab.articles": "مقالات", "tab.books": "كتب",
+    "tab.zakat": "الزكاة", "tab.contact": "تواصل معنا",
+    "chip.method": "الطريقة", "chip.tz": "التوقيت", "chip.hrs": "س",
+    "chip.lat": "خط العرض", "chip.lng": "خط الطول", "chip.days": "أيام",
+    "btn.today": "اليوم", "btn.copy": "نسخ", "btn.share": "مشاركة",
+    "btn.dark": "مظلم", "btn.light": "مضيء", "btn.advanced": "إعدادات متقدمة",
+    "search.placeholder": "ابحث عن مدينة...",
+    "col.date": "التاريخ", "col.fajr": "الفجر", "col.sunrise": "الشروق",
+    "col.dhuhr": "الظهر", "col.asr": "العصر", "col.maghrib": "المغرب", "col.isha": "العشاء",
+    "badge.today": "اليوم",
+    "stat.current": "الحالي", "stat.hours": "ساعات", "stat.minutes": "دقائق",
+    "stat.seconds": "ثوانٍ", "stat.at": "في",
+    "label.next_prayer": "الصلاة القادمة",
+    "prayer.fajr": "الفجر", "prayer.sunrise": "الشروق", "prayer.dhuhr": "الظهر",
+    "prayer.asr": "العصر", "prayer.maghrib": "المغرب", "prayer.isha": "العشاء",
+    "prayer.imsak": "الإمساك", "prayer.iftar": "الإفطار", "prayer.midnight": "منتصف الليل",
+    "sidebar.islamqa": "أسئلة وأجوبة إسلامية", "sidebar.islamqa.placeholder": "ابحث في إسلام سؤال وجواب…",
+    "sidebar.ayah": "آية اليوم", "sidebar.calendar": "محوّل التقويم",
+    "calendar.greg.tab": "ميلادي ← هجري", "calendar.hijri.tab": "هجري ← ميلادي",
+    "calendar.greg.label": "التاريخ الميلادي", "calendar.today": "اليوم",
+    "calendar.hijri.result": "التاريخ الهجري",
+    "lang.label": "English",
+  },
+};
+
+let currentLang = localStorage.getItem("adhan-lang") || "en";
+
+function t(key) {
+  return TRANSLATIONS[currentLang]?.[key] ?? TRANSLATIONS.en[key] ?? key;
+}
+
+function applyI18n() {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+}
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem("adhan-lang", lang);
+  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+  document.documentElement.lang = lang;
+
+  const btn = $("langBtn");
+  if (btn) btn.textContent = t("lang.label");
+
+  applyI18n();
+
+  // Re-render dynamic content only when coordinates are available
+  const themeBtn = $("themeBtn");
+  if (themeBtn) updateThemeButton(themeBtn, getCurrentTheme());
+  if (!isNaN(parseFloat($("lat")?.value))) updateDashboard();
+}
+
+/********************************************************************
  * Theme (Dark / Light)
  ********************************************************************/
 const themeKey = "adhan-theme";
@@ -1380,10 +1466,13 @@ function getCurrentTheme() {
 }
 
 function updateThemeButton(btn, theme) {
+  const span = btn.querySelector("[data-i18n]");
   if (theme === "light") {
-    btn.textContent = "☀️ Light";
+    btn.firstChild.textContent = "☀️ ";
+    if (span) span.textContent = t("btn.light");
   } else {
-    btn.textContent = "🌙 Dark";
+    btn.firstChild.textContent = "🌙 ";
+    if (span) span.textContent = t("btn.dark");
   }
 }
 
@@ -1416,6 +1505,17 @@ function toggleTheme(btn) {
   setupCitySearch();
   applySettings();
   initCalendarConverter();
+
+  // Language toggle
+  const langBtn = $("langBtn");
+  if (langBtn) {
+    // Apply saved language on load
+    document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+    document.documentElement.lang = currentLang;
+    langBtn.textContent = t("lang.label");
+    applyI18n();
+    langBtn.addEventListener("click", () => setLanguage(currentLang === "en" ? "ar" : "en"));
+  }
 
   // Theme toggle
   const themeBtn = $("themeBtn");
