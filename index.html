@@ -55,6 +55,10 @@
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           <span data-i18n="tab.books">Books</span>
         </button>
+        <button class="content-tab" data-tab="apps" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span data-i18n="tab.apps">Islamic Apps</span>
+        </button>
         <button class="content-tab" data-tab="zakat" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           <span data-i18n="tab.zakat">Zakat</span>
@@ -358,6 +362,267 @@
           <span data-i18n-html="disclaimer.books">All books displayed here are the intellectual property of <a href="https://islamqa.info" target="_blank" rel="noopener">islamqa.info</a> and their respective authors. Adhan Timings does not claim ownership of, nor hold any copyright over, any of the content listed below. This content is presented solely for convenience and ease of access. Please visit islamqa.info directly to support their work.</span>
         </div>
         <div id="books-grid" class="content-grid"></div>
+      </div>
+
+      <!-- Islamic Apps tab -->
+      <div id="tab-apps" class="tab-content" hidden>
+        <div class="apps-header">
+          <p class="apps-subtitle" data-i18n-html="apps.subtitle">A curated collection of Islamic apps and tools from <a href="https://nuqayah.com/projects" target="_blank" rel="noopener">nuqayah.com</a>.</p>
+        </div>
+        <div class="app-grid">
+
+          <a class="app-card" href="https://tafsir.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://tafsir.app/app.png" alt="الباحث القرآني" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">الباحث القرآني</div>
+                <div class="app-card-name-en">Quranic Researcher</div>
+              </div>
+            </div>
+            <div class="app-card-desc">تفسير · قراءات · مصاحف · إعراب · علوم القرآن · أسباب النزول</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+              <span class="app-badge app-badge--android">Android</span>
+              <span class="app-badge app-badge--ios">iOS</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://muqri.com" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://muqri.com/app.png" alt="المقرئ" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">المقرئ</div>
+                <div class="app-card-name-en">Al-Muqri</div>
+              </div>
+            </div>
+            <div class="app-card-desc">تسهيل حفظ القرآن لكل صغير وكبير · مترجم إلى ٢٨ لغة</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+              <span class="app-badge app-badge--android">Android</span>
+              <span class="app-badge app-badge--ios">iOS</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://read.tafsir.one" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://read.tafsir.one/app.png" alt="التفسير التفاعلي" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">التفسير التفاعلي</div>
+                <div class="app-card-name-en">Interactive Tafsir</div>
+              </div>
+            </div>
+            <div class="app-card-desc">الميسَّر · المختصر · السعدي · ابن جزي · الجلالين · الميسر في الغريب</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+              <span class="app-badge app-badge--android">Android</span>
+              <span class="app-badge app-badge--ios">iOS</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://sunnah.one" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://sunnah.one/app.png" alt="الباحث الحديثي" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">الباحث الحديثي</div>
+                <div class="app-card-name-en">Hadith Researcher</div>
+              </div>
+            </div>
+            <div class="app-card-desc">ابحث بجزء من الحديث واستخرج جميع الروايات مع درجة صحتها</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+              <span class="app-badge app-badge--android">Android</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://app.turath.io" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://app.turath.io/app.png" alt="تراث" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">تراث</div>
+                <div class="app-card-name-en">Turath</div>
+              </div>
+            </div>
+            <div class="app-card-desc">مكتبة إسلامية شاملة · بحث فوري · ربط الكتب · يعمل بدون إنترنت</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://faidah.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://faidah.app/app.png" alt="فائدة" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">فائدة</div>
+                <div class="app-card-name-en">Faidah</div>
+              </div>
+            </div>
+            <div class="app-card-desc">تعلِّم واستفدْ · دون أن يكون ضيق الوقت أو النسيان عائقًا</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+              <span class="app-badge app-badge--android">Android</span>
+              <span class="app-badge app-badge--ios">iOS</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://takw.in" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://takw.in/app.png" alt="تكوين الراسخين" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">تكوين الراسخين</div>
+                <div class="app-card-name-en">Takwin Al-Rasikheen</div>
+              </div>
+            </div>
+            <div class="app-card-desc">المتون والمنظومات والشروح · منهج دراسي إسلامي متكامل</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://qari.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://qari.app/app.png" alt="القارئ" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">القارئ</div>
+                <div class="app-card-name-en">Al-Qari</div>
+              </div>
+            </div>
+            <div class="app-card-desc">١١٨ قارئ و١٤٤ مصحف · الاستماع إلى القرآن في صفحة واحدة</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://muhaffidh.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://muhaffidh.app/app.png" alt="المصحف المحفظ" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">المصحف المحفظ</div>
+                <div class="app-card-name-en">Al-Muhaffidh</div>
+              </div>
+            </div>
+            <div class="app-card-desc">احفظ كتاب الله بأسلوب مبتكر · لا تظهر الكلمات إلا عند اللمس</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+              <span class="app-badge app-badge--android">Android</span>
+              <span class="app-badge app-badge--ios">iOS</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://bahith.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://bahith.app/app.png" alt="الباحث العلمي" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">الباحث العلمي</div>
+                <div class="app-card-name-en">Scientific Researcher</div>
+              </div>
+            </div>
+            <div class="app-card-desc">بحث فوري في أكبر مكتبة على الشبكة · كتب · دروس · مخطوطات</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://miftah.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://miftah.app/app.png" alt="Miftah" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">Miftah</div>
+                <div class="app-card-name-en">Arabic Letters</div>
+              </div>
+            </div>
+            <div class="app-card-desc">Learn Arabic letters and sounds — simple and accessible</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://quizzer.one" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://quizzer.one/app.png" alt="منصة سؤال" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">منصة سؤال</div>
+                <div class="app-card-name-en">Quizzer</div>
+              </div>
+            </div>
+            <div class="app-card-desc">اختبارات تعليمية شرعية ماتعة</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://mutoon.one" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://mutoon.one/app.png" alt="مقرئ المتون" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">مقرئ المتون</div>
+                <div class="app-card-name-en">Mutoon Reader</div>
+              </div>
+            </div>
+            <div class="app-card-desc">تسهيل حفظ المتون العلمية والأدبية</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://kalimah.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://kalimah.app/app.png" alt="كلمة" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">كلمة</div>
+                <div class="app-card-name-en">Kalimah</div>
+              </div>
+            </div>
+            <div class="app-card-desc">اختبر معرفتك بغريب القرآن</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://almushaf.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://almushaf.app/app.png" alt="المصحف" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">المصحف</div>
+                <div class="app-card-name-en">Al-Mushaf</div>
+              </div>
+            </div>
+            <div class="app-card-desc">مصحف رقمي عالي الجودة من مجمع الملك فهد · سريع وسهل الاستخدام</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://rawy.net" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://rawy.net/app.png" alt="راوي" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">راوي</div>
+                <div class="app-card-name-en">Rawy</div>
+              </div>
+            </div>
+            <div class="app-card-desc">مكتبة صوتية إسلامية شاملة · آلاف الكتب · واجهة أنيقة · يعمل بدون إنترنت</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+              <span class="app-badge app-badge--android">Android</span>
+              <span class="app-badge app-badge--ios">iOS</span>
+            </div>
+          </a>
+
+          <a class="app-card" href="https://hifdh.app" target="_blank" rel="noopener">
+            <div class="app-card-top">
+              <img class="app-icon" src="https://hifdh.app/app.png" alt="حفظ" loading="lazy">
+              <div class="app-card-info">
+                <div class="app-card-name">حفظ</div>
+                <div class="app-card-name-en">Hifdh</div>
+              </div>
+            </div>
+            <div class="app-card-desc">أداة مراجعة قائمة على التكرار المتباعد · قيد التطوير</div>
+            <div class="app-card-footer">
+              <span class="app-badge app-badge--web">Web</span>
+            </div>
+          </a>
+
+        </div>
       </div>
 
       <!-- Zakat tab -->

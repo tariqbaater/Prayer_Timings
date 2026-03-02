@@ -1718,6 +1718,130 @@ input[type="date"] {
   width: 55%;
 }
 
+/* ── Islamic Apps tab ─────────────────────────────────────────── */
+.apps-header {
+  padding: 4px 0 8px;
+}
+
+.apps-subtitle {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.apps-subtitle a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  padding: 12px 0 24px;
+}
+
+.app-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.app-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg), 0 8px 28px rgba(202, 163, 128, 0.13);
+}
+
+.app-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background: var(--surface-2);
+}
+
+.app-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.app-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-card-name-en {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.app-card-desc {
+  font-size: 12px;
+  color: var(--muted-light);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.app-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.app-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+}
+
+.app-badge--web {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.app-badge--android {
+  background: color-mix(in srgb, #3ddc84 12%, transparent);
+  border-color: color-mix(in srgb, #3ddc84 30%, transparent);
+  color: #2a9e5f;
+}
+
+.app-badge--ios {
+  background: color-mix(in srgb, #007aff 10%, transparent);
+  border-color: color-mix(in srgb, #007aff 25%, transparent);
+  color: #007aff;
+}
+
+[data-theme="light"] .app-badge--android { color: #1a7a46; }
+[data-theme="light"] .app-badge--ios     { color: #0055cc; }
+
 /* Loading / error inside grids */
 .islamqa-loading,
 .islamqa-error {

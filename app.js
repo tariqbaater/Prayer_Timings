@@ -1337,7 +1337,8 @@ function restoreNotificationState(btn) {
 const TRANSLATIONS = {
   en: {
     "tab.prayer": "Prayer Times", "tab.articles": "Articles", "tab.books": "Books",
-    "tab.zakat": "Zakat", "tab.contact": "Contact",
+    "tab.apps": "Islamic Apps", "tab.zakat": "Zakat", "tab.contact": "Contact",
+    "apps.subtitle": `A curated collection of Islamic apps and tools from <a href="https://nuqayah.com/projects" target="_blank" rel="noopener">nuqayah.com</a>.`,
     "chip.method": "Method", "chip.tz": "TZ", "chip.hrs": "hrs",
     "chip.lat": "Lat", "chip.lng": "Lng", "chip.days": "Days",
     "btn.today": "Today", "btn.copy": "Copy", "btn.share": "Share",
@@ -1431,7 +1432,8 @@ const TRANSLATIONS = {
   },
   ar: {
     "tab.prayer": "أوقات الصلاة", "tab.articles": "مقالات", "tab.books": "كتب",
-    "tab.zakat": "الزكاة", "tab.contact": "تواصل معنا",
+    "tab.apps": "تطبيقات إسلامية", "tab.zakat": "الزكاة", "tab.contact": "تواصل معنا",
+    "apps.subtitle": `مجموعة مختارة من التطبيقات والأدوات الإسلامية من <a href="https://nuqayah.com/projects" target="_blank" rel="noopener">nuqayah.com</a>.`,
     "chip.method": "الطريقة", "chip.tz": "التوقيت", "chip.hrs": "س",
     "chip.lat": "خط العرض", "chip.lng": "خط الطول", "chip.days": "أيام",
     "btn.today": "اليوم", "btn.copy": "نسخ", "btn.share": "مشاركة",
