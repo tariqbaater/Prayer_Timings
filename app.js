@@ -1188,9 +1188,37 @@ function regenerate() {
   }
 
   updateNowLine();
+  updateQibla(latN, lngN);
 
   startCountdown(next.date, t("prayer." + next.key.toLowerCase()));
   saveSettings();
+}
+
+function updateQibla(userLat, userLng) {
+  const needle      = $("qiblaNeedle");
+  const degEl       = $("qiblaDeg");
+  const dirEl       = $("qiblaDir");
+  const wrap        = $("qiblaWrap");
+  const placeholder = $("qiblaPlaceholder");
+  if (!needle) return;
+
+  const MECCA_LAT = 21.3891, MECCA_LNG = 39.8579;
+  const φ1 = userLat  * Math.PI / 180;
+  const φ2 = MECCA_LAT * Math.PI / 180;
+  const Δλ = (MECCA_LNG - userLng) * Math.PI / 180;
+
+  const x = Math.sin(Δλ) * Math.cos(φ2);
+  const y = Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+  const bearing = ((Math.atan2(x, y) * 180 / Math.PI) + 360) % 360;
+
+  needle.style.transform = `rotate(${bearing}deg)`;
+  degEl.textContent = `${Math.round(bearing)}°`;
+
+  const dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  dirEl.textContent = dirs[Math.round(bearing / 22.5) % 16];
+
+  wrap.classList.remove("hidden");
+  placeholder.classList.add("hidden");
 }
 
 /********************************************************************
@@ -1353,6 +1381,7 @@ const TRANSLATIONS = {
     "prayer.fajr": "Fajr", "prayer.sunrise": "Sunrise", "prayer.dhuhr": "Dhuhr",
     "prayer.asr": "Asr", "prayer.maghrib": "Maghrib", "prayer.isha": "Isha",
     "prayer.imsak": "Imsak", "prayer.iftar": "Iftar", "prayer.midnight": "Midnight",
+    "sidebar.qibla": "Qibla Direction", "qibla.placeholder": "Set your location to see the Qibla direction.",
     "sidebar.islamqa": "Islamic Q&A", "sidebar.islamqa.placeholder": "Search IslamQA…",
     "sidebar.ayah": "Daily Ayah", "sidebar.calendar": "Calendar Converter",
     "calendar.greg.tab": "Gregorian → Hijri", "calendar.hijri.tab": "Hijri → Gregorian",
@@ -1448,6 +1477,7 @@ const TRANSLATIONS = {
     "prayer.fajr": "الفجر", "prayer.sunrise": "الشروق", "prayer.dhuhr": "الظهر",
     "prayer.asr": "العصر", "prayer.maghrib": "المغرب", "prayer.isha": "العشاء",
     "prayer.imsak": "الإمساك", "prayer.iftar": "الإفطار", "prayer.midnight": "منتصف الليل",
+    "sidebar.qibla": "اتجاه القبلة", "qibla.placeholder": "حدّد موقعك لمعرفة اتجاه القبلة.",
     "sidebar.islamqa": "أسئلة وأجوبة إسلامية", "sidebar.islamqa.placeholder": "ابحث في إسلام سؤال وجواب…",
     "sidebar.ayah": "آية اليوم", "sidebar.calendar": "محوّل التقويم",
     "calendar.greg.tab": "ميلادي ← هجري", "calendar.hijri.tab": "هجري ← ميلادي",
