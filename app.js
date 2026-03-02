@@ -1013,6 +1013,7 @@ function startCountdown(targetDate, label) {
       cdS.textContent = "00";
       if (countdownTimer) clearInterval(countdownTimer);
       countdownTimer = null;
+      playAdhanTone();
       // Time just passed; recompute the next target.
       setTimeout(regenerate, 750);
       return;
@@ -1198,6 +1199,8 @@ function regenerate() {
  ********************************************************************/
 let notificationsEnabled = false;
 let notificationTimer = null;
+let audioEnabled = false;
+let audioContext = null;
 const notifiedPrayers = new Set();
 
 function canNotify() {
@@ -1329,6 +1332,246 @@ function restoreNotificationState(btn) {
   } catch { /* ignore */ }
 }
 
+function playAdhanTone() {
+  if (!audioEnabled || !audioContext) return;
+  try {
+    if (audioContext.state === "suspended") audioContext.resume();
+    const notes = [392, 440, 523.25]; // G4, A4, C5
+    notes.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      const t0 = audioContext.currentTime + i * 0.6;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.35, t0 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.55);
+      osc.start(t0);
+      osc.stop(t0 + 0.56);
+    });
+  } catch { /* ignore */ }
+}
+
+function toggleAudio(btn) {
+  const sp = btn.querySelector("[data-i18n]");
+  audioEnabled = !audioEnabled;
+  if (audioEnabled) {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } else if (audioContext.state === "suspended") {
+      audioContext.resume();
+    }
+    if (sp) { sp.dataset.i18n = "btn.sound_on"; sp.textContent = t("btn.sound_on"); }
+    btn.classList.add("btn--active");
+    try { localStorage.setItem("adhan-audio", "on"); } catch { /* ignore */ }
+    playAdhanTone(); // preview
+  } else {
+    if (sp) { sp.dataset.i18n = "btn.sound"; sp.textContent = t("btn.sound"); }
+    btn.classList.remove("btn--active");
+    try { localStorage.setItem("adhan-audio", "off"); } catch { /* ignore */ }
+  }
+}
+
+function restoreAudioState(btn) {
+  try {
+    if (localStorage.getItem("adhan-audio") === "on") {
+      audioEnabled = true;
+      const sp = btn.querySelector("[data-i18n]");
+      if (sp) { sp.dataset.i18n = "btn.sound_on"; sp.textContent = t("btn.sound_on"); }
+      btn.classList.add("btn--active");
+      // AudioContext must wait for user gesture; created lazily on first click
+    }
+  } catch { /* ignore */ }
+}
+
+/********************************************************************
+ * Dua of the Day — 30 duas from Hisnul Muslim
+ ********************************************************************/
+const DUAS = [
+  {
+    arabic: "الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ",
+    transliteration: "Alhamdu lillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushur",
+    translation: "All praise is for Allah who gave us life after having taken it from us, and unto Him is the resurrection.",
+    source: "Bukhari 6312"
+  },
+  {
+    arabic: "اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ",
+    transliteration: "Allahumma bika asbahna wa bika amsayna wa bika nahya wa bika namutu wa ilaykan-nushur",
+    translation: "O Allah, by You we enter the morning, and by You we enter the evening, by You we live and by You we die, and to You is the resurrection.",
+    source: "Abu Dawud 5068 / Tirmidhi 3391"
+  },
+  {
+    arabic: "أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ",
+    transliteration: "A'udhu bikalimati-llahit-tammati min sharri ma khalaq",
+    translation: "I seek refuge in the perfect words of Allah from the evil of what He has created.",
+    source: "Muslim 2708"
+  },
+  {
+    arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    transliteration: "Bismillahil-ladhi la yadurru ma'asmihi shay'un fil-ardi wa la fis-sama'i wa huwas-sami'ul-'alim",
+    translation: "In the name of Allah, with Whose name nothing on earth or in heaven can cause harm, and He is the All-Hearing, the All-Knowing.",
+    source: "Abu Dawud 5088 / Tirmidhi 3388"
+  },
+  {
+    arabic: "اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ خَلَقْتَنِي وَأَنَا عَبْدُكَ وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي فَاغْفِرْ لِي فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ",
+    transliteration: "Allahumma anta rabbi la ilaha illa anta, khalaqtani wa ana 'abduka, wa ana 'ala 'ahdika wa wa'dika mastata'tu, a'udhu bika min sharri ma sana'tu, abu'u laka bini'matika 'alayya, wa abu'u bidhanbī, faghfir li fa'innahu la yaghfirudh-dhunuba illa ant",
+    translation: "O Allah, You are my Lord. There is no god but You. You created me and I am Your servant, and I am faithful to my covenant and my promise to You as much as I am able. I seek refuge in You from the evil I have done. I acknowledge Your blessing upon me and I confess my sin, so forgive me, for none forgives sins but You.",
+    source: "Bukhari 6306 (Sayyidul Istighfar)"
+  },
+  {
+    arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+    transliteration: "Subhanallahi wa bihamdih",
+    translation: "Glory be to Allah and praise Him.",
+    source: "Bukhari 6405 (100×)"
+  },
+  {
+    arabic: "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ",
+    transliteration: "Allahumma salli wa sallim 'ala nabiyyina Muhammad",
+    translation: "O Allah, bestow Your prayers and peace upon our Prophet Muhammad.",
+    source: "General sunnah"
+  },
+  {
+    arabic: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ",
+    transliteration: "Rabbighfir li wa liwalidayya",
+    translation: "My Lord, forgive me and my parents.",
+    source: "Quran 71:28"
+  },
+  {
+    arabic: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    transliteration: "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar",
+    translation: "Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.",
+    source: "Quran 2:201"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ",
+    transliteration: "Allahumma inni as'alukal-'afiyata fid-dunya wal-akhirah",
+    translation: "O Allah, I ask You for well-being in this world and the Hereafter.",
+    source: "Ibn Majah 3871"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ",
+    transliteration: "Allahumma inni a'udhu bika minal-hammi wal-hazani wa a'udhu bika minal-'ajzi wal-kasal",
+    translation: "O Allah, I seek refuge in You from worry and grief, and I seek refuge in You from incapacity and laziness.",
+    source: "Bukhari 6369"
+  },
+  {
+    arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    transliteration: "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamdu wa huwa 'ala kulli shay'in qadir",
+    translation: "There is no god but Allah, alone, without partner. His is the dominion and His is the praise, and He is over all things powerful.",
+    source: "Bukhari 6403 (100×)"
+  },
+  {
+    arabic: "سُبْحَانَ اللَّهِ وَالْحَمْدُ لِلَّهِ وَلَا إِلَهَ إِلَّا اللَّهُ وَاللَّهُ أَكْبَرُ",
+    transliteration: "Subhanallahi wal-hamdu lillahi wa la ilaha illallahu wallahu akbar",
+    translation: "Glory be to Allah, all praise be to Allah, there is no god but Allah, and Allah is the Greatest.",
+    source: "Muslim 2695"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا",
+    transliteration: "Allahumma inni as'aluka 'ilman nafi'an wa rizqan tayyiban wa 'amalan mutaqabbala",
+    translation: "O Allah, I ask You for beneficial knowledge, wholesome provision, and accepted deeds.",
+    source: "Ibn Majah 925"
+  },
+  {
+    arabic: "رَبِّ زِدْنِي عِلْمًا",
+    transliteration: "Rabbi zidni 'ilma",
+    translation: "My Lord, increase me in knowledge.",
+    source: "Quran 20:114"
+  },
+  {
+    arabic: "اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي",
+    transliteration: "Allahummah-dini wa saddidni",
+    translation: "O Allah, guide me and make me upright.",
+    source: "Muslim 2725"
+  },
+  {
+    arabic: "حَسْبِيَ اللَّهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ",
+    transliteration: "Hasbiyallahu la ilaha illa huwa, 'alayhi tawakkaltu wa huwa rabbul-'arshil-'azim",
+    translation: "Allah is sufficient for me. There is no god but Him. I have put my trust in Him, and He is the Lord of the Mighty Throne.",
+    source: "Abu Dawud 5081 (7×)"
+  },
+  {
+    arabic: "اللَّهُمَّ اكْفِنِي بِحَلَالِكَ عَنْ حَرَامِكَ وَأَغْنِنِي بِفَضْلِكَ عَمَّنْ سِوَاكَ",
+    transliteration: "Allahummak-fini bihalалika 'an haramika wa aghnini bifadlika 'amman siwak",
+    translation: "O Allah, suffice me with what You have made lawful against what You have made unlawful, and enrich me with Your bounty from dependence on anyone other than You.",
+    source: "Tirmidhi 3563"
+  },
+  {
+    arabic: "يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ",
+    transliteration: "Ya Hayyu ya Qayyumu birahmatika astaghith",
+    translation: "O Ever-Living, O Sustainer of all existence, by Your mercy I seek help.",
+    source: "Tirmidhi 3524"
+  },
+  {
+    arabic: "لَا إِلَهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+    transliteration: "La ilaha illa anta subhanaka inni kuntu minaz-zalimin",
+    translation: "There is no god but You, glory be to You, indeed I have been of the wrongdoers.",
+    source: "Quran 21:87 (Dua of Yunus ﷺ)"
+  },
+  {
+    arabic: "رَبِّ إِنِّي لِمَا أَنزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+    transliteration: "Rabbi inni lima anzalta ilayya min khayrin faqir",
+    translation: "My Lord, I am in absolute need of the good You send me.",
+    source: "Quran 28:24 (Dua of Musa ﷺ)"
+  },
+  {
+    arabic: "اللَّهُمَّ أَصْلِحْ لِي دِينِيَ الَّذِي هُوَ عِصْمَةُ أَمْرِي وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي",
+    transliteration: "Allahumma aslih li dini alladhi huwa 'ismatu amri, wa aslih li dunyaya allati fiha ma'ashi",
+    translation: "O Allah, set right for me my religious commitment which is the safeguard of my affair, and set right for me my worldly affairs wherein is my livelihood.",
+    source: "Muslim 2720"
+  },
+  {
+    arabic: "اللَّهُمَّ مُصَرِّفَ الْقُلُوبِ صَرِّفْ قُلُوبَنَا عَلَى طَاعَتِكَ",
+    transliteration: "Allahumma musarrifal-qulub, sarrif qulubana 'ala ta'atik",
+    translation: "O Allah, Controller of the hearts, direct our hearts to Your obedience.",
+    source: "Muslim 2654"
+  },
+  {
+    arabic: "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِن لَّدُنكَ رَحْمَةً",
+    transliteration: "Rabbana la tuzigh qulubana ba'da idh hadaytana wa hab lana milladunka rahmah",
+    translation: "Our Lord, do not let our hearts deviate after You have guided us, and grant us from Yourself mercy.",
+    source: "Quran 3:8"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ",
+    transliteration: "Allahumma inni as'alukal-jannata wa a'udhu bika minan-nar",
+    translation: "O Allah, I ask You for Paradise and I seek refuge in You from the Fire.",
+    source: "Abu Dawud 792"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ الثَّبَاتَ فِي الْأَمْرِ وَأَسْأَلُكَ عَزِيمَةَ الرُّشْدِ",
+    transliteration: "Allahumma inni as'alukat-thabata fil-amr, wa as'aluka 'azimatar-rushd",
+    translation: "O Allah, I ask You for steadfastness in all my affairs, and I ask You for the determination to be rightly guided.",
+    source: "Nasa'i 1304"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَسْأَلُكَ حُبَّكَ وَحُبَّ مَنْ يُحِبُّكَ وَحُبَّ عَمَلٍ يُقَرِّبُنِي إِلَى حُبِّكَ",
+    transliteration: "Allahumma inni as'aluka hubbaka wa hubba man yuhibbuka wa hubba 'amalin yuqarribuni ila hubbik",
+    translation: "O Allah, I ask You for Your love, and the love of those who love You, and the love of deeds that will bring me closer to Your love.",
+    source: "Tirmidhi 3490"
+  },
+  {
+    arabic: "رَبِّ أَعِنِّي وَلَا تُعِنْ عَلَيَّ وَانْصُرْنِي وَلَا تَنْصُرْ عَلَيَّ",
+    transliteration: "Rabbi a'inni wa la tu'in 'alayya, wansurni wa la tansur 'alayya",
+    translation: "My Lord, help me and do not help against me, grant me victory and do not grant victory over me.",
+    source: "Abu Dawud 1510 / Tirmidhi 3551"
+  },
+  {
+    arabic: "اللَّهُمَّ بَارِكْ لَنَا فِي رَجَبٍ وَشَعْبَانَ وَبَلِّغْنَا رَمَضَانَ",
+    transliteration: "Allahumma barik lana fi Rajaba wa Sha'bana wa ballighna Ramadan",
+    translation: "O Allah, bless us in Rajab and Sha'ban and bring us to Ramadan.",
+    source: "Ahmad 2346"
+  },
+  {
+    arabic: "اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْبُخْلِ وَأَعُوذُ بِكَ مِنَ الْجُبْنِ",
+    transliteration: "Allahumma inni a'udhu bika minal-bukhli wa a'udhu bika minal-jubn",
+    translation: "O Allah, I seek refuge in You from miserliness, and I seek refuge in You from cowardice.",
+    source: "Bukhari 2822"
+  },
+];
+
 /********************************************************************
  * Language / i18n
  ********************************************************************/
@@ -1342,6 +1585,8 @@ const TRANSLATIONS = {
     "btn.today": "Today", "btn.copy": "Copy", "btn.share": "Share",
     "btn.dark": "Dark", "btn.light": "Light", "btn.advanced": "Advanced Settings", "btn.hide_advanced": "Hide Advanced Settings",
     "btn.notify": "Notify", "btn.notify_on": "Notifying",
+    "btn.sound": "Sound", "btn.sound_on": "Sound On",
+    "btn.ics": "Download .ics",
     "search.placeholder": "Search city...",
     "col.date": "Date", "col.fajr": "Fajr", "col.sunrise": "Sunrise",
     "col.dhuhr": "Dhuhr", "col.asr": "Asr", "col.maghrib": "Maghrib", "col.isha": "Isha",
@@ -1354,7 +1599,7 @@ const TRANSLATIONS = {
     "prayer.imsak": "Imsak", "prayer.iftar": "Iftar", "prayer.midnight": "Midnight",
     "sidebar.qibla": "Qibla Direction", "qibla.placeholder": "Set your location to see the Qibla direction.",
     "sidebar.islamqa": "Islamic Q&A", "sidebar.islamqa.placeholder": "Search IslamQA…",
-    "sidebar.ayah": "Daily Ayah", "sidebar.calendar": "Calendar Converter",
+    "sidebar.ayah": "Daily Ayah", "sidebar.dua": "Dua of the Day", "sidebar.calendar": "Calendar Converter",
     "calendar.greg.tab": "Gregorian → Hijri", "calendar.hijri.tab": "Hijri → Gregorian",
     "calendar.greg.label": "Gregorian Date", "calendar.today": "Today",
     "calendar.hijri.result": "Hijri Date",
@@ -1439,6 +1684,8 @@ const TRANSLATIONS = {
     "btn.today": "اليوم", "btn.copy": "نسخ", "btn.share": "مشاركة",
     "btn.dark": "مظلم", "btn.light": "مضيء", "btn.advanced": "إعدادات متقدمة", "btn.hide_advanced": "إخفاء الإعدادات المتقدمة",
     "btn.notify": "تنبيهات", "btn.notify_on": "مفعّل",
+    "btn.sound": "صوت", "btn.sound_on": "صوت مفعّل",
+    "btn.ics": "تحميل .ics",
     "search.placeholder": "ابحث عن مدينة...",
     "col.date": "التاريخ", "col.fajr": "الفجر", "col.sunrise": "الشروق",
     "col.dhuhr": "الظهر", "col.asr": "العصر", "col.maghrib": "المغرب", "col.isha": "العشاء",
@@ -1451,7 +1698,7 @@ const TRANSLATIONS = {
     "prayer.imsak": "الإمساك", "prayer.iftar": "الإفطار", "prayer.midnight": "منتصف الليل",
     "sidebar.qibla": "اتجاه القبلة", "qibla.placeholder": "حدّد موقعك لمعرفة اتجاه القبلة.",
     "sidebar.islamqa": "أسئلة وأجوبة إسلامية", "sidebar.islamqa.placeholder": "ابحث في إسلام سؤال وجواب…",
-    "sidebar.ayah": "آية اليوم", "sidebar.calendar": "محوّل التقويم",
+    "sidebar.ayah": "آية اليوم", "sidebar.dua": "دعاء اليوم", "sidebar.calendar": "محوّل التقويم",
     "calendar.greg.tab": "ميلادي ← هجري", "calendar.hijri.tab": "هجري ← ميلادي",
     "calendar.greg.label": "التاريخ الميلادي", "calendar.today": "اليوم",
     "calendar.hijri.result": "التاريخ الهجري",
@@ -1661,6 +1908,92 @@ function toggleTheme(btn) {
   updateThemeButton(btn, next);
 }
 
+/********************************************************************
+ * Dua of the Day — render
+ ********************************************************************/
+function renderDua() {
+  const container = $("duaContent");
+  if (!container) return;
+  const start = new Date(new Date().getFullYear(), 0, 1);
+  const dayOfYear = Math.floor((new Date() - start) / 86400000);
+  const dua = DUAS[dayOfYear % DUAS.length];
+  container.innerHTML = `
+    <div class="dua-arabic">${dua.arabic}</div>
+    <div class="dua-transliteration">${dua.transliteration}</div>
+    <div class="dua-translation">"${dua.translation}"</div>
+    <div class="dua-source">${dua.source}</div>`;
+}
+
+/********************************************************************
+ * .ics Calendar Export
+ ********************************************************************/
+function fmtIcsDate(d) {
+  return d.getUTCFullYear()
+    + String(d.getUTCMonth() + 1).padStart(2, "0")
+    + String(d.getUTCDate()).padStart(2, "0")
+    + "T"
+    + String(d.getUTCHours()).padStart(2, "0")
+    + String(d.getUTCMinutes()).padStart(2, "0")
+    + "00Z";
+}
+
+function buildIcs() {
+  const rows = buildRows();
+  const city = $("citySearch").value || "Unknown Location";
+  const tzOffset = parseFloat($("tz").value) || 0;
+  const prayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Adhan Timings//Prayer Times//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "X-WR-CALNAME:Prayer Times - " + city,
+  ];
+
+  for (const row of rows) {
+    for (const prayer of prayers) {
+      const timeStr = row.times[prayer];
+      if (!timeStr || timeStr === "-----") continue;
+      const m = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+      if (!m) continue;
+      let h = parseInt(m[1]), min = parseInt(m[2]);
+      const ap = m[3].toUpperCase();
+      if (ap === "PM" && h !== 12) h += 12;
+      if (ap === "AM" && h === 12) h = 0;
+      const local = new Date(row.date);
+      local.setHours(h, min, 0, 0);
+      const utcMs = local.getTime() - tzOffset * 3600000;
+      const dtStart = fmtIcsDate(new Date(utcMs));
+      const dtEnd   = fmtIcsDate(new Date(utcMs + 10 * 60000));
+      lines.push(
+        "BEGIN:VEVENT",
+        "DTSTART:" + dtStart,
+        "DTEND:" + dtEnd,
+        "SUMMARY:" + prayer + " - " + city,
+        "UID:" + dtStart + "-" + prayer.toLowerCase() + "@adhan-timings",
+        "END:VEVENT"
+      );
+    }
+  }
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
+}
+
+function downloadIcs() {
+  const content = buildIcs();
+  const blob = new Blob([content], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  const city = ($("citySearch").value || "prayer-times").replace(/\s+/g, "-").toLowerCase();
+  a.href = url;
+  a.download = city + "-prayer-times.ics";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 (function init() {
   initDropdowns();
@@ -1690,6 +2023,18 @@ function toggleTheme(btn) {
   if (notifBtn) {
     restoreNotificationState(notifBtn);
     notifBtn.addEventListener("click", () => toggleNotifications(notifBtn));
+  }
+
+  // Audio toggle
+  const audioBtn = $("audioBtn");
+  if (audioBtn) {
+    restoreAudioState(audioBtn);
+    audioBtn.addEventListener("click", () => {
+      if (!audioContext && audioEnabled) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      toggleAudio(audioBtn);
+    });
   }
 
 
@@ -2049,6 +2394,10 @@ Isha: ${today.times.Isha}`;
     }
   });
 
+  // .ics download
+  const downloadIcsBtn = $("downloadIcs");
+  if (downloadIcsBtn) downloadIcsBtn.addEventListener("click", downloadIcs);
+
   // Social share handlers
   const shareCity = $("citySearch").value || "Unknown";
   const shareText = `Prayer Times for ${shareCity}`;
@@ -2121,6 +2470,7 @@ Isha: ${today.times.Isha}`;
     }
   })();
 
+  renderDua();
   initContentTabs();
   regenerate();
 })();

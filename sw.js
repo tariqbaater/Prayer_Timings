@@ -1,4 +1,4 @@
-const CACHE_NAME = "adhan-timings-v13";
+const CACHE_NAME = "adhan-timings-v14";
 const ASSETS = [
   "./",
   "./index.html",
@@ -41,6 +41,22 @@ self.addEventListener("fetch", (event) => {
 
   // Skip non-GET requests
   if (event.request.method !== "GET") return;
+
+  // Network-first for alquran.cloud API (Daily Ayah)
+  if (url.hostname === "api.alquran.cloud") {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
 
   // Network-first for Nominatim API
   if (url.hostname === "nominatim.openstreetmap.org") {

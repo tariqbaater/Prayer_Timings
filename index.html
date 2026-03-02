@@ -149,6 +149,7 @@
           <button class="btn chip" id="shareBtn" aria-label="Share prayer times">📤 <span data-i18n="btn.share">Share</span></button>
           <button class="btn chip" id="themeBtn" aria-label="Toggle light/dark theme" title="Toggle theme">🌙 <span data-i18n="btn.dark">Dark</span></button>
           <button class="btn chip" id="notifBtn" aria-label="Enable prayer notifications">🔔 <span data-i18n="btn.notify">Notify</span></button>
+          <button class="btn chip" id="audioBtn" aria-label="Toggle adhan sound">🔇 <span data-i18n="btn.sound">Sound</span></button>
           <button class="btn chip" id="toggleAdvanced" aria-label="Toggle advanced settings">⚙️ <span data-i18n="btn.advanced">Advanced Settings</span></button>
 
 
@@ -256,6 +257,18 @@
               <div id="ayahContent" aria-live="polite">
                 <div class="ayah-loading">Loading today's ayah…</div>
               </div>
+            </div>
+          </div>
+          <!-- Dua of the Day -->
+          <div class="card sidebar-card">
+            <div class="sidebar-inner">
+              <h2 class="sidebar-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                </svg>
+                <span data-i18n="sidebar.dua">Dua of the Day</span>
+              </h2>
+              <div id="duaContent" aria-live="polite"></div>
             </div>
           </div>
           <!-- Calendar Converter -->
@@ -873,6 +886,10 @@
             <button class="btn download-btn" id="downloadPdf">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
               Download PDF
+            </button>
+            <button class="btn download-btn" id="downloadIcs">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span data-i18n="btn.ics">Download .ics</span>
             </button>
           </div>
         </div>

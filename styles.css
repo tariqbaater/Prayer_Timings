@@ -1418,6 +1418,41 @@ input[type="date"] {
   padding: 16px 0;
 }
 
+/* Dua of the Day */
+.dua-arabic {
+  font-family: "Amiri", "Traditional Arabic", serif;
+  font-size: 22px;
+  line-height: 2;
+  text-align: right;
+  direction: rtl;
+  color: var(--good);
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dua-transliteration {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+.dua-translation {
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.dua-source {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: monospace;
+  text-align: right;
+}
+
 /* Islamic Q&A Search */
 .islamqa-form {
   display: flex;
