@@ -1,4 +1,4 @@
-const CACHE_NAME = "adhan-timings-v15";
+const CACHE_NAME = "adhan-timings-v16";
 const ASSETS = [
   "./",
   "./index.html",
@@ -14,6 +14,7 @@ const ASSETS = [
   "./apple-touch-icon.png",
   "./assets/asset_background_pattern.png",
   "./assets/adhan_format_no_table.pdf",
+  "./assets/Azan-Holy-Makkah.mp3",
 ];
 
 // Install: cache core assets

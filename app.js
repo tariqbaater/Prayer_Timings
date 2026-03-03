@@ -1172,7 +1172,7 @@ function regenerate() {
 let notificationsEnabled = false;
 let notificationTimer = null;
 let audioEnabled = false;
-let audioContext = null;
+let adhanAudio = null;
 const notifiedPrayers = new Set();
 
 function canNotify() {
@@ -1297,24 +1297,13 @@ function restoreNotificationState(btn) {
 }
 
 function playAdhanTone() {
-  if (!audioEnabled || !audioContext) return;
+  if (!audioEnabled) return;
   try {
-    if (audioContext.state === "suspended") audioContext.resume();
-    const notes = [392, 440, 523.25]; // G4, A4, C5
-    notes.forEach((freq, i) => {
-      const osc = audioContext.createOscillator();
-      const gain = audioContext.createGain();
-      osc.connect(gain);
-      gain.connect(audioContext.destination);
-      osc.type = "sine";
-      osc.frequency.value = freq;
-      const t0 = audioContext.currentTime + i * 0.6;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.35, t0 + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.55);
-      osc.start(t0);
-      osc.stop(t0 + 0.56);
-    });
+    if (!adhanAudio) {
+      adhanAudio = new Audio("assets/Azan-Holy-Makkah.mp3");
+    }
+    adhanAudio.currentTime = 0;
+    adhanAudio.play().catch(() => {});
   } catch { /* ignore */ }
 }
 
@@ -1322,11 +1311,6 @@ function toggleAudio(btn) {
   const sp = btn.querySelector("[data-i18n]");
   audioEnabled = !audioEnabled;
   if (audioEnabled) {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    } else if (audioContext.state === "suspended") {
-      audioContext.resume();
-    }
     if (sp) { sp.dataset.i18n = "btn.sound_on"; sp.textContent = t("btn.sound_on"); }
     btn.classList.add("btn--active");
     try { localStorage.setItem("adhan-audio", "on"); } catch { /* ignore */ }
@@ -1543,6 +1527,7 @@ const TRANSLATIONS = {
   en: {
     "tab.prayer": "Prayer Times", "tab.articles": "Articles", "tab.books": "Books",
     "tab.apps": "Islamic Apps", "tab.zakat": "Zakat", "tab.contact": "Contact",
+    "tab.about": "About", "tab.install": "Install", "tab.privacy": "Privacy",
     "apps.subtitle": `A curated collection of Islamic apps and tools from <a href="https://nuqayah.com/projects" target="_blank" rel="noopener">nuqayah.com</a>.`,
     "chip.method": "Method", "chip.tz": "TZ", "chip.hrs": "hrs",
     "chip.lat": "Lat", "chip.lng": "Lng", "chip.days": "Days",
@@ -1638,10 +1623,43 @@ const TRANSLATIONS = {
     "contact.ph.message": "Share your thoughts, suggestions, or report an issue…",
     "contact.note": "Your message will open in your default email client addressed to us directly.",
     "contact.submit": "Send Message",
+    "about.heading": "About & Accuracy",
+    "about.engine.heading": "Calculation Engine",
+    "about.engine.body": "Prayer times are computed using <strong>PrayTimes v2</strong>, an open-source algorithm that calculates solar angles to determine each prayer's start time based on geographic coordinates and a selected juristic method.",
+    "about.methods.heading": "Available Methods",
+    "about.methods.list": `<li><strong>MWL</strong> — Muslim World League (Fajr 18°, Isha 17°)</li><li><strong>ISNA</strong> — Islamic Society of North America (15°/15°)</li><li><strong>Egypt</strong> — Egyptian General Authority (19.5°/17.5°)</li><li><strong>Makkah</strong> — Umm al-Qura, Makkah (18.5°, Isha 90 min after Maghrib)</li><li><strong>Karachi</strong> — University of Islamic Sciences, Karachi (18°/18°)</li><li><strong>Tehran</strong> — Institute of Geophysics, Tehran (17.7°/14°)</li><li><strong>Jafari</strong> — Shia Ithna Ashari (16°/14°)</li><li><strong>Bahrain</strong> — Kingdom of Bahrain (17.6°/14°)</li>`,
+    "about.variances.heading": "Known Variances",
+    "about.variances.list": `<li>Calculated times may differ from local mosque announcements that follow moon-sighting traditions.</li><li>DST transitions can cause a 1-hour offset if the timezone offset is not adjusted manually.</li><li>High-latitude locations (above ~48°N/S) use the Night Middle correction method to handle extended twilight periods.</li><li>Asr time varies between Shafi'i (shadow = object length) and Hanafi (shadow = 2× object length) — select your school in advanced settings.</li>`,
+    "about.sources.heading": "Data Sources",
+    "about.sources.list": `<li><strong>Geocoding:</strong> OpenStreetMap Nominatim (open, free, rate-limited)</li><li><strong>Daily Ayah:</strong> alquran.cloud API (open Islamic data)</li><li><strong>Gold price:</strong> goldapi.io (live pricing for Zakat Nisab)</li><li><strong>Articles &amp; Books:</strong> islamqa.info (proxied via allorigins/corsproxy)</li>`,
+    "about.disclaimer.heading": "Disclaimer",
+    "about.disclaimer.body": "Times are calculated estimates. Differences of 1–3 minutes from your local mosque are normal. Always verify with your local mosque or Islamic authority for confirmed prayer times.",
+    "about.meta": "Version: 1.0 · Last updated: March 2026 · Built with ♥ for the Muslim community",
+    "install.heading": "How to Install Adhan Timings",
+    "install.intro": "Install the app to your home screen for fast access, offline support, and prayer notifications — no app store required.",
+    "install.android.title": "Android (Chrome)",
+    "install.android.steps": `<li>Tap the <strong>⋮</strong> menu (top right of Chrome)</li><li>Tap <strong>"Add to Home Screen"</strong> or <strong>"Install app"</strong></li><li>Confirm — the icon appears on your home screen</li>`,
+    "install.ios.title": "iPhone / iPad (Safari)",
+    "install.ios.steps": `<li>Tap the <strong>Share</strong> button (□↑) at the bottom of Safari</li><li>Scroll down and tap <strong>"Add to Home Screen"</strong></li><li>Tap <strong>"Add"</strong> to confirm</li>`,
+    "install.desktop.title": "Desktop (Chrome / Edge)",
+    "install.desktop.steps": `<li>Click the <strong>install icon (⊕)</strong> in the address bar, or</li><li>Open the browser menu → <strong>"Install Adhan Timings"</strong></li><li>Click <strong>"Install"</strong> to confirm</li>`,
+    "install.tip": `<strong>Tip:</strong> After installing, enable prayer notifications using the 🔔 Notify button for on-time adhan reminders.`,
+    "privacy.heading": "Privacy Policy",
+    "privacy.intro": "Adhan Timings respects your privacy. This page explains what data is used and how.",
+    "privacy.collect.heading": "Data We Collect",
+    "privacy.collect.list": `<li><strong>Location:</strong> Your city, latitude, longitude, and timezone — entered manually or via the browser's Geolocation API. This data is stored only in your browser's <code>localStorage</code> and is never sent to our servers.</li><li><strong>Preferences:</strong> Theme, language, calculation method, and audio settings — stored locally in <code>localStorage</code>.</li><li><strong>No account required.</strong> We do not collect names, emails, or any personally identifiable information.</li>`,
+    "privacy.third.heading": "Third-Party Services",
+    "privacy.third.list": `<li><strong>Google Fonts</strong> — loads the Amiri typeface for Arabic text. Google may log font requests.</li><li><strong>OpenStreetMap Nominatim</strong> — used for city search geocoding. Your search query is sent to nominatim.openstreetmap.org.</li><li><strong>allorigins.win / corsproxy.io</strong> — CORS proxies used to fetch articles and books from islamqa.info. URLs are forwarded to these third-party proxies.</li><li><strong>goldapi.io</strong> — used to fetch live gold prices for the Zakat Nisab calculation. Requests include the currency code only.</li><li><strong>alquran.cloud</strong> — provides the Daily Ayah text. A random surah/ayah number is requested; no personal data is sent.</li>`,
+    "privacy.cookies.heading": "Cookies & Analytics",
+    "privacy.cookies.body": "We do not use cookies. We do not use any analytics service (no Google Analytics, no tracking pixels). No data is collected about how you use the app.",
+    "privacy.contact.heading": "Contact",
+    "privacy.contact.body": "For privacy enquiries, please use the Contact tab to send us a message, or raise an issue on our public repository.",
+    "privacy.meta": "Last updated: March 2026",
   },
   ar: {
     "tab.prayer": "أوقات الصلاة", "tab.articles": "مقالات", "tab.books": "كتب",
     "tab.apps": "تطبيقات إسلامية", "tab.zakat": "الزكاة", "tab.contact": "تواصل معنا",
+    "tab.about": "حول التطبيق", "tab.install": "تثبيت", "tab.privacy": "الخصوصية",
     "apps.subtitle": `مجموعة مختارة من التطبيقات والأدوات الإسلامية من <a href="https://nuqayah.com/projects" target="_blank" rel="noopener">nuqayah.com</a>.`,
     "chip.method": "الطريقة", "chip.tz": "التوقيت", "chip.hrs": "س",
     "chip.lat": "خط العرض", "chip.lng": "خط الطول", "chip.days": "أيام",
@@ -1737,6 +1755,38 @@ const TRANSLATIONS = {
     "contact.ph.message": "شاركنا أفكارك أو اقتراحاتك أو أبلغنا عن مشكلة…",
     "contact.note": "ستفتح رسالتك في برنامج البريد الإلكتروني الافتراضي لديك مرسلةً إلينا مباشرةً.",
     "contact.submit": "إرسال الرسالة",
+    "about.heading": "حول التطبيق والدقة",
+    "about.engine.heading": "محرك الحساب",
+    "about.engine.body": "تُحسب أوقات الصلاة باستخدام <strong>PrayTimes v2</strong>، وهو خوارزمية مفتوحة المصدر تحسب زوايا الشمس لتحديد وقت بداية كل صلاة بناءً على الإحداثيات الجغرافية والمذهب الفقهي المختار.",
+    "about.methods.heading": "الطرق المتاحة",
+    "about.methods.list": `<li><strong>MWL</strong> — رابطة العالم الإسلامي (الفجر 18°، العشاء 17°)</li><li><strong>ISNA</strong> — الجمعية الإسلامية لأمريكا الشمالية (15°/15°)</li><li><strong>Egypt</strong> — الهيئة المصرية العامة للمساحة (19.5°/17.5°)</li><li><strong>Makkah</strong> — أم القرى، مكة المكرمة (18.5°، العشاء 90 دقيقة بعد المغرب)</li><li><strong>Karachi</strong> — جامعة العلوم الإسلامية، كراتشي (18°/18°)</li><li><strong>Tehran</strong> — معهد الجيوفيزياء، طهران (17.7°/14°)</li><li><strong>Jafari</strong> — الشيعة الإثنا عشرية (16°/14°)</li><li><strong>Bahrain</strong> — مملكة البحرين (17.6°/14°)</li>`,
+    "about.variances.heading": "الفروقات المعروفة",
+    "about.variances.list": `<li>قد تختلف الأوقات المحسوبة عن إعلانات المسجد المحلي التي تتبع تقاليد رؤية الهلال.</li><li>قد تؤدي تحولات التوقيت الصيفي إلى انحراف ساعة واحدة إذا لم يُضبط إزاحة المنطقة الزمنية يدوياً.</li><li>تستخدم المواقع ذات خطوط العرض العالية (فوق ~48°ش/ج) طريقة منتصف الليل للتصحيح للتعامل مع فترات الشفق الممتدة.</li><li>يختلف وقت العصر بين الشافعية (الظل = طول الجسم) والحنفية (الظل = ضعف طول الجسم) — اختر مذهبك في الإعدادات المتقدمة.</li>`,
+    "about.sources.heading": "مصادر البيانات",
+    "about.sources.list": `<li><strong>الترميز الجغرافي:</strong> OpenStreetMap Nominatim (مفتوح، مجاني، محدود المعدل)</li><li><strong>آية اليوم:</strong> واجهة برمجة alquran.cloud (بيانات إسلامية مفتوحة)</li><li><strong>سعر الذهب:</strong> goldapi.io (أسعار مباشرة لنصاب الزكاة)</li><li><strong>المقالات والكتب:</strong> islamqa.info (عبر وكيل allorigins/corsproxy)</li>`,
+    "about.disclaimer.heading": "إخلاء المسؤولية",
+    "about.disclaimer.body": "الأوقات تقديرات محسوبة. الاختلافات بمقدار 1-3 دقائق عن مسجدك المحلي أمر طبيعي. تحقق دائماً مع مسجدك المحلي أو الجهة الإسلامية المختصة للحصول على أوقات الصلاة المؤكدة.",
+    "about.meta": "الإصدار: 1.0 · آخر تحديث: مارس 2026 · بُني بمحبة للأمة الإسلامية",
+    "install.heading": "كيفية تثبيت أوقات الأذان",
+    "install.intro": "ثبّت التطبيق على شاشتك الرئيسية للوصول السريع والدعم دون اتصال وتنبيهات الصلاة — لا حاجة لمتجر التطبيقات.",
+    "install.android.title": "أندرويد (Chrome)",
+    "install.android.steps": `<li>انقر على قائمة <strong>⋮</strong> (أعلى يمين Chrome)</li><li>انقر على <strong>"إضافة إلى الشاشة الرئيسية"</strong> أو <strong>"تثبيت التطبيق"</strong></li><li>أكّد — ستظهر الأيقونة على شاشتك الرئيسية</li>`,
+    "install.ios.title": "iPhone / iPad (Safari)",
+    "install.ios.steps": `<li>انقر على زر <strong>المشاركة</strong> (□↑) في أسفل Safari</li><li>مرّر لأسفل وانقر على <strong>"إضافة إلى الشاشة الرئيسية"</strong></li><li>انقر على <strong>"إضافة"</strong> للتأكيد</li>`,
+    "install.desktop.title": "سطح المكتب (Chrome / Edge)",
+    "install.desktop.steps": `<li>انقر على <strong>أيقونة التثبيت (⊕)</strong> في شريط العنوان، أو</li><li>افتح قائمة المتصفح ← <strong>"تثبيت أوقات الأذان"</strong></li><li>انقر على <strong>"تثبيت"</strong> للتأكيد</li>`,
+    "install.tip": `<strong>نصيحة:</strong> بعد التثبيت، فعّل تنبيهات الصلاة باستخدام زر 🔔 تنبيهات للحصول على تذكيرات الأذان في وقتها.`,
+    "privacy.heading": "سياسة الخصوصية",
+    "privacy.intro": "يحترم تطبيق أوقات الأذان خصوصيتك. تشرح هذه الصفحة البيانات المستخدمة وكيفية استخدامها.",
+    "privacy.collect.heading": "البيانات التي نجمعها",
+    "privacy.collect.list": `<li><strong>الموقع:</strong> مدينتك وخط العرض وخط الطول والمنطقة الزمنية — تُدخل يدوياً أو عبر واجهة برمجة الموقع الجغرافي بالمتصفح. تُخزَّن هذه البيانات فقط في <code>localStorage</code> بمتصفحك ولا تُرسَل إلى خوادمنا.</li><li><strong>التفضيلات:</strong> السمة واللغة وطريقة الحساب وإعدادات الصوت — تُخزَّن محلياً في <code>localStorage</code>.</li><li><strong>لا حساب مطلوب.</strong> لا نجمع الأسماء أو البريد الإلكتروني أو أي معلومات تعريف شخصية.</li>`,
+    "privacy.third.heading": "خدمات الطرف الثالث",
+    "privacy.third.list": `<li><strong>Google Fonts</strong> — يُحمّل خط Amiri للنصوص العربية. قد تسجّل Google طلبات الخطوط.</li><li><strong>OpenStreetMap Nominatim</strong> — يُستخدم للترميز الجغرافي للبحث عن المدن. تُرسَل استعلامات البحث إلى nominatim.openstreetmap.org.</li><li><strong>allorigins.win / corsproxy.io</strong> — وكلاء CORS يُستخدمان لجلب المقالات والكتب من islamqa.info. تُعاد توجيه الروابط إلى هذه الوكلاء الخارجية.</li><li><strong>goldapi.io</strong> — يُستخدم لجلب أسعار الذهب المباشرة لحساب نصاب الزكاة. تتضمن الطلبات رمز العملة فقط.</li><li><strong>alquran.cloud</strong> — يوفر نص آية اليوم. يُطلب رقم سورة وآية عشوائي؛ لا تُرسَل بيانات شخصية.</li>`,
+    "privacy.cookies.heading": "ملفات تعريف الارتباط والتحليلات",
+    "privacy.cookies.body": "لا نستخدم ملفات تعريف الارتباط. لا نستخدم أي خدمة تحليلات (لا Google Analytics، لا بكسلات تتبع). لا تُجمَع بيانات حول طريقة استخدامك للتطبيق.",
+    "privacy.contact.heading": "التواصل",
+    "privacy.contact.body": "لاستفسارات الخصوصية، يُرجى استخدام تبويب التواصل لإرسال رسالة، أو رفع مشكلة في مستودعنا العام.",
+    "privacy.meta": "آخر تحديث: مارس 2026",
   },
 };
 
@@ -1941,6 +1991,27 @@ function buildIcs() {
   const city = $("citySearch").value || "Unknown Location";
   const tzOffset = parseFloat($("tz").value) || 0;
   const prayers = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+  const reminderMin = parseInt($("icsReminder")?.value || "0", 10);
+  const includeRrule = $("icsRecurring")?.checked || false;
+
+  // Feature 3b: ensure today's prayers are always included
+  const todayMidnight = new Date();
+  todayMidnight.setHours(0, 0, 0, 0);
+  const todayInRows = rows.some((r) => sameDay(r.date, todayMidnight));
+  const allRows = [...rows];
+  if (!todayInRows) {
+    const lat = parseFloat($("lat").value);
+    const lng = parseFloat($("lng").value);
+    const tz = parseFloat($("tz").value) || 0;
+    const pt = createPrayTime(parseInt($("method").value, 10));
+    const times = pt.getDatePrayerTimes(
+      todayMidnight.getFullYear(), todayMidnight.getMonth() + 1, todayMidnight.getDate(),
+      lat, lng, tz
+    );
+    const map = {};
+    PrayTime.timeNames.forEach((name, idx) => (map[name] = times[idx]));
+    allRows.unshift({ date: todayMidnight, times: map });
+  }
 
   const lines = [
     "BEGIN:VCALENDAR",
@@ -1951,31 +2022,51 @@ function buildIcs() {
     "X-WR-CALNAME:Prayer Times - " + city,
   ];
 
-  for (const row of rows) {
+  function pushVEvent(date, prayer, timeStr, uidNs, summary, rrule) {
+    const m = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!m) return;
+    let h = parseInt(m[1]), min = parseInt(m[2]);
+    const ap = m[3].toUpperCase();
+    if (ap === "PM" && h !== 12) h += 12;
+    if (ap === "AM" && h === 12) h = 0;
+    const utcMs = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), h, min, 0)
+                  - tzOffset * 3600000;
+    const dtStart = fmtIcsDate(new Date(utcMs));
+    const dtEnd   = fmtIcsDate(new Date(utcMs + 10 * 60000));
+    lines.push("BEGIN:VEVENT");
+    lines.push("DTSTART:" + dtStart);
+    lines.push("DTEND:" + dtEnd);
+    if (rrule) lines.push("RRULE:" + rrule);
+    lines.push("SUMMARY:" + summary);
+    lines.push("UID:" + dtStart + "-" + prayer.toLowerCase() + "@" + uidNs);
+    if (reminderMin > 0) {
+      lines.push("BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Reminder",
+        `TRIGGER:-PT${reminderMin}M`, "END:VALARM");
+    }
+    lines.push("END:VEVENT");
+  }
+
+  for (const row of allRows) {
     for (const prayer of prayers) {
       const timeStr = row.times[prayer];
       if (!timeStr || timeStr === "-----") continue;
-      const m = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i);
-      if (!m) continue;
-      let h = parseInt(m[1]), min = parseInt(m[2]);
-      const ap = m[3].toUpperCase();
-      if (ap === "PM" && h !== 12) h += 12;
-      if (ap === "AM" && h === 12) h = 0;
-      const local = new Date(row.date);
-      local.setHours(h, min, 0, 0);
-      const utcMs = local.getTime() - tzOffset * 3600000;
-      const dtStart = fmtIcsDate(new Date(utcMs));
-      const dtEnd   = fmtIcsDate(new Date(utcMs + 10 * 60000));
-      lines.push(
-        "BEGIN:VEVENT",
-        "DTSTART:" + dtStart,
-        "DTEND:" + dtEnd,
-        "SUMMARY:" + prayer + " - " + city,
-        "UID:" + dtStart + "-" + prayer.toLowerCase() + "@adhan-timings",
-        "END:VEVENT"
-      );
+      pushVEvent(row.date, prayer, timeStr, "adhan-timings", prayer + " - " + city, null);
     }
   }
+
+  // Feature 3d: RRULE recurring daily events based on today's times
+  if (includeRrule) {
+    const todayRow = allRows.find((r) => sameDay(r.date, todayMidnight));
+    if (todayRow) {
+      for (const prayer of prayers) {
+        const timeStr = todayRow.times[prayer];
+        if (!timeStr || timeStr === "-----") continue;
+        pushVEvent(todayMidnight, prayer, timeStr, "adhan-timings-rrule",
+          prayer + " (Daily approx.) - " + city, "FREQ=DAILY");
+      }
+    }
+  }
+
   lines.push("END:VCALENDAR");
   return lines.join("\r\n");
 }
@@ -1992,6 +2083,30 @@ function downloadIcs() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+/********************************************************************
+ * PWA Install Prompt
+ ********************************************************************/
+let _installPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  _installPrompt = e;
+  const installBtn = $("installBtn");
+  if (installBtn) installBtn.hidden = false;
+});
+
+window.addEventListener("appinstalled", () => {
+  _installPrompt = null;
+  const installBtn = $("installBtn");
+  if (installBtn) installBtn.hidden = true;
+});
+
+function triggerInstall() {
+  if (!_installPrompt) return;
+  _installPrompt.prompt();
+  _installPrompt.userChoice.then(() => { _installPrompt = null; });
 }
 
 (function init() {
@@ -2028,12 +2143,7 @@ function downloadIcs() {
   const audioBtn = $("audioBtn");
   if (audioBtn) {
     restoreAudioState(audioBtn);
-    audioBtn.addEventListener("click", () => {
-      if (!audioContext && audioEnabled) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      toggleAudio(audioBtn);
-    });
+    audioBtn.addEventListener("click", () => toggleAudio(audioBtn));
   }
 
 
@@ -2142,34 +2252,6 @@ function downloadIcs() {
     regenerate();
   });
 
-  // Copy today's times
-  $("copyBtn").addEventListener("click", () => {
-    const rows = buildRows();
-    const now = new Date();
-    const today = rows.find((r) => sameDay(r.date, now));
-    if (!today) return;
-
-    const city = $("citySearch").value;
-    const text = `${city} Prayer Times - ${fmtDateLong(today.date)}
-Fajr: ${today.times.Fajr}
-Sunrise: ${today.times.Sunrise}
-Dhuhr: ${today.times.Dhuhr}
-Asr: ${today.times.Asr}
-Maghrib: ${today.times.Maghrib}
-Isha: ${today.times.Isha}`;
-
-    copyToClipboard(text)
-      .then(() => showCopyFeedback("copyBtn"))
-      .catch(() => alert(text));
-  });
-
-  function showCopyFeedback(btnId) {
-    const btn = $(btnId);
-    const original = btn.textContent;
-    btn.textContent = "Copied!";
-    setTimeout(() => (btn.textContent = original), 1500);
-  }
-
   // Geolocation: use my location
   $("locateBtn").addEventListener("click", () => {
     if (!navigator.geolocation) {
@@ -2231,10 +2313,10 @@ Isha: ${today.times.Isha}`;
       const hijri = formatHijriDate(new Date());
 
       // ── Layout measurements (calibrated against the template) ──
-      // "Adhan Timings" script text ends at ~43 % from top
+      // "Adhan Timings" script text ends at ~38 % from top
       // Footer decoration starts at ~82 % from top
       // pdf-lib y=0 is at the bottom of the page
-      const contentTop    = height - Math.round(height * 0.43); // ~480 pt from bottom
+      const contentTop    = height - Math.round(height * 0.38); // ~521 pt from bottom
       const contentBottom = Math.round(height * 0.18);           // ~152 pt from bottom
       const tableLeft     = 32;
       const tableRight    = width - 32;
@@ -2722,6 +2804,145 @@ function calculateZakat() {
     verdict.className   = "zakat-verdict zakat-verdict--exempt";
     verdict.textContent = t("zakat.exempt").replace("{net}", fmt(net)).replace("{nisab}", fmt(nisab));
     amount.innerHTML    = "";
+  }
+}
+
+async function downloadZakatPdf() {
+  const btn = $("zakatPdfBtn");
+  if (btn) { btn.disabled = true; btn.querySelector("span").textContent = "Generating…"; }
+
+  try {
+    if (!window.PDFLib) {
+      alert("PDF library not loaded. Please refresh and try again.");
+      return;
+    }
+
+    const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([595.28, 841.89]); // A4 portrait
+    const { width, height } = page.getSize();
+
+    const font     = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    const currencyCode = $("zakatCurrency")?.value || "USD";
+    const currSymbol   = CURRENCY_SYMBOLS[currencyCode] || currencyCode + " ";
+    const goldPrice    = parseFloat($("goldPrice")?.value) || 85;
+    const nisab        = 85 * goldPrice;
+
+    const val = (id) => parseFloat($(id)?.value) || 0;
+    const assets      = val("z_cash") + val("z_gold") + val("z_investments") + val("z_business") + val("z_receivables") + val("z_other");
+    const liabilities = val("z_debts") + val("z_expenses") + val("z_bizliab");
+    const net         = Math.max(0, assets - liabilities);
+    const isLiable    = net >= nisab;
+    const zakatDue    = isLiable ? net * 0.025 : 0;
+
+    const fmt = (n) => currSymbol + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const today = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+
+    const COL_L = 48;
+    const COL_R = width - 48;
+    const TEXT_W = COL_R - COL_L;
+    let y = height - 48;
+
+    const draw = (text, x, yPos, sz, f, col) => {
+      page.drawText(String(text), { x, y: yPos, size: sz, font: f, color: col || rgb(0.9, 0.9, 0.9) });
+    };
+    const drawRight = (text, yPos, sz, f, col) => {
+      const tw = f.widthOfTextAtSize(String(text), sz);
+      draw(text, COL_R - tw, yPos, sz, f, col);
+    };
+    const hline = (yPos, col) => {
+      page.drawLine({ start: { x: COL_L, y: yPos }, end: { x: COL_R, y: yPos },
+        thickness: 0.5, color: col || rgb(0.3, 0.3, 0.3) });
+    };
+    const rowLine = (label, value, yPos) => {
+      draw(label, COL_L + 16, yPos, 9, font, rgb(0.75, 0.75, 0.75));
+      drawRight(value, yPos, 9, font, rgb(0.9, 0.9, 0.9));
+      return yPos - 16;
+    };
+    const sectionHeader = (text, yPos) => {
+      draw(text, COL_L, yPos, 11, fontBold, rgb(0.6, 0.8, 1));
+      return yPos - 14;
+    };
+    const totalLine = (label, value, yPos) => {
+      hline(yPos + 3);
+      draw(label, COL_L, yPos - 8, 9, fontBold, rgb(0.9, 0.9, 0.9));
+      drawRight(value, yPos - 8, 9, fontBold, rgb(0.9, 0.9, 0.9));
+      return yPos - 22;
+    };
+
+    // Header
+    draw("Zakat Calculation Summary", COL_L, y, 18, fontBold, rgb(0.95, 0.85, 0.4));
+    drawRight(today, y, 9, font, rgb(0.6, 0.6, 0.6));
+    y -= 10;
+    hline(y, rgb(0.5, 0.4, 0.1));
+    y -= 18;
+
+    // Currency / gold / nisab line
+    draw(`Currency: ${currencyCode}   Gold: ${currSymbol}${goldPrice.toFixed(2)}/g   Nisab: ${fmt(nisab)}`, COL_L, y, 9, font, rgb(0.6, 0.6, 0.6));
+    y -= 26;
+
+    // Assets
+    y = sectionHeader("Assets", y);
+    y = rowLine("Cash & Bank Savings",       fmt(val("z_cash")),         y);
+    y = rowLine("Gold & Silver",             fmt(val("z_gold")),         y);
+    y = rowLine("Investments & Stocks",      fmt(val("z_investments")),  y);
+    y = rowLine("Business Inventory",        fmt(val("z_business")),     y);
+    y = rowLine("Money Owed to You",         fmt(val("z_receivables")),  y);
+    y = rowLine("Other Zakatable Assets",    fmt(val("z_other")),        y);
+    y = totalLine("Total Assets", fmt(assets), y);
+    y -= 8;
+
+    // Liabilities
+    y = sectionHeader("Liabilities", y);
+    y = rowLine("Outstanding Debts",     fmt(val("z_debts")),    y);
+    y = rowLine("Bills & Expenses Due",  fmt(val("z_expenses")), y);
+    y = rowLine("Business Liabilities",  fmt(val("z_bizliab")),  y);
+    y = totalLine("Total Liabilities", fmt(liabilities), y);
+    y -= 16;
+
+    // Net + Nisab
+    draw("Net Zakatable Wealth", COL_L, y, 11, fontBold, rgb(0.9, 0.9, 0.9));
+    drawRight(fmt(net), y, 11, fontBold, rgb(0.9, 0.9, 0.9));
+    y -= 14;
+    draw("Nisab Threshold", COL_L, y, 9, font, rgb(0.6, 0.6, 0.6));
+    drawRight(fmt(nisab), y, 9, font, rgb(0.6, 0.6, 0.6));
+    y -= 24;
+
+    // Verdict box
+    const boxH = 44;
+    const verdictColor = isLiable ? rgb(0.6, 0.2, 0.2) : rgb(0.1, 0.4, 0.2);
+    page.drawRectangle({ x: COL_L, y: y - boxH, width: TEXT_W, height: boxH,
+      color: verdictColor, borderColor: rgb(0.6, 0.6, 0.6), borderWidth: 0.5 });
+    const verdictText = isLiable
+      ? `Zakat Due: ${fmt(zakatDue)} (2.5% of ${fmt(net)})`
+      : `Below Nisab — No Zakat Due (Net: ${fmt(net)})`;
+    const vtw = fontBold.widthOfTextAtSize(verdictText, 11);
+    page.drawText(verdictText, { x: COL_L + (TEXT_W - vtw) / 2, y: y - boxH / 2 - 4,
+      size: 11, font: fontBold, color: rgb(1, 1, 1) });
+    y -= boxH + 24;
+
+    // Footer
+    hline(y + 6, rgb(0.3, 0.3, 0.3));
+    draw("Generated by Adhan Timings · adhan-timings.app · " + today, COL_L, y - 6, 8, font, rgb(0.45, 0.45, 0.45));
+    draw("This is an estimate. Consult a scholar for binding rulings.", COL_L, y - 18, 8, font, rgb(0.45, 0.45, 0.45));
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `zakat-summary-${dateStr}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert("PDF generation failed: " + err.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.querySelector("span").textContent = "Download Summary"; }
   }
 }
 

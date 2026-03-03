@@ -13,15 +13,19 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://adhan-timings.app/" />
     <meta property="og:title" content="Adhan Timings - Prayer Times" />
     <meta property="og:description" content="Islamic prayer times for any location worldwide" />
-    <meta property="og:image" content="icon-512.png" />
-    
+    <meta property="og:image" content="https://adhan-timings.app/assets/azan-timings.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@adhan_timings" />
     <meta name="twitter:title" content="Adhan Timings - Prayer Times" />
     <meta name="twitter:description" content="Islamic prayer times for any location worldwide" />
-    <meta name="twitter:image" content="icon-512.png" />
+    <meta name="twitter:image" content="https://adhan-timings.app/assets/azan-timings.png" />
     
     <title>Adhan Timings</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,6 +67,18 @@
         <button class="content-tab" data-tab="zakat" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
           <span data-i18n="tab.zakat">Zakat</span>
+        </button>
+        <button class="content-tab" data-tab="about" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span data-i18n="tab.about">About</span>
+        </button>
+        <button class="content-tab" data-tab="install" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span data-i18n="tab.install">Install</span>
+        </button>
+        <button class="content-tab" data-tab="privacy" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span data-i18n="tab.privacy">Privacy</span>
         </button>
         <button class="content-tab" data-tab="contact" role="tab" aria-selected="false">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -145,11 +161,11 @@
           </div>
 
           <button class="btn chip" id="todayBtn" aria-label="Go to today">📆 <span data-i18n="btn.today">Today</span></button>
-          <button class="btn chip" id="copyBtn" aria-label="Copy today's times">📋 <span data-i18n="btn.copy">Copy</span></button>
           <button class="btn chip" id="shareBtn" aria-label="Share prayer times">📤 <span data-i18n="btn.share">Share</span></button>
           <button class="btn chip" id="themeBtn" aria-label="Toggle light/dark theme" title="Toggle theme">🌙 <span data-i18n="btn.dark">Dark</span></button>
           <button class="btn chip" id="notifBtn" aria-label="Enable prayer notifications">🔔 <span data-i18n="btn.notify">Notify</span></button>
           <button class="btn chip" id="audioBtn" aria-label="Toggle adhan sound">🔇 <span data-i18n="btn.sound">Sound</span></button>
+          <button class="btn chip" id="installBtn" hidden aria-label="Install app" onclick="triggerInstall()">📲 <span>Install</span></button>
           <button class="btn chip" id="toggleAdvanced" aria-label="Toggle advanced settings">⚙️ <span data-i18n="btn.advanced">Advanced Settings</span></button>
 
 
@@ -729,6 +745,10 @@
                 </div>
                 <div class="zakat-verdict" id="zakatVerdict" data-i18n="zakat.empty">Enter your wealth details above to calculate your Zakat obligation.</div>
                 <div class="zakat-amount" id="zakatAmount"></div>
+                <button class="btn zakat-export-btn" id="zakatPdfBtn" onclick="downloadZakatPdf()">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                  <span>Download Summary</span>
+                </button>
               </div>
             </div>
           </div>
@@ -789,6 +809,154 @@
             </div>
           </div>
 
+        </div>
+      </div>
+
+      <!-- About / Accuracy tab -->
+      <div id="tab-about" class="tab-content" hidden>
+        <div class="info-page">
+          <h2 class="info-heading" data-i18n="about.heading">About &amp; Accuracy</h2>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="about.engine.heading">Calculation Engine</h3>
+            <p class="info-body" data-i18n-html="about.engine.body">Prayer times are computed using <strong>PrayTimes v2</strong>, an open-source algorithm that calculates solar angles to determine each prayer's start time based on geographic coordinates and a selected juristic method.</p>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="about.methods.heading">Available Methods</h3>
+            <ul class="info-list" data-i18n-html="about.methods.list">
+              <li><strong>MWL</strong> — Muslim World League (Fajr 18°, Isha 17°)</li>
+              <li><strong>ISNA</strong> — Islamic Society of North America (15°/15°)</li>
+              <li><strong>Egypt</strong> — Egyptian General Authority (19.5°/17.5°)</li>
+              <li><strong>Makkah</strong> — Umm al-Qura, Makkah (18.5°, Isha 90 min after Maghrib)</li>
+              <li><strong>Karachi</strong> — University of Islamic Sciences, Karachi (18°/18°)</li>
+              <li><strong>Tehran</strong> — Institute of Geophysics, Tehran (17.7°/14°)</li>
+              <li><strong>Jafari</strong> — Shia Ithna Ashari (16°/14°)</li>
+              <li><strong>Bahrain</strong> — Kingdom of Bahrain (17.6°/14°)</li>
+            </ul>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="about.variances.heading">Known Variances</h3>
+            <ul class="info-list" data-i18n-html="about.variances.list">
+              <li>Calculated times may differ from local mosque announcements that follow moon-sighting traditions.</li>
+              <li>DST transitions can cause a 1-hour offset if the timezone offset is not adjusted manually.</li>
+              <li>High-latitude locations (above ~48°N/S) use the Night Middle correction method to handle extended twilight periods.</li>
+              <li>Asr time varies between Shafi'i (shadow = object length) and Hanafi (shadow = 2× object length) — select your school in advanced settings.</li>
+            </ul>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="about.sources.heading">Data Sources</h3>
+            <ul class="info-list" data-i18n-html="about.sources.list">
+              <li><strong>Geocoding:</strong> OpenStreetMap Nominatim (open, free, rate-limited)</li>
+              <li><strong>Daily Ayah:</strong> alquran.cloud API (open Islamic data)</li>
+              <li><strong>Gold price:</strong> goldapi.io (live pricing for Zakat Nisab)</li>
+              <li><strong>Articles &amp; Books:</strong> islamqa.info (proxied via allorigins/corsproxy)</li>
+            </ul>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="about.disclaimer.heading">Disclaimer</h3>
+            <p class="info-body" data-i18n="about.disclaimer.body">Times are calculated estimates. Differences of 1–3 minutes from your local mosque are normal. Always verify with your local mosque or Islamic authority for confirmed prayer times.</p>
+          </div>
+
+          <div class="info-section">
+            <p class="info-meta" data-i18n="about.meta">Version: 1.0 · Last updated: March 2026 · Built with ♥ for the Muslim community</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Install Guide tab -->
+      <div id="tab-install" class="tab-content" hidden>
+        <div class="info-page">
+          <h2 class="info-heading" data-i18n="install.heading">How to Install Adhan Timings</h2>
+          <p class="info-intro" data-i18n="install.intro">Install the app to your home screen for fast access, offline support, and prayer notifications — no app store required.</p>
+
+          <div class="install-cards">
+            <div class="install-card">
+              <div class="install-card-icon">📱</div>
+              <div class="install-card-body">
+                <h3 class="install-card-title" data-i18n="install.android.title">Android (Chrome)</h3>
+                <ol class="install-steps" data-i18n-html="install.android.steps">
+                  <li>Tap the <strong>⋮</strong> menu (top right of Chrome)</li>
+                  <li>Tap <strong>"Add to Home Screen"</strong> or <strong>"Install app"</strong></li>
+                  <li>Confirm — the icon appears on your home screen</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="install-card">
+              <div class="install-card-icon">🍎</div>
+              <div class="install-card-body">
+                <h3 class="install-card-title" data-i18n="install.ios.title">iPhone / iPad (Safari)</h3>
+                <ol class="install-steps" data-i18n-html="install.ios.steps">
+                  <li>Tap the <strong>Share</strong> button (□↑) at the bottom of Safari</li>
+                  <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                  <li>Tap <strong>"Add"</strong> to confirm</li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="install-card">
+              <div class="install-card-icon">💻</div>
+              <div class="install-card-body">
+                <h3 class="install-card-title" data-i18n="install.desktop.title">Desktop (Chrome / Edge)</h3>
+                <ol class="install-steps" data-i18n-html="install.desktop.steps">
+                  <li>Click the <strong>install icon (⊕)</strong> in the address bar, or</li>
+                  <li>Open the browser menu → <strong>"Install Adhan Timings"</strong></li>
+                  <li>Click <strong>"Install"</strong> to confirm</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+
+          <div class="install-tip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            <span data-i18n-html="install.tip"><strong>Tip:</strong> After installing, enable prayer notifications using the 🔔 Notify button for on-time adhan reminders.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Privacy Policy tab -->
+      <div id="tab-privacy" class="tab-content" hidden>
+        <div class="info-page">
+          <h2 class="info-heading" data-i18n="privacy.heading">Privacy Policy</h2>
+          <p class="info-intro" data-i18n="privacy.intro">Adhan Timings respects your privacy. This page explains what data is used and how.</p>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="privacy.collect.heading">Data We Collect</h3>
+            <ul class="info-list" data-i18n-html="privacy.collect.list">
+              <li><strong>Location:</strong> Your city, latitude, longitude, and timezone — entered manually or via the browser's Geolocation API. This data is stored only in your browser's <code>localStorage</code> and is never sent to our servers.</li>
+              <li><strong>Preferences:</strong> Theme, language, calculation method, and audio settings — stored locally in <code>localStorage</code>.</li>
+              <li><strong>No account required.</strong> We do not collect names, emails, or any personally identifiable information.</li>
+            </ul>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="privacy.third.heading">Third-Party Services</h3>
+            <ul class="info-list" data-i18n-html="privacy.third.list">
+              <li><strong>Google Fonts</strong> — loads the Amiri typeface for Arabic text. Google may log font requests.</li>
+              <li><strong>OpenStreetMap Nominatim</strong> — used for city search geocoding. Your search query is sent to nominatim.openstreetmap.org.</li>
+              <li><strong>allorigins.win / corsproxy.io</strong> — CORS proxies used to fetch articles and books from islamqa.info. URLs are forwarded to these third-party proxies.</li>
+              <li><strong>goldapi.io</strong> — used to fetch live gold prices for the Zakat Nisab calculation. Requests include the currency code only.</li>
+              <li><strong>alquran.cloud</strong> — provides the Daily Ayah text. A random surah/ayah number is requested; no personal data is sent.</li>
+            </ul>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="privacy.cookies.heading">Cookies &amp; Analytics</h3>
+            <p class="info-body" data-i18n="privacy.cookies.body">We do not use cookies. We do not use any analytics service (no Google Analytics, no tracking pixels). No data is collected about how you use the app.</p>
+          </div>
+
+          <div class="info-section">
+            <h3 class="info-subheading" data-i18n="privacy.contact.heading">Contact</h3>
+            <p class="info-body" data-i18n="privacy.contact.body">For privacy enquiries, please use the Contact tab to send us a message, or raise an issue on our public repository.</p>
+          </div>
+
+          <div class="info-section">
+            <p class="info-meta" data-i18n="privacy.meta">Last updated: March 2026</p>
+          </div>
         </div>
       </div>
 
@@ -882,6 +1050,21 @@
               <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
               <span>Email</span>
             </a>
+          </div>
+          <div class="modal-ics-options">
+            <label class="modal-ics-label" for="icsReminder">Reminder before prayer:</label>
+            <select class="modal-ics-select" id="icsReminder">
+              <option value="0">None</option>
+              <option value="5">5 min</option>
+              <option value="10">10 min</option>
+              <option value="15" selected>15 min</option>
+              <option value="30">30 min</option>
+            </select>
+            <label class="modal-ics-check">
+              <input type="checkbox" id="icsRecurring" />
+              Include recurring events (daily approximation)
+            </label>
+            <p class="modal-ics-note">Recurring times are fixed approximations — exact times vary daily.</p>
           </div>
           <div class="modal-download">
             <button class="btn download-btn" id="downloadPdf">

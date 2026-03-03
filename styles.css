@@ -1188,6 +1188,50 @@ input[type="date"] {
   border: 1px solid var(--border);
 }
 
+.modal-ics-options {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-ics-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.modal-ics-select {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+  padding: 6px 8px;
+  width: 100%;
+}
+
+.modal-ics-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.modal-ics-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+  font-style: italic;
+}
+
 .modal-download {
   margin-top: 24px;
   padding-top: 24px;
@@ -2185,6 +2229,24 @@ input[type="date"] {
   font-variant-numeric: tabular-nums;
 }
 
+.zakat-export-btn {
+  margin-top: 16px;
+  width: 100%;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 10px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.zakat-export-btn:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* FAQ column */
 .zakat-faq-heading {
   font-size: 20px;
@@ -2527,4 +2589,139 @@ html[dir="rtl"] .faq-answer ul,
 html[dir="rtl"] .faq-answer ol {
   padding-left: 0;
   padding-right: 20px;
+}
+
+/* ── Info pages (About, Privacy, Install Guide) ─────────────────── */
+.info-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+.info-heading {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 8px;
+}
+
+.info-intro {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 28px;
+  line-height: 1.6;
+}
+
+.info-note {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  margin: -16px 0 24px;
+}
+
+.info-section {
+  margin-bottom: 28px;
+}
+
+.info-subheading {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+
+.info-body {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.info-list {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.info-list li {
+  margin-bottom: 6px;
+}
+
+.info-list li:last-child {
+  margin-bottom: 0;
+}
+
+.info-meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* Install guide cards */
+.install-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.install-card {
+  display: flex;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.install-card-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.install-card-body {
+  flex: 1;
+}
+
+.install-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 10px;
+}
+
+.install-steps {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.7;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.install-steps li {
+  margin-bottom: 4px;
+}
+
+.install-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.install-tip svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--accent);
 }
