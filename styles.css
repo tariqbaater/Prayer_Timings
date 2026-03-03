@@ -22,7 +22,6 @@
   --border: rgba(255, 255, 255, 0.08);
   --border-light: rgba(255, 255, 255, 0.12);
   --accent: #caa380;
-  --accent-hover: #caa380;
   --accent-subtle: rgba(202, 163, 128, 0.15);
   --good: #4ade80;
   --good-subtle: rgba(74, 222, 128, 0.12);
@@ -79,7 +78,6 @@
   --border: rgba(0, 0, 0, 0.08);
   --border-light: rgba(0, 0, 0, 0.12);
   --accent: #caa380;
-  --accent-hover: #caa380;
   --accent-subtle: rgba(202, 163, 128, 0.12);
   --good: #16a34a;
   --good-subtle: rgba(22, 163, 74, 0.1);
@@ -349,6 +347,14 @@ body::before {
   display: flex;
 }
 
+.chip-label--muted {
+  color: var(--muted);
+}
+
+.separator--dim {
+  opacity: 0.5;
+}
+
 /* City Search */
 .city-search-chip {
   position: relative;
@@ -381,7 +387,7 @@ body::before {
 }
 
 .locate-btn:hover {
-  color: var(--accent-hover);
+  color: var(--accent);
   background: var(--accent-subtle);
 }
 
@@ -489,7 +495,7 @@ input[type="date"] {
   padding: 8px 14px;
   border: 1px solid var(--border);
   background: var(--accent-subtle);
-  color: var(--accent-hover);
+  color: var(--accent);
   border-radius: 10px;
   cursor: pointer;
   min-height: 40px;
@@ -607,7 +613,7 @@ input[type="date"] {
 
 .converter-tab.active {
   background: var(--accent-subtle);
-  color: var(--accent-hover);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -651,7 +657,7 @@ input[type="date"] {
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--accent-subtle);
-  color: var(--accent-hover);
+  color: var(--accent);
   font-size: 12px;
   font-weight: 500;
   font-family: inherit;
@@ -720,7 +726,7 @@ input[type="date"] {
 .converter-result-value {
   font-size: 15px;
   font-weight: 600;
-  color: var(--accent-hover);
+  color: var(--accent);
   line-height: 1.4;
 }
 
@@ -880,7 +886,7 @@ input[type="date"] {
 }
 
 .stat--current .n {
-  color: var(--accent-hover);
+  color: var(--accent);
 }
 
 .stat--next {
@@ -1009,7 +1015,7 @@ input[type="date"] {
 }
 
 .footer a {
-  color: var(--accent-hover);
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -1081,184 +1087,6 @@ input[type="date"] {
 }
 .row:nth-child(10) {
   animation-delay: 0.2s;
-}
-
-/* Tablet: stack sidebar below main */
-@media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: static;
-  }
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  body {
-    padding: 16px 12px;
-  }
-
-  .title-banner {
-    border-radius: 16px;
-    padding: 16px;
-  }
-
-  .title-banner {
-    padding: 32px 16px;
-    min-height: 140px;
-  }
-
-  .title-arabic {
-    font-size: 26px;
-  }
-
-  .title-english {
-    font-size: 14px;
-    letter-spacing: 4px;
-  }
-
-  .bar {
-    padding: 12px;
-    gap: 8px;
-  }
-
-  .left {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .city-search-chip {
-    grid-column: 1 / -1;
-    min-width: unset;
-    width: auto;
-  }
-
-  #chipLatLng {
-    grid-column: 1 / -1;
-  }
-
-  #toggleAdvanced {
-    grid-column: 1 / -1;
-    justify-content: center;
-  }
-
-  .chip {
-    padding: 6px 10px;
-    font-size: 12px;
-    min-height: 36px;
-    min-width: 0;
-    overflow: hidden;
-  }
-
-  /* Must come after .chip to win the cascade */
-  .city-search-chip {
-    overflow: visible;
-  }
-
-  .chip input[type="number"],
-  .chip input[type="text"] {
-    min-width: 0;
-    width: 100%;
-  }
-
-  .btn {
-    padding: 6px 10px;
-    font-size: 12px;
-    min-height: 36px;
-    justify-content: center;
-  }
-
-  .inner {
-    padding: 16px;
-  }
-
-  .head {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    text-align: center;
-  }
-
-  .title {
-    order: 1;
-    width: 100%;
-    text-align: center;
-  }
-
-  .midline {
-    order: 3;
-    width: 100%;
-    font-size: 13px;
-  }
-
-  .big {
-    order: 2;
-    width: 100%;
-    text-align: center;
-  }
-
-  .big .time {
-    font-size: 28px;
-  }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .stat--current {
-    grid-column: span 2;
-  }
-
-  .col-sunrise {
-    display: none;
-  }
-
-  .row {
-    grid-template-columns: auto repeat(5, 1fr);
-    gap: 4px;
-    padding: 10px 8px;
-  }
-
-  .cell {
-    font-size: 11px;
-  }
-
-  .headcell {
-    font-size: 9px;
-    letter-spacing: 0.2px;
-  }
-
-  .datecell {
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-  }
-
-  .datecell span:first-child {
-    display: none;
-  }
-
-  .badge {
-    min-width: 36px;
-    min-height: 18px;
-    font-size: 9px;
-    padding: 2px 6px;
-  }
-
-  .sidebar-inner {
-    padding: 16px;
-  }
-
-  .converter-tab {
-    font-size: 11px;
-    padding: 6px 8px;
-  }
 }
 
 /* Modal */
@@ -1943,13 +1771,6 @@ input[type="date"] {
   align-items: start;
 }
 
-@media (max-width: 900px) {
-  .contact-wrap {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-}
-
 .contact-heading {
   font-size: 26px;
   font-weight: 700;
@@ -2000,12 +1821,6 @@ input[type="date"] {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-}
-
-@media (max-width: 600px) {
-  .contact-form-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .contact-field {
@@ -2096,12 +1911,6 @@ input[type="date"] {
   gap: 32px;
   padding: 24px 0;
   align-items: start;
-}
-
-@media (max-width: 960px) {
-  .zakat-page {
-    grid-template-columns: 1fr;
-  }
 }
 
 .zakat-card {
@@ -2462,8 +2271,206 @@ input[type="date"] {
   margin-bottom: 4px;
 }
 
-/* Zakat mobile */
+/* ── Responsive ───────────────────────────────────────────────── */
+
+/* Tablet: stack sidebar below main */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+}
+
+/* Contact: single column */
+@media (max-width: 960px) {
+  .zakat-page {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .contact-wrap {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  body {
+    padding: 16px 12px;
+  }
+
+  .title-banner {
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .title-banner {
+    padding: 32px 16px;
+    min-height: 140px;
+  }
+
+  .title-arabic {
+    font-size: 26px;
+  }
+
+  .title-english {
+    font-size: 14px;
+    letter-spacing: 4px;
+  }
+
+  .bar {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .left {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .city-search-chip {
+    grid-column: 1 / -1;
+    min-width: unset;
+    width: auto;
+  }
+
+  #chipLatLng {
+    grid-column: 1 / -1;
+  }
+
+  #toggleAdvanced {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+
+  .chip {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-height: 36px;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  /* Must come after .chip to win the cascade */
+  .city-search-chip {
+    overflow: visible;
+  }
+
+  .chip input[type="number"],
+  .chip input[type="text"] {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-height: 36px;
+    justify-content: center;
+  }
+
+  .inner {
+    padding: 16px;
+  }
+
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .title {
+    order: 1;
+    width: 100%;
+    text-align: center;
+  }
+
+  .midline {
+    order: 3;
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .big {
+    order: 2;
+    width: 100%;
+    text-align: center;
+  }
+
+  .big .time {
+    font-size: 28px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .stat--current {
+    grid-column: span 2;
+  }
+
+  .col-sunrise {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: auto repeat(5, 1fr);
+    gap: 4px;
+    padding: 10px 8px;
+  }
+
+  .cell {
+    font-size: 11px;
+  }
+
+  .headcell {
+    font-size: 9px;
+    letter-spacing: 0.2px;
+  }
+
+  .datecell {
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .datecell span:first-child {
+    display: none;
+  }
+
+  .badge {
+    min-width: 36px;
+    min-height: 18px;
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  .sidebar-inner {
+    padding: 16px;
+  }
+
+  .converter-tab {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+
+/* Small mobile */
 @media (max-width: 600px) {
+  .contact-form-grid {
+    grid-template-columns: 1fr;
+  }
+
   .zakat-card-header,
   .zakat-section,
   .zakat-result {

@@ -1,4 +1,4 @@
-const CACHE_NAME = "adhan-timings-v14";
+const CACHE_NAME = "adhan-timings-v15";
 const ASSETS = [
   "./",
   "./index.html",
@@ -11,6 +11,7 @@ const ASSETS = [
   "./icon-192.svg",
   "./icon-512.svg",
   "./manifest.json",
+  "./apple-touch-icon.png",
   "./assets/asset_background_pattern.png",
   "./assets/adhan_format_no_table.pdf",
 ];

@@ -60,30 +60,8 @@ class PrayTime {
     this.methodParams[PrayTime.Bahrain] = [17.6, 0, 4, 0, 14];
   }
 
-  setCalcMethod(methodID) {
-    this.calcMethod = methodID;
-  }
-  setAsrMethod(methodID) {
-    if (methodID === 0 || methodID === 1) this.asrJuristic = methodID;
-  }
-  setHighLatsMethod(methodID) {
-    this.adjustHighLats = methodID;
-  }
   setTimeFormat(fmt) {
     this.timeFormat = fmt;
-  }
-  setDhuhrMinutes(min) {
-    this.dhuhrMinutes = min;
-  }
-
-  setCustomParams(params) {
-    for (let i = 0; i < 5; i++) {
-      if (params[i] == null)
-        this.methodParams[PrayTime.Custom][i] =
-          this.methodParams[this.calcMethod][i];
-      else this.methodParams[PrayTime.Custom][i] = params[i];
-    }
-    this.calcMethod = PrayTime.Custom;
   }
 
   getDatePrayerTimes(
@@ -373,6 +351,11 @@ class PrayTime {
 const $ = (id) => document.getElementById(id);
 
 const settingsKey = "iftar-timetable-settings";
+
+// Ordered prayer name keys used for next-prayer lookup and notifications (no Sunrise)
+const PRAYER_NAMES = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+// Full set including Sunrise — used for current-prayer detection
+const PRAYER_NAMES_WITH_SUNRISE = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 const methods = [
   { id: PrayTime.Jafari, label: "Jafari (Ithna Ashari)" },
@@ -879,6 +862,13 @@ function applySettings() {
 }
 
 
+function createPrayTime(methodID) {
+  const pt = new PrayTime(methodID);
+  pt.setTimeFormat(PrayTime.Time12);
+  pt.adjustHighLats = PrayTime.MidNight;
+  return pt;
+}
+
 function buildRows() {
   const startStr = $("start").value;
   const startDate = startStr
@@ -891,10 +881,7 @@ function buildRows() {
   const tz = parseFloat($("tz").value);
 
   const methodID = parseInt($("method").value, 10);
-
-  const pt = new PrayTime(methodID);
-  pt.setTimeFormat(PrayTime.Time12);
-  pt.setHighLatsMethod(PrayTime.MidNight);
+  const pt = createPrayTime(methodID);
 
   const rows = [];
   for (let i = 0; i < days; i++) {
@@ -1051,13 +1038,7 @@ function getNextPrayerTarget(now, pt, lat, lng, tz) {
   tomorrow.setDate(tomorrow.getDate() + 1);
 
   const todayMap = getPrayerTimesMapForDate(pt, today, lat, lng, tz);
-  const prayers = [
-    { key: "Fajr", label: "Fajr" },
-    { key: "Dhuhr", label: "Dhuhr" },
-    { key: "Asr", label: "Asr" },
-    { key: "Maghrib", label: "Maghrib" },
-    { key: "Isha", label: "Isha" },
-  ];
+  const prayers = PRAYER_NAMES.map(k => ({ key: k, label: k }));
 
   for (const p of prayers) {
     const t = todayMap[p.key];
@@ -1079,14 +1060,7 @@ function getCurrentPrayer(now, pt, lat, lng, tz) {
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
 
-  const prayers = [
-    { key: "Fajr", label: "Fajr" },
-    { key: "Sunrise", label: "Sunrise" },
-    { key: "Dhuhr", label: "Dhuhr" },
-    { key: "Asr", label: "Asr" },
-    { key: "Maghrib", label: "Maghrib" },
-    { key: "Isha", label: "Isha" },
-  ];
+  const prayers = PRAYER_NAMES_WITH_SUNRISE.map(k => ({ key: k, label: k }));
 
   const todayMap = getPrayerTimesMapForDate(pt, today, lat, lng, tz);
   const yesterdayMap = getPrayerTimesMapForDate(pt, yesterday, lat, lng, tz);
@@ -1133,9 +1107,7 @@ function regenerate() {
   // Next prayer target and dashboard values.
   const now = new Date();
   const methodID = parseInt($("method").value, 10);
-  const pt = new PrayTime(methodID);
-  pt.setTimeFormat(PrayTime.Time12);
-  pt.setHighLatsMethod(PrayTime.MidNight);
+  const pt = createPrayTime(methodID);
 
   const latN = parseFloat($("lat").value);
   const lngN = parseFloat($("lng").value);
@@ -1254,9 +1226,7 @@ function checkPrayerNotifications() {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const methodID = parseInt($("method").value, 10);
-  const pt = new PrayTime(methodID);
-  pt.setTimeFormat(PrayTime.Time12);
-  pt.setHighLatsMethod(PrayTime.MidNight);
+  const pt = createPrayTime(methodID);
 
   const latN = parseFloat($("lat").value);
   const lngN = parseFloat($("lng").value);
@@ -1264,13 +1234,7 @@ function checkPrayerNotifications() {
 
   const todayMap = getPrayerTimesMapForDate(pt, today, latN, lngN, tzN);
 
-  const prayers = [
-    { key: "Fajr", label: "Fajr" },
-    { key: "Dhuhr", label: "Dhuhr" },
-    { key: "Asr", label: "Asr" },
-    { key: "Maghrib", label: "Maghrib" },
-    { key: "Isha", label: "Isha" },
-  ];
+  const prayers = PRAYER_NAMES.map(k => ({ key: k, label: k }));
 
   for (const p of prayers) {
     const timeStr = String(todayMap[p.key]);
@@ -1820,7 +1784,7 @@ function setLanguage(lang) {
   // Re-render dynamic content only when coordinates are available
   const themeBtn = $("themeBtn");
   if (themeBtn) updateThemeButton(themeBtn, getCurrentTheme());
-  if (!isNaN(parseFloat($("lat")?.value))) updateDashboard();
+  if (!isNaN(parseFloat($("lat")?.value))) regenerate();
 
   // Re-run zakat calculation to update translated verdict text
   if (zakatInitialized) calculateZakat();
@@ -1914,8 +1878,25 @@ function toggleTheme(btn) {
 const COPY_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6h11a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V8"/><path d="M2 4a2 2 0 0 1 2-2h9l5 5v13a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4z"/><path d="M13 2v5h5"/></svg>`;
 const CHECK_ICON = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
 
+async function copyToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.left = "-9999px";
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand("copy"); } catch { /* ignore */ }
+  document.body.removeChild(ta);
+  if (!ok) throw new Error("copy failed");
+}
+
 function copySidebarCard(btn, text) {
-  navigator.clipboard.writeText(text).then(() => {
+  copyToClipboard(text).then(() => {
     btn.innerHTML = CHECK_ICON;
     btn.style.color = "var(--good)";
     setTimeout(() => { btn.innerHTML = COPY_ICON; btn.style.color = ""; }, 2000);
@@ -2177,34 +2158,10 @@ Asr: ${today.times.Asr}
 Maghrib: ${today.times.Maghrib}
 Isha: ${today.times.Isha}`;
 
-    // Try clipboard API first, fallback for mobile
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(() => {
-        showCopyFeedback("copyBtn");
-      }).catch(() => {
-        fallbackCopy(text);
-      });
-    } else {
-      fallbackCopy(text);
-    }
+    copyToClipboard(text)
+      .then(() => showCopyFeedback("copyBtn"))
+      .catch(() => alert(text));
   });
-
-  function fallbackCopy(text) {
-    const textArea = document.createElement("textarea");
-    textArea.value = text;
-    textArea.style.position = "fixed";
-    textArea.style.left = "-9999px";
-    document.body.appendChild(textArea);
-    textArea.select();
-    try {
-      document.execCommand("copy");
-      showCopyFeedback("copyBtn");
-    } catch {
-      // Last resort - show the text in an alert
-      alert(text);
-    }
-    document.body.removeChild(textArea);
-  }
 
   function showCopyFeedback(btnId) {
     const btn = $(btnId);
@@ -2571,49 +2528,6 @@ function clearOldIslamQACache() {
   } catch { /* ignore */ }
 }
 
-async function loadArticles() {
-  const grid     = $("articles-grid");
-  const cacheKey = `islamqa_articles_${currentLang}_${new Date().toDateString()}`;
-  clearOldIslamQACache();
-
-  // Serve from cache instantly if available
-  try {
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) { grid.innerHTML = cached; grid.dataset.loaded = "1"; return; }
-  } catch { /* ignore */ }
-
-  grid.innerHTML = Array(8).fill(`<div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
-  const BASE  = `https://islamqa.info/${currentLang}/articles`;
-
-  try {
-    // Fetch page 1 and detect total pages
-    const html1 = await fetchViaProxy(BASE);
-    const doc1  = new DOMParser().parseFromString(html1, "text/html");
-    if (!doc1.querySelectorAll('a[data-sut="post-item"]').length) throw new Error("no items");
-
-    const pageNums = Array.from(doc1.querySelectorAll('a[href*="?page="]'))
-      .map((a) => parseInt(new URL(a.href, "https://islamqa.info").searchParams.get("page"), 10))
-      .filter((n) => !isNaN(n));
-    const totalPages = pageNums.length ? Math.max(...pageNums) : 1;
-
-    // Fetch remaining pages concurrently
-    const remaining = Array.from({ length: totalPages - 1 }, (_, i) =>
-      fetchViaProxy(`${BASE}?page=${i + 2}`)
-        .then((h) => new DOMParser().parseFromString(h, "text/html"))
-    );
-    const otherDocs = await Promise.all(remaining);
-
-    const allCards = [doc1, ...otherDocs].flatMap(parseArticleItems);
-    const html = allCards.join("") || `<div class="islamqa-error">No articles found.</div>`;
-    grid.innerHTML = html;
-    try { localStorage.setItem(cacheKey, html); } catch { /* quota exceeded */ }
-  } catch {
-    grid.innerHTML = `<div class="islamqa-error">Could not load articles.<br>
-      <a class="islamqa-browse-btn" href="https://islamqa.info/${currentLang}/articles" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
-  }
-  grid.dataset.loaded = "1";
-}
-
 function parseBookItems(doc) {
   return Array.from(doc.querySelectorAll('a[data-sut="post-item"]')).map((a) => {
     const href    = a.getAttribute("href") || "";
@@ -2636,48 +2550,68 @@ function parseBookItems(doc) {
   });
 }
 
-async function loadBooks() {
-  const grid     = $("books-grid");
-  const cacheKey = `islamqa_books_${currentLang}_${new Date().toDateString()}`;
+async function loadCachedIslamQAContent({ url, cacheKey, skeletonHtml, parseItems, gridId, emptyMsg, errorLabel, errorPath }) {
+  const grid = $(gridId);
   clearOldIslamQACache();
 
-  // Serve from cache instantly if available
   try {
     const cached = localStorage.getItem(cacheKey);
     if (cached) { grid.innerHTML = cached; grid.dataset.loaded = "1"; return; }
   } catch { /* ignore */ }
 
-  grid.innerHTML = Array(8).fill(`<div class="skeleton-card skeleton-card--tall"><div class="skeleton-cover skeleton-cover--tall"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`).join("");
-  const BASE  = `https://islamqa.info/${currentLang}/books`;
+  grid.innerHTML = Array(8).fill(skeletonHtml).join("");
 
   try {
-    // Fetch page 1 and detect total pages
-    const html1 = await fetchViaProxy(BASE);
+    const html1 = await fetchViaProxy(url);
     const doc1  = new DOMParser().parseFromString(html1, "text/html");
     if (!doc1.querySelectorAll('a[data-sut="post-item"]').length) throw new Error("no items");
 
-    // Find the highest page number from pagination links
     const pageNums = Array.from(doc1.querySelectorAll('a[href*="?page="]'))
       .map((a) => parseInt(new URL(a.href, "https://islamqa.info").searchParams.get("page"), 10))
       .filter((n) => !isNaN(n));
     const totalPages = pageNums.length ? Math.max(...pageNums) : 1;
 
-    // Fetch remaining pages concurrently
     const remaining = Array.from({ length: totalPages - 1 }, (_, i) =>
-      fetchViaProxy(`${BASE}?page=${i + 2}`)
+      fetchViaProxy(`${url}?page=${i + 2}`)
         .then((h) => new DOMParser().parseFromString(h, "text/html"))
     );
     const otherDocs = await Promise.all(remaining);
 
-    const allCards = [doc1, ...otherDocs].flatMap(parseBookItems);
-    const html = allCards.join("") || `<div class="islamqa-error">No books found.</div>`;
+    const allCards = [doc1, ...otherDocs].flatMap(parseItems);
+    const html = allCards.join("") || `<div class="islamqa-error">${emptyMsg}</div>`;
     grid.innerHTML = html;
     try { localStorage.setItem(cacheKey, html); } catch { /* quota exceeded */ }
   } catch {
-    grid.innerHTML = `<div class="islamqa-error">Could not load books.<br>
-      <a class="islamqa-browse-btn" href="https://islamqa.info/${currentLang}/books" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
+    grid.innerHTML = `<div class="islamqa-error">Could not load ${errorLabel}.<br>
+      <a class="islamqa-browse-btn" href="https://islamqa.info/${currentLang}/${errorPath}" target="_blank" rel="noopener">Browse on islamqa.info →</a></div>`;
   }
   grid.dataset.loaded = "1";
+}
+
+function loadArticles() {
+  return loadCachedIslamQAContent({
+    url:         `https://islamqa.info/${currentLang}/articles`,
+    cacheKey:    `islamqa_articles_${currentLang}_${new Date().toDateString()}`,
+    skeletonHtml: `<div class="skeleton-card"><div class="skeleton-cover"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`,
+    parseItems:  parseArticleItems,
+    gridId:      "articles-grid",
+    emptyMsg:    "No articles found.",
+    errorLabel:  "articles",
+    errorPath:   "articles",
+  });
+}
+
+function loadBooks() {
+  return loadCachedIslamQAContent({
+    url:         `https://islamqa.info/${currentLang}/books`,
+    cacheKey:    `islamqa_books_${currentLang}_${new Date().toDateString()}`,
+    skeletonHtml: `<div class="skeleton-card skeleton-card--tall"><div class="skeleton-cover skeleton-cover--tall"></div><div class="skeleton-body"><div class="skeleton-line skeleton-line--title"></div><div class="skeleton-line"></div><div class="skeleton-line skeleton-line--short"></div></div></div>`,
+    parseItems:  parseBookItems,
+    gridId:      "books-grid",
+    emptyMsg:    "No books found.",
+    errorLabel:  "books",
+    errorPath:   "books",
+  });
 }
 
 /********************************************************************
@@ -2789,4 +2723,8 @@ function calculateZakat() {
     verdict.textContent = t("zakat.exempt").replace("{net}", fmt(net)).replace("{nisab}", fmt(nisab));
     amount.innerHTML    = "";
   }
+}
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
 }
