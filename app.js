@@ -2109,6 +2109,28 @@ function triggerInstall() {
   _installPrompt.userChoice.then(() => { _installPrompt = null; });
 }
 
+// ─── Font size ───────────────────────────────────────────────────────────────
+const FONT_SIZES = ["", "lg", "xl"];
+const FONT_LABELS = { "": "aA", lg: "aA+", xl: "aA++" };
+
+function applyFontSize(size) {
+  const html = document.documentElement;
+  if (size) {
+    html.setAttribute("data-font-size", size);
+  } else {
+    html.removeAttribute("data-font-size");
+  }
+  const btn = $("fontSizeBtn");
+  if (btn) btn.textContent = FONT_LABELS[size] || "aA";
+}
+
+function cycleFontSize() {
+  const current = document.documentElement.getAttribute("data-font-size") || "";
+  const next = FONT_SIZES[(FONT_SIZES.indexOf(current) + 1) % FONT_SIZES.length];
+  applyFontSize(next);
+  localStorage.setItem("adhan-font-size", next);
+}
+
 (function init() {
   initDropdowns();
   setTodayDateInput();
@@ -2137,6 +2159,14 @@ function triggerInstall() {
   if (notifBtn) {
     restoreNotificationState(notifBtn);
     notifBtn.addEventListener("click", () => toggleNotifications(notifBtn));
+  }
+
+  // Font size toggle
+  const fontSizeBtn = $("fontSizeBtn");
+  if (fontSizeBtn) {
+    const savedSize = localStorage.getItem("adhan-font-size") || "";
+    applyFontSize(savedSize);
+    fontSizeBtn.addEventListener("click", cycleFontSize);
   }
 
   // Audio toggle

@@ -135,7 +135,7 @@
   background: var(--accent);
   color: white;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
   transition: top 0.2s ease;
@@ -147,6 +147,14 @@
 
 html {
   font-size: 16px;
+}
+
+html[data-font-size="lg"] {
+  font-size: 1.125rem;
+}
+
+html[data-font-size="xl"] {
+  font-size: 1.25rem;
 }
 
 html.theme-transition,
@@ -247,7 +255,7 @@ body::before {
   border: 1px solid var(--accent-border);
   border-radius: 20px;
   color: var(--accent);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   font-family: "Amiri", serif;
   cursor: pointer;
@@ -257,6 +265,30 @@ body::before {
 }
 
 .lang-btn:hover {
+  background: var(--btn-hover-bg);
+  border-color: var(--accent);
+}
+
+.font-size-btn {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  padding: 6px 12px;
+  background: var(--accent-subtle);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.font-size-btn:hover {
   background: var(--btn-hover-bg);
   border-color: var(--accent);
 }
@@ -283,7 +315,7 @@ body::before {
 }
 
 .title-arabic {
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 700;
   color: var(--good);
   font-family:
@@ -292,7 +324,7 @@ body::before {
 }
 
 .title-english {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--good);
   letter-spacing: 8px;
@@ -329,7 +361,7 @@ body::before {
   border-radius: 10px;
   background: var(--surface-2);
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: 0.8125rem;
   min-height: 40px;
   transition: all 0.2s ease;
 }
@@ -435,17 +467,17 @@ body::before {
 .city-dropdown-item .name {
   font-weight: 500;
   color: var(--text);
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .city-dropdown-item .country {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   margin-top: 2px;
 }
 
 .city-dropdown-item .coords {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   font-family: monospace;
   margin-top: 2px;
@@ -457,7 +489,7 @@ body::before {
   padding: 16px;
   text-align: center;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 .city-dropdown-error {
@@ -470,7 +502,7 @@ input {
   color: var(--text);
   border: none;
   outline: none;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: inherit;
 }
 
@@ -499,7 +531,7 @@ input[type="date"] {
   border-radius: 10px;
   cursor: pointer;
   min-height: 40px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   font-family: inherit;
   transition: all 0.2s ease;
@@ -571,7 +603,7 @@ input[type="date"] {
   align-items: center;
   gap: 8px;
   margin: 0 0 16px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--text);
 }
@@ -599,7 +631,7 @@ input[type="date"] {
   border-radius: 8px;
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -628,7 +660,7 @@ input[type="date"] {
 }
 
 .converter-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -642,7 +674,7 @@ input[type="date"] {
   border-radius: 10px;
   background: var(--surface-2);
   color: var(--text);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: inherit;
   outline: none;
   transition: border-color 0.2s ease;
@@ -658,7 +690,7 @@ input[type="date"] {
   border-radius: 10px;
   background: var(--accent-subtle);
   color: var(--accent);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -696,13 +728,13 @@ input[type="date"] {
 .converter-field .converter-input {
   padding: 8px 6px;
   text-align: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 .converter-field select.converter-input {
   text-align: left;
   padding: 8px 4px;
-  font-size: 11px;
+  font-size: 0.6875rem;
 }
 
 .converter-result {
@@ -715,7 +747,7 @@ input[type="date"] {
 }
 
 .converter-result-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -724,7 +756,7 @@ input[type="date"] {
 }
 
 .converter-result-value {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--accent);
   line-height: 1.4;
@@ -782,13 +814,13 @@ input[type="date"] {
 }
 
 .headline {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--muted-light);
 }
 
 .hijri-time {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 700;
   color: var(--good);
   letter-spacing: -0.5px;
@@ -801,7 +833,7 @@ input[type="date"] {
   background: var(--midline-bg);
   border: 1px solid var(--good-border);
   font-weight: 600;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--good);
   white-space: nowrap;
   transition:
@@ -826,12 +858,12 @@ input[type="date"] {
 
 .big .label {
   color: var(--muted-light);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
 .big .time {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: -1px;
   color: var(--good);
@@ -839,7 +871,7 @@ input[type="date"] {
 
 .big .meta {
   color: var(--muted-light);
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 /* Stats Section */
@@ -865,14 +897,14 @@ input[type="date"] {
 }
 
 .stat .n {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   color: var(--text);
   font-variant-numeric: tabular-nums;
 }
 
 .stat .k {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   margin-top: 4px;
   font-weight: 500;
@@ -954,13 +986,13 @@ input[type="date"] {
 }
 
 .cell {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
 }
 
 .headcell {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -988,7 +1020,7 @@ input[type="date"] {
   padding: 4px 10px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--muted-light);
   background: var(--surface-3);
@@ -1010,7 +1042,7 @@ input[type="date"] {
   text-align: center;
   padding: 40px 16px 20px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1.6;
 }
 
@@ -1122,7 +1154,7 @@ input[type="date"] {
   background: none;
   border: none;
   color: var(--muted);
-  font-size: 28px;
+  font-size: 1.75rem;
   cursor: pointer;
   line-height: 1;
 }
@@ -1133,7 +1165,7 @@ input[type="date"] {
 
 .modal-title {
   margin: 0 0 24px;
-  font-size: 20px;
+  font-size: 1.25rem;
   color: var(--text);
 }
 
@@ -1163,7 +1195,7 @@ input[type="date"] {
 }
 
 .social-btn span {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
 }
 
@@ -1200,7 +1232,7 @@ input[type="date"] {
 }
 
 .modal-ics-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -1211,7 +1243,7 @@ input[type="date"] {
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
-  font-size: 13px;
+  font-size: 0.8125rem;
   padding: 6px 8px;
   width: 100%;
 }
@@ -1220,13 +1252,13 @@ input[type="date"] {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   cursor: pointer;
 }
 
 .modal-ics-note {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   margin: 0;
   font-style: italic;
@@ -1246,7 +1278,7 @@ input[type="date"] {
 /* Daily Ayah */
 .ayah-arabic {
   font-family: "Amiri", "Traditional Arabic", serif;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 2;
   text-align: right;
   direction: rtl;
@@ -1257,7 +1289,7 @@ input[type="date"] {
 }
 
 .ayah-english {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.7;
   color: var(--text-secondary);
   font-style: italic;
@@ -1271,20 +1303,20 @@ input[type="date"] {
 }
 
 .ayah-ref-name {
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--accent);
 }
 
 .ayah-ref-num {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   font-family: monospace;
 }
 
 .ayah-loading,
 .ayah-error {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted);
   text-align: center;
   padding: 16px 0;
@@ -1293,7 +1325,7 @@ input[type="date"] {
 /* Dua of the Day */
 .dua-arabic {
   font-family: "Amiri", "Traditional Arabic", serif;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 2;
   text-align: right;
   direction: rtl;
@@ -1304,7 +1336,7 @@ input[type="date"] {
 }
 
 .dua-transliteration {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.7;
   color: var(--text-secondary);
   font-style: italic;
@@ -1312,14 +1344,14 @@ input[type="date"] {
 }
 
 .dua-translation {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.7;
   color: var(--text-secondary);
   margin-bottom: 12px;
 }
 
 .dua-source {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   font-family: monospace;
   display: flex;
@@ -1372,7 +1404,7 @@ input[type="date"] {
   background: transparent;
   border: none;
   outline: none;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: inherit;
   color: var(--text);
   min-width: 0;
@@ -1403,7 +1435,7 @@ input[type="date"] {
 
 .islamqa-hint {
   margin: 0;
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   text-align: center;
 }
@@ -1431,7 +1463,7 @@ input[type="date"] {
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   font-family: inherit;
   cursor: pointer;
@@ -1465,7 +1497,7 @@ input[type="date"] {
   background: var(--warn-subtle);
   border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 10px;
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.6;
   color: var(--muted-light);
 }
@@ -1527,7 +1559,7 @@ input[type="date"] {
 }
 
 .article-card-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text);
   line-height: 1.4;
@@ -1538,7 +1570,7 @@ input[type="date"] {
 }
 
 .article-card-excerpt {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-light);
   line-height: 1.6;
   flex: 1;
@@ -1551,7 +1583,7 @@ input[type="date"] {
 .article-card-footer {
   padding: 10px 16px;
   border-top: 1px solid var(--border);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 500;
   color: var(--accent);
   text-align: right;
@@ -1659,7 +1691,7 @@ input[type="date"] {
 }
 
 .apps-subtitle {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--muted);
   line-height: 1.6;
 }
@@ -1720,7 +1752,7 @@ input[type="date"] {
 }
 
 .app-card-name {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 700;
   color: var(--text);
   white-space: nowrap;
@@ -1729,13 +1761,13 @@ input[type="date"] {
 }
 
 .app-card-name-en {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   font-weight: 500;
 }
 
 .app-card-desc {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-light);
   line-height: 1.5;
   flex: 1;
@@ -1749,7 +1781,7 @@ input[type="date"] {
 }
 
 .app-badge {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   padding: 3px 8px;
   border-radius: 20px;
@@ -1784,7 +1816,7 @@ input[type="date"] {
   text-align: center;
   padding: 64px 24px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 2;
 }
 
@@ -1798,7 +1830,7 @@ input[type="date"] {
   color: white;
   border-radius: 10px;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   transition: opacity 0.2s ease;
 }
@@ -1816,7 +1848,7 @@ input[type="date"] {
 }
 
 .contact-heading {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 20px;
@@ -1824,7 +1856,7 @@ input[type="date"] {
 }
 
 .contact-body {
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.8;
   color: var(--text-secondary);
   margin: 0 0 16px;
@@ -1841,7 +1873,7 @@ input[type="date"] {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--accent);
 }
@@ -1874,7 +1906,7 @@ input[type="date"] {
 }
 
 .contact-label {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--muted-light);
   letter-spacing: 0.3px;
@@ -1885,7 +1917,7 @@ input[type="date"] {
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: inherit;
   color: var(--text);
   outline: none;
@@ -1918,7 +1950,7 @@ input[type="date"] {
 
 .contact-note {
   margin: 0;
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   line-height: 1.5;
   flex: 1;
@@ -1933,7 +1965,7 @@ input[type="date"] {
   color: white;
   border: none;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
@@ -1969,14 +2001,14 @@ input[type="date"] {
 }
 
 .zakat-title {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 8px;
 }
 
 .zakat-subtitle {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted-light);
   line-height: 1.7;
   margin: 0 0 20px;
@@ -2024,7 +2056,7 @@ input[type="date"] {
 }
 
 .zakat-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.4px;
@@ -2036,7 +2068,7 @@ input[type="date"] {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 10px 20px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-family: inherit;
   color: var(--text);
   outline: none;
@@ -2060,7 +2092,7 @@ input[type="date"] {
 }
 
 .gold-price-hint {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--muted);
   white-space: nowrap;
   flex-shrink: 0;
@@ -2086,7 +2118,7 @@ input[type="date"] {
 }
 
 .zakat-nisab-label {
-  font-size: 10px;
+  font-size: 0.625rem;
   color: var(--good);
   font-weight: 600;
   text-transform: uppercase;
@@ -2094,7 +2126,7 @@ input[type="date"] {
 }
 
 .zakat-nisab-value {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--good);
 }
@@ -2119,7 +2151,7 @@ input[type="date"] {
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -2140,7 +2172,7 @@ input[type="date"] {
 }
 
 .zakat-row-label {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted-light);
 }
 
@@ -2162,7 +2194,7 @@ input[type="date"] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--muted-light);
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
@@ -2175,14 +2207,14 @@ input[type="date"] {
 .zakat-result-row--net {
   font-weight: 600;
   color: var(--text);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .zakat-verdict {
   margin-top: 4px;
   padding: 12px 14px;
   border-radius: 10px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 1.5;
   background: var(--surface-3);
   color: var(--muted-light);
@@ -2217,13 +2249,13 @@ input[type="date"] {
 }
 
 .zakat-amount-label {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--good);
 }
 
 .zakat-amount-value {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--good);
   font-variant-numeric: tabular-nums;
@@ -2234,7 +2266,7 @@ input[type="date"] {
   width: 100%;
   justify-content: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   padding: 10px 16px;
   background: var(--surface-2);
   border: 1px solid var(--border);
@@ -2249,7 +2281,7 @@ input[type="date"] {
 
 /* FAQ column */
 .zakat-faq-heading {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 16px;
@@ -2282,7 +2314,7 @@ input[type="date"] {
   padding: 14px 16px;
   background: none;
   border: none;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   font-family: inherit;
   color: var(--text);
@@ -2308,7 +2340,7 @@ input[type="date"] {
 .faq-answer {
   display: none;
   padding: 0 16px 16px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
   line-height: 1.75;
   border-top: 1px solid var(--border);
@@ -2377,11 +2409,11 @@ input[type="date"] {
   }
 
   .title-arabic {
-    font-size: 26px;
+    font-size: 1.625rem;
   }
 
   .title-english {
-    font-size: 14px;
+    font-size: 0.875rem;
     letter-spacing: 4px;
   }
 
@@ -2415,7 +2447,7 @@ input[type="date"] {
 
   .chip {
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: 0.75rem;
     min-height: 36px;
     min-width: 0;
     overflow: hidden;
@@ -2434,7 +2466,7 @@ input[type="date"] {
 
   .btn {
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: 0.75rem;
     min-height: 36px;
     justify-content: center;
   }
@@ -2459,7 +2491,7 @@ input[type="date"] {
   .midline {
     order: 3;
     width: 100%;
-    font-size: 13px;
+    font-size: 0.8125rem;
   }
 
   .big {
@@ -2469,7 +2501,7 @@ input[type="date"] {
   }
 
   .big .time {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 
   .stats {
@@ -2492,11 +2524,11 @@ input[type="date"] {
   }
 
   .cell {
-    font-size: 11px;
+    font-size: 0.6875rem;
   }
 
   .headcell {
-    font-size: 9px;
+    font-size: 0.5625rem;
     letter-spacing: 0.2px;
   }
 
@@ -2513,7 +2545,7 @@ input[type="date"] {
   .badge {
     min-width: 36px;
     min-height: 18px;
-    font-size: 9px;
+    font-size: 0.5625rem;
     padding: 2px 6px;
   }
 
@@ -2522,7 +2554,7 @@ input[type="date"] {
   }
 
   .converter-tab {
-    font-size: 11px;
+    font-size: 0.6875rem;
     padding: 6px 8px;
   }
 }
@@ -2566,6 +2598,11 @@ html[dir="rtl"] .lang-btn {
   font-family: inherit;
 }
 
+html[dir="rtl"] .font-size-btn {
+  left: auto;
+  right: 16px;
+}
+
 /* Mirror the head grid columns' text alignment */
 html[dir="rtl"] .big {
   text-align: left;
@@ -2599,21 +2636,21 @@ html[dir="rtl"] .faq-answer ol {
 }
 
 .info-heading {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 700;
   color: var(--text);
   margin: 0 0 8px;
 }
 
 .info-intro {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--muted);
   margin: 0 0 28px;
   line-height: 1.6;
 }
 
 .info-note {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: var(--muted);
   font-style: italic;
   margin: -16px 0 24px;
@@ -2624,7 +2661,7 @@ html[dir="rtl"] .faq-answer ol {
 }
 
 .info-subheading {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -2633,14 +2670,14 @@ html[dir="rtl"] .faq-answer ol {
 }
 
 .info-body {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   line-height: 1.7;
   margin: 0;
 }
 
 .info-list {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   line-height: 1.7;
   padding-left: 20px;
@@ -2656,7 +2693,7 @@ html[dir="rtl"] .faq-answer ol {
 }
 
 .info-meta {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--muted);
   margin: 0;
 }
@@ -2679,7 +2716,7 @@ html[dir="rtl"] .faq-answer ol {
 }
 
 .install-card-icon {
-  font-size: 28px;
+  font-size: 1.75rem;
   flex-shrink: 0;
   line-height: 1.2;
 }
@@ -2689,14 +2726,14 @@ html[dir="rtl"] .faq-answer ol {
 }
 
 .install-card-title {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--text);
   margin: 0 0 10px;
 }
 
 .install-steps {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   line-height: 1.7;
   padding-left: 20px;
@@ -2715,7 +2752,7 @@ html[dir="rtl"] .faq-answer ol {
   background: rgba(139, 92, 246, 0.1);
   border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text);
   line-height: 1.5;
 }
