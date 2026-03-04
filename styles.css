@@ -307,10 +307,9 @@ body::before {
 }
 
 .header-logo {
-  width: 88px;
-  height: 88px;
+  width: 120px;
+  height: auto;
   object-fit: contain;
-  border-radius: 20px;
   margin-bottom: 4px;
 }
 
